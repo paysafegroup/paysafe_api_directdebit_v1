@@ -1,0 +1,1801 @@
+FORMAT: 1A
+HOST: https://api.netbanx.com/directdebit/v1/
+
+# NETBANX Direct Debit API
+
+# Overview
+Connect your application directly with our payment engine to process a full suite of methods that are REST-based – designed to be easy to understand and use. Ultimate control puts you in the driver’s seat.
+* Choose an efficient, lightweight, and fast integration method to access our API.
+* Implement a wide variety of REST-based API requests – including purchases and independent credits.
+* Obtain output in JSON format – it’s easy to parse in a large variety of Web and mobile applications.
+* Use any language or platform to make requests through standard HTTP protocols.
+
+**Start accepting Direct Debit payments**
+
+Once you have set up a NETBANX merchant account, you can connect to the NETBANX gateway with our simple-to-use API. See our [Getting Started](#gettingstarted) section for a quick integration overview.
+
+Here is a summary of the process:
+ 1. You send a transaction request, including bank information and purchase amount. 
+ 2. NETBANX processes the request. 
+ 3. The transaction is completed in real time, though in most cases the request clears in 3–5 business days, at which time payment will be deposited in your business bank account.
+ 4. You can look up any Direct Debit transaction you have processed with NETBANX, including charges and credits. 
+ 
+**Direct Debit workflow**
+
+The flow of funds in a Direct Debit charge transaction is depicted in the diagram below.
+
+![](https://github.com/paysafegroup/paysafe_api_directdebit_v1/raw/master/images/DD_Processing_Overview.png)
+
+1. The consumer places an order.
+2. The merchant securely transfers the order information to NETBANX. Note that for certain bank schemes, a mandate reference number must be included in the request.
+3. NETBANX transmits the transaction request through its payment gateway to a Direct Debit clearing house.
+4. The Direct Debit charge request is routed to the consumer's bank. At this point, the bank information is verified.
+5. The transaction is approved by the consumer's bank.
+6. NETBANX returns the message to the merchant.
+7. The consumer's bank transfers the money to the merchant's bank account.
+
+<a name="apikey" /a>
+# Authentication 
+In order for you to use the NETBANX REST API, NETBANX must first set you up on their system
+and provide you with an API key. Your API key looks something like this:
+ * Key ID – MerchantXYZ
+ * Key Password – B-tst1-0-51ed39e4-312d02345d3f123120881dff9bb4020a89e8ac44cdfdcecd702151182fdc952272661d290ab2e5849e31bb03deede7e
+
+The case-sensitive API key is sent using HTTP Basic Authentication. To use HTTP Basic Authentication, you must send the API key credentials using the Authorization header with every request. The Authorization header is constructed as follows:
+ 1. The Key ID and Key Password are combined into a string separated by a colon, e.g.,“Key ID:Key Password”.
+ 2. The resulting string literal is then encoded using Base64.
+ 3. The authorization method and a space (i.e., “Basic”) are then put before the encoded string.
+
+For example, using the Key ID and Password examples above, the header is formed as follows:
+
+``Authorization: Basic
+TWVyY2hhbnRYWVo6Qi10c3QxLTAtNTFlZDM5ZTQtMzEyZDAyMzQ1ZDNmMTIzMTIwODgxZGZmOWJiNDAyMGE4OWU4YWM0NGNkZmRjZWNkNzAyMTUxMTgyZmRjOTU yMjcyNjYxZDI5MGFiMmU1ODQ5ZTMxYmIwM2RlZWRlN2U=``
+
+For additional details, please refer to [http://en.wikipedia.org/wiki/Basic_access_authentication](http://en.wikipedia.org/wiki/Basic_access_authentication).
+
+**Note:** Your Production API key will be different from your Test API key. Contact your account manager for details. You must keep your API keys safe and ensure that it is used appropriately for your needs.
+
+# URLs 
+
+##  Test URL
+In order to test your integration with NETBANX, use the following Test URL:
+
+`https://api.test.netbanx.com`
+
+For example:
+
+`https://api.test.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`
+
+## Production URL
+In order to process live requests with NETBANX, use the following Production URL:
+
+`https://api.netbanx.com`
+
+For example:
+
+`https://api.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`
+
+# Pagination
+
+In the case where an API GET request returns multiple results, NETBANX returns the first 10 records by default and uses HATEOAS links to provide page navigation. In addition to the default behavior, it is also possible to control the number of results and starting point by passing in query parameters as follows:
+
+## Query Parameters for Pagination
+
+
+| Name      | Description                                                                           |
+|-----------|---------------------------------------------------------------------------------------|
+| limit     | This is the total number of records to  return. Default value is 10. Max value is 50. |
+| offset    | This is the starting position, where 0 is the first record. Default value is 0.       |
+| startDate | This is the start date in UTC. Default value is 30 days before the endDate.           |
+| endDate   | This is the end date in UTC. Default value is the current date and time.              |
+
+# Global Invalid Characters
+
+You must not include any of the characters in the following table as values in any of your request parameters. If you do, your request will result in an error.
+
+|    Character    |    HEX    |    Description                     |
+|-----------------|-----------|------------------------------------|
+| "               | 22        | Double quotes (or speech marks)    |
+| ;               | 3B        | Semicolon                          |
+| ^               | 5E        | Caret, circumflex                  |
+| *               | 2A        | Asterisk                           |
+| <               | 3C        | Less than (or open angled bracket) |
+| /               | 2F        | Slash or divide                    |
+| [               | 5B        | Opening bracket                    |
+| ]               | 5D        | Closing bracket                    |
+| \               | 5C        | Backslash                          |
+
+# API
+
+The Direct Debit API allows merchants to process echeck transactions using the REST protocol. The protocol uses JSON for all requests and responses.
+
+The following request types are supported: 
+
+  * [Purchases](#purchaserequest)
+  * [Standalone Credits](#standalonecreditrequest)
+  
+**Note:** The availability of request types is allotted on a merchant-by-merchant basis, since not all merchant banks support all operations. If you have any questions, contact your account manager.
+ 
+**API Endpoint:** `https://api.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`  
+
+**Resource Patterns**
+
+|Endpoint URL                                   |Description                    |Action |
+|---                                            |---                            |---    |
+|/purchases                                     |Submit a Purchase              |POST   |
+|/purchases/{PURCHASE_ID}                       |Cancel a Purchase              |PUT    |
+|/purchases/{PURCHASE_ID}                       |Look Up a Purchase             |GET    |
+|/standalonecredits                             |Submit a Standalone Credit     |POST   |
+|/standalonecredits/{STANDALONE_CREDIT_ID}      |Cancel a Standalone Credit     |PUT    |
+|/standalonecredits/{STANDALONE_CREDIT_ID}      |Look Up a Standalone Credit    |GET    |
+
+<a name="gettingstarted"></a>
+# Getting Started
+
+This section outlines some common scenarios for making Direct Debit payments. To get started you must first sign up for a test account and get an API key.
+
+All examples in this section use cURL, which is a command line tool for transferring data using protocols such as HTTPS.
+
+## Verify That the Service Is Accessible
+
+The following request verifies that the service is up and accessible from your network.
+
+Request:
+
+`curl -X GET https://api.test.netbanx.com/directdebit/monitor`
+
+Response:
+
+`{
+"status" : "READY"
+}`
+
+**Note:** The system should respond with a status of READY if it is available.
+
+## Process a Purchase
+
+A purchase request allows you to transfer money from a customer's bank account to your merchant account. To process a purchase, you must initiate a POST request to the purchases endpoint. The transaction is completed in real time, though the banking network typically takes 3&ndash;5 days to transfer the funds.
+
+    curl -X POST https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases \
+      -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
+      -H 'Content-Type: application/json' \
+      -d ' {
+            "merchantRefNum": "ORDER_ID:1231",
+            "amount": 10098,
+            "ach": {
+                "accountHolderName": "XYZ Company",
+                "accountType": "CHECKING",
+                "accountNumber": "988772192",
+                "routingNumber": "211589828",
+                "payMethod": "WEB"
+            },
+            "customerIp": "192.0.126.111",
+            "profile": {
+                "firstName": "Joe",
+                "lastName": "Smith",
+                "email": "Joe.Smith@hotmail.com"
+            },
+            "billingDetails": {
+                "street": "100 Queen Street West",
+                "city": "Los Angeles",
+                "state": "CA",
+                "country": "US",
+                "zip": "90210",
+                "phone": "3102649010"
+            }
+        } '
+        
+**Note:** By default the Direct Debit processing system will check for duplicate transactions. Prior to trying the example, you should:
+
+  * Provide a unique merchant reference number for each transaction.
+  * Replace the account number (89987201) in the URL with the test account number you received.
+  * Replace the [API key](#apikey) (after the -u) with the API key you have received.
+  
+## Purchase Response
+
+    {
+        "links": [
+            {
+                "rel": "self",
+                "href": "https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+            }
+        ],
+        "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+        "merchantRefNum": "ORDER_ID:1231",
+        "amount": 10098,
+        "ach": {
+            "accountHolderName": "XYZ Company",
+            "accountType": "CHECKING",
+            "lastDigits": "92",
+            "routingNumber": "211589828",
+            "payMethod": "WEB"
+        },
+        "customerIp": "192.0.126.111",
+        "profile": {
+            "firstName": "Joe",
+            "lastName": "Smith",
+            "email": "Joe.Smith@hotmail.com"
+        },
+        "billingDetails": {
+            "street": "100 Queen Street West",
+            "city": "Los Angeles",
+            "state": "CA",
+            "country": "US",
+            "zip": "90210",
+            "phone": "3102649010"
+        },
+        "txnTime": "2014-12-14T15:12:18Z",
+        "currencyCode": "USD",
+        "status": "PENDING"
+    }
+    
+## Purchase Message Sequence
+
+![](https://github.com/paysafegroup/paysafe_api_directdebit_v1/raw/master/images/DD_Purchase_Message_Sequence.png)
+
+## Look Up a Purchase Transaction
+
+You can look up an existing purchase transaction by providing the account number and transaction ID in the URL as follows: 
+
+    curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae \
+      -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
+      -H 'Content-Type: application/json'
+  
+**Note:** Prior to trying the example, you should:
+
+  * Replace the account number (89987201) in the URL with the test account number you received.
+  * Replace the [API key](#apikey) (after the -u) with the API key you have received.
+  
+If you do not have a transaction ID, you can look up a transaction based on the *merchantRefNum* you supplied with the original request:
+
+    curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases?merchantRefNum=ORDER_ID:1231&limit=2 \
+      -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
+      -H 'Content-Type: application/json'
+  
+
+# Testing Instructions
+
+The NETBANX Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment.
+
+**Note:** Direct Debit check transactions processed in the Test environment are not sent to the banking network, but through a simulator. Depending on the information provided with the transaction request, the simulator returns either a successful (approved) or failed (declined) response.
+
+With the NETBANX Direct Debit API you can test the following:
+
+  * Verify support for all the operation types that you require.
+  * Review all common errors as well as errors that may occur for each operation, and ensure your application can handle them.
+  * Verify the lengths and format for all attributes you send.
+  * Use the details in this section to simulate different responses.
+  
+To use the test environment, you must post your requests to the following endpoint:
+
+`https://api.test.netbanx.com/directdebit/v1/accounts/<test account number>`
+
+
+# ISO Standards
+
+<a name="currencycodes"></a>
+## Currency Codes
+
+|Currency           |Code   |
+|---                |---    |
+|Argentine Peso     |ARS    |
+|Australian Dollar  |AUD    |
+|Baht               |THB    |
+|Brazilian Real     |BRL    |
+|Bulgarian Lev      |BGN    |
+|Canadian Dollar    |CAD    |
+|Czech Koruna       |CZK    |
+|Danish Krone       |DKK    |
+|Euro               |EUR    |
+|Forint             |HUF    |
+|Hong Kong Dollar   |HKD    |
+|Iceland Krona      |ISK    |
+|Japanese Yen       |JPY    |
+|Mexican Peso       |MXN    |
+|New Israeli Shekel |ILS    |
+|New Leu            |RON    |
+|New Taiwan Dollar  |TWD    |
+|New Zealand Dollar |NZD    |
+|Norwegian Krone    |NOK    |
+|Pound Sterling     |GBP    |
+|Rand               |ZAR    |
+|Singapore Dollar   |SGD    |
+|Swedish Krona      |SEK    |
+|Swiss Franc        |CHF    |
+|US Dollar          |USD    |
+|Zloty              |PLN    |
+
+<a name="provincecodes"></a>
+## Province Codes
+
+|Province               |Code   |
+|---                    |---    |
+|Alberta                |AB     |
+|British Columbia       |BC     |
+|Manitoba               |MB     |
+|New Brunswick          |NB     |
+|Newfoundland           |NL     |
+|Nova Scotia            |NS     |
+|Northwest Territories  |NT     |
+|Nunavut                |NU     |
+|Ontario                |ON     |
+|Prince Edward Island   |PE     |
+|Quebec                 |QC     |
+|Saskatchewan           |SK     |
+|Yukon                  |YT     |
+
+<a name="statecodes"></a>
+## State Codes
+
+|State                  |Code   |
+|---                    |---    |
+|Alabama                |AL     |
+|Alaska                 |AK     |
+|American Samoa         |AS     |
+|Arizona                |AZ     |
+|Arkansas               |AR     |
+|Armed Forces Americas  |AA     |
+|Armed Forces Europe    |AE     |
+|Armed Forces Pacific   |AP     |
+|California             |CA     |
+|Colorado               |CO     |
+|Connecticut            |CT     |
+|Delaware               |DE     |
+|District of Columbia   |DC     |
+|Florida                |FL     |
+|Georgia                |GA     |
+|Guam                   |GU     |
+|Hawaii                 |HI     |
+|Idaho                  |ID     |
+|Illinois               |IL     |
+|Indiana                |IN     |
+|International          |IT     |
+|Iowa                   |IA     |
+|Kansas                 |KS     |
+|Kentucky               |KY     |
+|Louisiana              |LA     |
+|Maine                  |ME     |
+|Maryland               |MD     |
+|Massachusetts          |MA     |
+|Michigan               |MI     |
+|Minnesota              |MN     |
+|Mississippi            |MS     |
+|Missouri               |MO     |
+|Montana                |MT     |
+|Nebraska               |NE     |
+|Nevada                 |NV     |
+|New Hampshire          |NH     |
+|New Jersey             |NJ     |
+|New Mexico             |NM     |
+|New York               |NY     |
+|North Carolina         |NC     |
+|North Dakota           |ND     |
+|Northern Mariana Is.   |MP     |
+|Ohio                   |OH     |
+|Oklahoma               |OK     |
+|Oregon                 |OR     |
+|Palau                  |PW     |
+|Pennsylvania           |PA     |
+|Puerto Rico            |PR     |
+|Rhode Island           |RI     |
+|South Carolina         |SC     |
+|South Dakota           |SD     |
+|Tennessee              |TN     |
+|Texas                  |TX     |
+|U.S. Virgin Islands    |VI     |
+|United States Federal  |US     |
+|Utah                   |UT     |
+|Vermont                |VT     |
+|Virginia               |VA     |
+|Washington             |WA     |
+|West Virginia          |WV     |
+|Wisconsin              |WI     |
+|Wyoming                |WY     |
+
+
+<a name="countrycodes"></a>
+## Country Codes
+| **Country**                       | **Code** |
+|---                                |---       |
+| Afghanistan                       | AF |
+| Åland Islands                     | AX |
+| Albania                           | AL |
+| Algeria                           | DZ |
+| American Samoa                    | AS |
+| Andorra                           | AD |
+| Angola                            | AO |
+| Anguilla                          | AI |
+| Antarctica                        | AQ |
+| Antigua and Barbuda               | AG |
+| Argentina                         | AR |
+| Armenia                           | AM |
+| Aruba                             | AW |
+| Australia                         | AU |
+| Austria                           | AT |
+| Azerbaijan                        | AZ |
+| Bahamas                           | BS |
+| Bahrain                           | BH |
+| Bangladesh                        | BD |
+| Barbados                          | BB |
+| Belarus                           | BY |
+| Belgium                           | BE |
+| Belize                            | BZ |
+| Benin                             | BJ |
+| Bermuda                           | BM |
+| Bhutan                            | BT |
+| Bolivia                           | BO |
+| Bonaire, Sint Eustatius and Saba  | BQ |
+| Bosnia and Herzegovina            | BA |
+| Botswana                          | BW |
+| Bouvet Island                     | BV |
+| Brazil                            | BR |
+| British Indian Ocean Territory    | IO |
+| Brunei Darussalam                 | BN |
+| Bulgaria                          | BG |
+| Burkina Faso                      | BF |
+| Burundi                           | BI |
+| Cambodia                          | KH |
+| Cameroon                          | CM |
+| Canada                            | CA |
+| Cape Verde                        | CV |
+| Cayman Islands                    | KY |
+| Central African Republic          | CF |
+| Chad                              | TD |
+| Chile                             | CL |
+| China                             | CN |
+| Christmas Island                  | CX |
+| Cocos (Keeling) Islands           | CC |
+| Colombia                          | CO |
+| Comoros                           | KM |
+| Congo                             | CG |
+| Congo, Democratic Republic of     | CD |
+| Cook Islands                      | CK |
+| Costa Rica                        | CR |
+| Côte D’Ivoire                     | CI |
+| Croatia                           | HR |
+| Cuba                              | CU |
+| Curaçao                           | CW |
+| Cyprus                            | CY |
+| Czech Republic                    | CZ |
+| Denmark                           | DK |
+| Djibouti                          | DJ |
+| Dominica                          | DM |
+| Dominican Republic                | DO |
+| Ecuador                           | EC |
+| Egypt                             | EG |
+| El Salvador                       | SV |
+| Equatorial Guinea                 | GQ |
+| Eritrea                           | ER |
+| Estonia                           | EE |
+| Ethiopia                          | ET |
+| Falkland Islands                  | FK |
+| Faroe Islands                     | FO |
+| Fiji                              | FJ |
+| Finland                           | FI |
+| France                            | FR |
+| French Guiana                     | GF |
+| French Polynesia                  | PF |
+| French Southern Territories       | TF |
+| Gabon                             | GA |
+| Gambia                            | GM |
+| Georgia                           | GE |
+| Germany                           | DE |
+| Ghana                             | GH |
+| Gibraltar                         | GI |
+| Greece                            | GR |
+| Greenland                         | GL |
+| Grenada                           | GD |
+| Guadeloupe                        | GP |
+| Guam                              | GU |
+| Guatemala                         | GT |
+| Guernsey                          | GG |
+| Guinea                            | GN |
+| Guinea-Bissau                     | GW |
+| Guyana                            | GY |
+| Haiti                             | HT |
+| Heard and McDonald Islands        | HM |
+| Honduras                          | HN |
+| Hong Kong                         | HK |
+| Hungary                           | HU |
+| Iceland                           | IS |
+| India                             | IN |
+| Indonesia                         | ID |
+| Iran  (Islamic Republic of)       | IR |
+| Iraq                              | IQ |
+| Ireland                           | IE |
+| Isle of Man                       | IM |
+| Israel                            | IL |
+| Italy                             | IT |
+| Jamaica                           | JM |
+| Japan                             | JP |
+| Jersey                            | JE |
+| Jordan                            | JO |
+| Kazakhstan                        | KZ |
+| Kenya                             | KE |
+| Kiribati                          | KI |
+| Korea, Democratic People’s Republic | KP |
+| Korea, Republic of                | KR |
+| Kuwait                            | KW |
+| Kyrgyzstan                        | KG |
+| Lao People’s Democratic Republic  | LA |
+| Latvia                            | LV |
+| Lebanon                           | LB |
+| Lesotho                           | LS |
+| Liberia                           | LR |
+| Libyan Arab Jamahiriya            | LY |
+| Liechtenstein                     | LI |
+| Lithuania                         | LT |
+| Luxembourg                        | LU |
+| Macau                             | MO |
+| Macedonia                         | MK |
+| Madagascar                        | MG |
+| Malawi                            | MW |
+| Malaysia                          | MY |
+| Maldives                          | MV |
+| Mali                              | ML |
+| Malta                             | MT |
+| Marshall Islands                  | MH |
+| Martinique                        | MQ |
+| Mauritania                        | MR |
+| Mauritius                         | MU |
+| Mayotte                           | YT |
+| Mexico                            | MX |
+| Micronesia, Federated States of   | FM |
+| Moldova, Republic of              | MD |
+| Monaco                            | MC |
+| Mongolia                          | MN |
+| Montenegro                        | ME |
+| Montserrat                        | MS |
+| Morocco                           | MA |
+| Mozambique                        | MZ |
+| Myanmar                           | MM |
+| Namibia                           | NA |
+| Nauru                             | NR |
+| Nepal                             | NP |
+| New Caledonia                     | NC |
+| New Zealand                       | NZ |
+| Nicaragua                         | NI |
+| Niger                             | NE |
+| Nigeria                           | NG |
+| Niue                              | NU |
+| Norfolk Island                    | NF |
+| Northern Mariana Islands          | MP |
+| Norway                            | NO |
+| Oman                              | OM |
+| Pakistan                          | PK |
+| Palau                             | PW |
+| Palestinian Territory, Occupied   | PS |
+| Panama                            | PA |
+| Papua New Guinea                  | PG |
+| Paraguay                          | PY |
+| Peru                              | PE |
+| Philippines                       | PH |
+| Pitcairn                          | PN |
+| Poland                            | PL |
+| Portugal                          | PT |
+| Puerto Rico                       | PR |
+| Qatar                             | QA |
+| Reunion                           | RE |
+| Romania                           | RO |
+| Russian Federation                | RU |
+| Rwanda                            | RW |
+| Saint Barthélemy                  | BL |
+| Saint Helena                      | SH |
+| Saint Kitts and Nevis             | KN |
+| Saint Lucia                       | LC |
+| Saint Martin                      | MF |
+| Saint Vincent and the Grenadines  | VC |
+| Samoa                             | WS |
+| San Marino                        | SM |
+| Sao Tome and Principe             | ST |
+| Saudi Arabia                      | SA |
+| Senegal                           | SN |
+| Serbia                            | RS |
+| Seychelles                        | SC |
+| Sierra Leone                      | SL |
+| Singapore                         | SG |
+| Sint Maarten                      | SX |
+| Slovakia (Slovak Republic)        | SK |
+| Slovenia                          | SI |
+| Solomon Islands                   | SB |
+| Somalia                           | SO |
+| South Africa                      | ZA |
+| South Georgia and the South Sandwich Islands | GS |
+| South Sudan                       | SS |
+| Spain                             | ES |
+| Sri Lanka                         | LK |
+| St. Pierre and Miquelon           | PM |
+| Sudan                             | SD |
+| Suriname                          | SR |
+| Svalbard and Jan Mayen Islands    | SJ |
+| Swaziland                         | SZ |
+| Sweden                            | SE |
+| Switzerland                       | CH |
+| Syrian Arab Republic              | SY |
+| Taiwan                            | TW |
+| Tajikistan                        | TJ |
+| Tanzania, United Republic of      | TZ |
+| Thailand                          | TH |
+| The Netherlands                   | NL |
+| Timor-Leste                       | TL |
+| Togo                              | TG |
+| Tokelau                           | TK |
+| Tonga                             | TO |
+| Trinidad and Tobago               | TT |
+| Tunisia                           | TN |
+| Turkey                            | TR |
+| Turkmenistan                      | TM |
+| Turks and Caicos Islands          | TC |
+| Tuvalu                            | TV |
+| Uganda                            | UG |
+| Ukraine                           | UA |
+| United Arab Emirates              | AE |
+| United Kingdom                    | GB |
+| United States                     | US |
+| United States Minor Outlying Islands | UM |
+| Uruguay                           | UY |
+| Uzbekistan                        | UZ |
+| Vanuatu                           | VU |
+| Vatican City State (Holy See)     | VA |
+| Venezuela                         | VE |
+| Vietnam                           | VN |
+| Virgin Islands (British)          | VG |
+| Virgin Islands (U.S.)             | VI |
+| Wallis and Futuna Islands         | WF |
+| Western Sahara                    | EH |
+| Yemen                             | YE |
+| Zambia                            | ZM |
+| Zimbabwe                          | ZW |
+
+# Complex JSON Objects
+
+<a name="achobject"></a>
+## ach
+
+When providing ACH bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|paymentToken       |string <br/>`length<=50`   |Yes            |If the payment token is provided, no other bank account information is necessary.<br/>**Note:** The payment token is the *paymentToken* value returned in the response to the ACH bank account creation request.|
+|payMethod          |string                     |Yes            |This is the payment type. <ul><li>WEB (Personal bank accounts only)</li><li>TEL (Personal bank accounts only)</li><li>PPD (Personal bank accounts only</li><li>CCD (Business bank accounts only)</li></ul>**Note:** Standalone Credits support only PPD and CCD.|
+|paymentDescriptor  |string<br/>`length<=12`    |               |This is the descriptor that will appear on the customer's bank statement.|
+
+**OR**
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|accountHolderName  |string <br/>`length<=22`   |Yes            |This is the name of the customer or company.|
+|accountType        |string                     |Yes            |This is the bank account type.<ul><li>SAVINGS</li><li>CHECKING</li><li>LOAN</li></ul>|
+|payMethod          |string                     |Yes            |This is the payment type. <ul><li>WEB (Personal bank accounts only)</li><li>TEL (Personal bank accounts only)</li><li>PPD (Personal bank accounts only</li><li>CCD (Business bank accounts only)</li></ul>**Note:** Standalone Credits support only PPD and CCD.|
+|accountNumber      |string <br/>`length=4-17`  |Yes            |This is the bank account number.|
+|routingNumber      |string<br/>`length=9`      |Yes            |For USD accounts, this is the 9-digit routing number of the customer's bank.|
+|paymentDescriptor  |string<br/>`length<=12`    |               |This is the descriptor that will appear on the customer's bank statement.|
+|lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
+
+
+```apib
+{
+    "ach": {
+        "accountHolderName": "XYZ Company",
+        "accountType": "CHECKING",
+        "accountNumber": "988772192",
+        "routingNumber": "211589828",
+        "payMethod": "WEB"
+    }
+}
+```
+
+<a name="bacsobject"></a>
+## bacs
+
+When providing BACS bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|paymentToken       |string <br/>`length<=50`   |Yes            |If the payment token is provided, no other bank account information is necessary.<br/>**Note:** The payment token is the *paymentToken* value returned in the response to the BACS bank account creation request.|
+
+**OR**
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|accountHolderName  |string <br/>`length<=22`   |Yes            |This is the name of the customer or company.|
+|sortCode           |string<br/>`length=6`      |Yes            |This is the sort code for the customer's bank account.|
+|accountNumber      |string <br/>`length=4-17`  |Yes            |This is the bank account number.|
+|mandateReference   |string<br/>`length=10`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.|
+|lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
+
+
+```apib
+{
+    "bacs": {
+        "accountHolderName": "XYZ Company",
+        "sortCode": "321654",
+        "accountNumber": "988772192",
+        "mandateReference": "SUBSCRIP10"
+    }
+}
+```
+
+<a name="billingdetailsobject"></a>
+## billingDetails
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|street             |string<br/>`length<=50`    |Yes            |This is the first line of the street address in the billing address.|
+|street2            |string<br/>`length<=50`    |               |This is the second line of the street address in the billing address, if required (e.g., apartment number).|
+|city               |string<br/>`length<=40`    |Yes            |This is the city in the billing address.|
+|state              |string<br/>`length<=40`    |               |Use the 2-character state or province codes for Canada or the United States.|
+|country            |string<br/>`length<=2`     |Yes            |See [Country Codes](#countrycodes).|
+|zip                |striing<br/>`length<=10`   |               |This is the postal/zip code in the billing address.|
+|phone              |string<br/>`length<=40`    |               |This is the customer's telephone number.|
+
+```apib
+{
+  "billingDetails":{
+    "street":"100 Queen Street West",
+    "city":"Toronto",
+    "state":"ON",
+    "country":"CA",
+    "zip":"M5H 2N2"
+  }
+}
+```
+
+<a name="dateofbirthobject"></a>
+## dateOfBirth
+
+|Element            |Type                           |Required       |Description                        |
+|---                |---                            |---            |---       |
+|day                |number<br/>`length=2 max=31`   |Yes            |This is the day of the customer’s birth.|
+|month              |number<br/>`length=2 max=12`   |Yes            |This is the month of the customer’s birth.|
+|year               |string<br/>`length=4 min=1900` |Yes            |This is the year of the customer’s birth.|
+
+```apib
+{
+    "dateOfBirth": {
+        "day": 15,
+        "month": 9,
+        "year": 1968
+    }
+}
+```
+
+<a name="eftobject"></a>
+## eft
+
+When providing EFT bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|paymentToken       |string <br/>`length<=50`   |Yes            |If the payment token is provided, no other bank account information is necessary.<br/>**Note:** The payment token is the *paymentToken* value returned in the response to the EFT bank account creation request.|
+|paymentDescriptor  |string<br/>`length<=15`    |               |This is the descriptor that will appear on the customer's bank statement.|
+
+**OR**
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|accountHolderName  |string <br/>`length<=30`   |Yes            |This is the name of the customer or company.|
+|accountNumber      |string <br/>`length=4-12`  |Yes            |This is the bank account number.|
+|transitNumber      |string<br/>`length=5`      |Yes            |This is the 5-digit transit number of the customer's bank branch.|
+|institutionId      |string<br/>`length=3`      |Yes            |This is the 3-digit institution ID of the customer’s bank branch.|
+|paymentDescriptor  |string<br/>`length<=15`    |               |This is the descriptor that will appear on the customer's bank statement.|
+|lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
+
+
+```apib
+{
+    "eft": {
+        "accountHolderName": "XYZ Company",
+        "accountNumber": "336612",
+        "transitNumber": "22446",
+        "institutionId": "001"
+    }
+}
+```
+
+<a name="errorobject"></a>
+## error
+
+|Element            |Type                           |Required       |Description                        |
+|---                |---                            |---            |---       |
+|code               |number<br/>`length=2 max=31`   |               |This is the day of the customer’s birth.|
+|message            |number<br/>`length=2 max=12`   |               |This is the month of the customer’s birth.|
+|details            |string<br/>`length=4 min=1900` |               |This is the year of the customer’s birth.|
+|fieldErrors        |array                          |               |This is a list of fields that have problems.|
+
+```apib
+{
+   "error":{
+      "code":5068,
+      "message":"Field Error(s)",
+      "fieldErrors":[
+         {
+            "field":"recipientEmail",
+            "error":"john@hi@you.c.c.c.c is not a valid e-mail address."
+         },
+         {
+            "field":"transaction.amount",
+            "error":"A transaction amount is required."
+         },
+         {
+            "field":"transaction.currency",
+            "error":"Currency with value [USD] exceeds the maximum size of [3]."
+         }
+      ],
+      "details":[
+           "There are invalid or missing fields in your request."
+        ]
+   }
+}
+```
+
+<a name="profileobject"></a>
+## profile
+
+|Element            |Type                           |Required       |Description                        |
+|---                |---                            |---            |---       |
+|firstName          |string<br/>`length<=80`        |Yes            |This is the customer’s first name.|
+|lastName           |string<br/>`length<=80`        |Yes            |This is the customer’s last name.|
+|email              |string<br/>`length<=255`       |               |This is the customer’s email address.|
+|ssn                |string<br/>`length<=9`         |               |This is the customer's social security number.|
+|dateOfBirth        |[dateOfBirth](#dateofbirthobject)  |           |This is the customer's date of birth.|
+
+```apib
+{
+    "profile": {
+        "firstName": "Joe",
+        "lastName": "Smith",
+        "email": "Joe.Smith@canada.com",
+        "ssn": "123456789",
+        "dateOfBirth": {
+            "day": 15,
+            "month": 9,
+            "year": 1968
+        }
+    }
+}
+```
+
+<a name=purchaseobject"></a>
+## purchase
+
+|Element            |Type                                   |Description                        |
+|---                |---                                    |---                                |
+|id                 |string <br/>`length<=36`               |This is the ID returned in the response. This ID can be used for future associated requests, e,g., Purchase lookup.|
+|merchantRefNum     |string <br/>`length<=255`              |This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.|
+|amount             |number<br>`max=99999999999`            |This is the amount of the request, in minor units.For example, to process US $10.99, this value should be 1099. To process 1000 Japanese yen, this value should be 1000. To process 10.139 Tunisian dinar, this value should be 10139.<br/>**Note:** If the merchant account is set up for a currency that has 3 decimal units, our system will half round up the least significant digit. Therefore, a transaction of 10.139 Tunisian dinar would be processed as 10.14.|
+|ach                |[ach](#achobject)                      |These are the details of the bank account used.|
+|eft                |[eft](#eftobject)                      |These are the details of the bank account used.|
+|bacs               |[bacs](#bacsobject)                    |These are the details of the bank account used.|
+|sepa               |[sepa](#sepaobject)                    |These are the details of the bank account used.|
+|profile            |[profile](#profileobject)              |These are some details about the customer.|
+|billingDetails     |[billingDetails](#billingdetailsobject)|These are the billing details for the request.|
+|customerIp         |string<br/>`length<=39`                |This is the customer's IP address.|
+|dupCheck           |boolean                                |This validates that this request is not a duplicate. A request is considered a duplicate if the *merchantRefNum* has already been used in a previous request.<br/>**Note:** This value defaults to *true*.|
+|txnTime            |UTC formatted date                     |This is the date and time the request was processed. For example:<br/>2014-01-26T10:32:28Z|
+|currencyCode       |string<br/>`length=3`                  |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
+|error              |[error](#errorobject)                  |       |
+|status             |string                                 |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
+
+
+<a name="sepaobject"></a>
+## sepa
+
+When providing SEPA bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|paymentToken       |string <br/>`length<=50`   |Yes            |If the payment token is provided, no other bank account information is necessary.<br/>**Note:** The payment token is the *paymentToken* value returned in the response to the SEPA bank account creation request.|
+
+**OR**
+
+|Element            |Type                       |Required       |Description                        |
+|---                |---                        |---            |---       |
+|accountHolderName  |string <br/>`length<=22`   |Yes            |This is the name of the customer or company.|
+|iban               |string<br/>`length=1-34`   |Yes            |This is the sort code for the customer's bank account.|
+|mandateReference   |string<br/>`length=35`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.|
+|lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
+
+
+```apib
+{
+    "sepa": {
+        "mandateReference": "1000-3232659874-65985698",
+        "accountHolderName": "XYZ Company",
+        "iban": "NL77ABNA0492122466"
+    }
+}
+```
+
+<a name="shippingdetailsobject"></a>
+## shippingDetails
+
+|Element            |Type                       |Required   |Description |
+|---                |---                        |---        |---        |
+|carrier            |enumeration                |           |This is the shipment carrier. Possible values are:<ul><li>APC &ndash; APC Overnight</li><li>APS &ndash; Anpost</li><li>CAD &ndash; Canada Postal Service</li><li>DHL &ndash; DHL</li><li>FEX &ndash; Fedex</li><li>RML &ndash; Royal Mail</li><li>UPS &ndash; United Parcel Service</li><li>USPS &ndash; United States Postal Service</li><li>CLK &ndash; CityLink</li><li>EMS &ndash; EMS (US Postal Service)</li><li>NEX &ndash; Nexworldwide</li><li>OTHER</li></ul>|
+|shipMethod         |enumeration                |           |This is the method of shipment. Possible values are:<ul><li>T &ndash; Next Day/Overnight</li><li>T &ndash; Two-Day Service</li><li>C &ndash; Lowest Cost</li><li>O &ndash; Other</li></ul>|
+|recipientName      |string<br/>`length<=255`   |           |This is the name of the person receiving the goods.|
+|street             |string<br/>`length<=50`    |           |This is the recipient's street address.|
+|street2            |string<br/>`length<=50`    |           |This is the second line of the street address in the shipping address, if required (e.g., apartment number).|
+|city               |string<br/>`length<=40`    |           |This is the city in which the recipient resides.|
+|state              |string                     |           |See [Province Codes](#provincecodes) or [State Codes](#statecodes) for Canada or the United States.|
+|country            |string                     |           |See [Country Codes](#countrycodes). |
+|zip                |string<br/>`length<=40`    |           |This is the the recipient's postal/zip code.|
+
+```apib
+{
+  "shippingDetails":{
+    "carrier":"UPS",
+    "shipMethod":"N",
+    "street":"100 Broadway",
+    "city":"Sacramento",
+    "state":"CA",
+    "country":"US",
+    "zip":"94203"
+  }
+}
+```
+
+<a name=standalonecreditobject"></a>
+## standalonecredit
+
+|Element            |Type                                       |Description                        |
+|---                |---                                        |---                                |
+|id                 |string <br/>`length<=36`                   |This is the ID returned in the response. This ID can be used for future associated requests, e,g., Standalone Credit lookup.|
+|merchantRefNum     |string <br/>`length<=255`                  |This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.|
+|amount             |number<br>`max=99999999999`                |This is the amount of the request, in minor units.For example, to process US $10.99, this value should be 1099. To process 1000 Japanese yen, this value should be 1000. To process 10.139 Tunisian dinar, this value should be 10139.<br/>**Note:** If the merchant account is set up for a currency that has 3 decimal units, our system will half round up the least significant digit. Therefore, a transaction of 10.139 Tunisian dinar would be processed as 10.14.|
+|ach                |[ach](#achobject)                          |These are the details of the bank account used.|
+|eft                |[eft](#eftobject)                          |These are the details of the bank account used.|
+|bacs               |[bacs](#bacsobject)                        |These are the details of the bank account used.|
+|profile            |[profile](#profileobject)                  |These are some details about the customer.|
+|billingDetails     |[billingDetails](#billingdetailsobject)    |These are the billing details for the request.|
+|shippingDetails    |[shippingDetails](#shippingdetailsobject)  |These are the shipping details for the request.|
+|customerIp         |string<br/>`length<=39`                    |This is the customer's IP address.|
+|dupCheck           |boolean                                    |This validates that this request is not a duplicate. A request is considered a duplicate if the *merchantRefNum* has already been used in a previous request.<br/>**Note:** This value defaults to *true*.|
+|txnTime            |UTC formatted date                         |This is the date and time the request was processed. For example:<br/>2014-01-26T10:32:28Z|
+|currencyCode       |string<br/>`length=3`                      |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
+|error              |[error](#errorobject)                      |       |
+|status             |string                                     |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
+
+
+# Error Summary
+
+## Common Errors
+|HTTP Status Code   |Error Code     |Description|
+|---                |---            |---|
+|500                |1000           |An internal error occurred.         |
+|502                |1001           |An error occurred with the external processing gateway.|
+|500                |1002           |An internal error occurred.            |
+|500                |1003           |An internal error occurred.            |
+|500                |1007           |An internal error occurred.            |
+|500                |1008           |An internal error occurred.            |
+|429                |1200           |The API call has been denied as it has exceeded the permissible call rate limit.|
+|401                |5000           |Your merchant account authentication failed. Either your store ID/password are invalid or the IP address from which you are sending the transaction has not been authorized.|
+|400                |5001           |The submitted currency code is invalid or your account does not support this currency.|
+|400                |5003           |You submitted an invalid amount with your request.|
+|400                |5004           |You submitted an invalid account type with your request.|
+|400                |5005           |You submitted an invalid operation type with your request.|
+|400                |5010           |The submitted country code is invalid.|
+|400                |5016           |The merchant account you provided cannot be found.|
+|400                |5017           |The merchant account you provided is disabled.|
+|402                |5021           |Your transaction request has been declined.|
+|400                |5023           |The request is not parseable.|
+|409                |5031           |The transaction you have submitted has already been processed.|
+|401                |5040           |Your merchant account is not configured for the transaction you attempted.|
+|400                |5042           |The merchant reference number is missing or invalid or it exceeds the maximum permissible length.|
+|400                |5068           |Either you submitted a request that is missing a mandatory field or the value of a field does not match the format expected.|
+|404                |5269           |The ID(s) specified in the URL do not correspond to the values in the system.|
+|403                |5270           |The credentials provided with the request do not have permission to access the requested data.|
+|406                |5271           |You requested a response in the 'Accept' header that is in an unsupported format.|
+|406                |5272           |The 'Content-Type' you specified in request header was submitted in an unsupported format.|
+|404                |5273           |Your client reached our application but we were unable to service your request due to an invalid URL.|
+|401                |5275           |The authentication credentials provided with the request have expired.|
+|401                |5276           |The authentication credentials provided with the request provided have been disabled.|
+|401                |5277           |The authentication credentials provided with the request have been locked due to multiple authentication failures.|
+|401                |5278           |The authentication credentials provided with the request were not accepted for an unknown reason.|
+|401                |5279           |The authentication credentials are invalid.|
+|401                |5280           |The required authentication credentials were not provided.|
+|405                |5281           |The request uses an action (e.g., GET, POST, or PUT) that is not supported by the resource.|
+|400                |5502           |Either the payment token is invalid or the corresponding profile or bank account is not active.|
+
+## Direct Debit Errors
+|HTTP Status Code   |Error Code     |Description|
+|---                |---            |---|
+|400                |2004           |The Direct Debit transaction cannot be found.  |
+|400                |2011           |You have submitted a mandate reference that does not exist.|
+|400                |2012           |You have submitted a mandate reference that is not active yet.|
+|400                |2013           |The mandate reference does not have a valid status.|
+|400                |2014           |The mandate reference is already in use for the specified bank account information.|
+|400                |2017           |The payment token bank scheme does not match the merchant account bank scheme.|
+|402                |4002           |The transaction was declined by our Risk Management department.|
+  
+
+
+# Purchases [/purchases]
+<a name="purchaserequest"></a>
+
+## ACH Purchase [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process an ACH Direct Debit Purchase request.
+
++ Request ACH Purchase (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include ACH
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Response
+        + Include profile
+        + Include billingDetails
+        
+## ACH Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process an ACH Direct Debit Purchase request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request ACH Purchase with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include ACH Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Token Response
+        + Include profile
+        + Include billingDetails        
+        
+## EFT Purchase [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process an EFT Direct Debit Purchase request.
+
++ Request EFT Purchase (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include EFT
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + Include Purchase Base
+        + Include EFT Response
+        + Include profile
+        + Include billingDetails
+        
+## EFT Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process an EFT Direct Debit Purchase request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request EFT Purchase with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include EFT Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + Include Purchase Base
+        + Include EFT Token Response
+        + Include profile
+        + Include billingDetails         
+
+## BACS Purchase [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process a BACS Direct Debit Purchase request.
+
++ Request BACS Purchase (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include BACS
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + Include Purchase Base
+        + Include BACS Response
+        + Include profile
+        + Include billingDetails
+        
+## BACS Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process a BACS Direct Debit Purchase request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request BACS Purchase with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include BACS Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + Include Purchase Base
+        + Include BACS Token Response
+        + Include profile
+        + Include billingDetails       
+
+## SEPA Purchase [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process a SEPA Direct Debit Purchase request.
+
++ Request SEPA Purchase (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include SEPA
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + Include Purchase Base
+        + Include SEPA Response
+        + Include profile
+        + Include billingDetails
+        
+## SEPA Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+
+This is how you process a SEPA Direct Debit Purchase request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request SEPA Purchase with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include SEPA Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + Include Purchase Base
+        + Include SEPA Token Response
+        + Include profile
+        + Include billingDetails
+
+
+## Cancel Purchase [PUT /purchases/{PURCHASE_ID}]
+
+This is how you cancel a Direct Debit Purchase request.
+
+**Note:** Direct Debit purchases can be cancelled only *before* they are batched, which varies with the downstream processor. Batching can occur shortly after or as long as one business day after the transaction is submitted. If you are uncertain, you can try the cancel transaction – the response will indicate whether the attempt occurred too late.
+
++ Request Cancel Purchase (application/json)
+
+    + Parameters
+        + PURCHASE_ID:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Purchase ID returned in the response.
+        
+    + Attributes
+        + status:CANCELLED (string, required) - This is the status of the transaction request.
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY        
+        
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Purchase
+        + Include Response Base
+        + status:CANCELLED (string, required) - This is the status of the transaction request.        
+        
+        
+## Get Purchase [GET /purchases/{PURCHASE_ID}]
+
+This is how you look up a Direct Debit Purchase request using the ID returned in the response to the original request.
+
++ Parameters
+    + PURCHASE_ID:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Purchase ID returned in the response.
+
++ Request Get Direct Debit Purchase (application/json)
+    
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+            
++ Response 200 (application/json)
+
+    + Attributes    
+        + Include Links Purchase
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Response
+        + Include profile
+        + Include billingDetails
+
+## Get Purchase Using Merchant Reference Number [GET /purchases?merchantRefNum=merchant-ABC-123&limit=2]
+
+This is how you look up a Purchase request using the merchant reference number.
+
++ Parameters
+    + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* returned in the response to the Purchase request.
+    + limit:2 (string, optional) - This is the total number of records to return. Default value is 10. Max value is 50.
+
+
++ Request Get Purchase (application/json)
+
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+        
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links GET
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Response
+        + Include profile
+        + Include billingDetails
+
+# Standalone Credits [/standalonecredits]
+<a name="standalonecreditrequest"></a>
+
+A Standalone Credit allows a merchant to credit an amount to a customer's bank account.
+
+## ACH Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process an ACH Direct Debit Standalone Credit request.
+
++ Request ACH Standalone Credit (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include ACH
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Response
+        + Include profile
+        + Include billingDetails
+
+## ACH Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process an ACH Direct Debit Standalone Credit request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request ACH Standalone Credit with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include ACH Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Token Response
+        + Include profile
+        + Include billingDetails       
+
+## EFT Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process an EFT Direct Debit Standalone Credit request.
+
++ Request EFT Standalone Credit (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include EFT
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include EFT Response
+        + Include profile
+        + Include billingDetails
+
+## EFT Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process an EFT Direct Debit Standalone Credit request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request EFT Standalone Credit with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include EFT Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include EFT Token Response
+        + Include profile
+        + Include billingDetails
+
+## BACS Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process a BACS Direct Debit Standalone Credit request.
+
++ Request BACS Standalone Credit (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include BACS
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include BACS Response
+        + Include profile
+        + Include billingDetails
+
+## BACS Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process a BACS Direct Debit Standalone Credit request using a payment token. If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
++ Request BACS Standalone Credit with Payment Token (application/json)
+
+    + Parameters
+        + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+        
+    + Attributes
+        + Include Purchase Base
+        + Include BACS Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include BACS Token Response
+        + Include profile
+        + Include billingDetails
+
+## Cancel Standalone Credit [PUT /standalonecredits/{STANDALONE_CREDIT_ID}]
+
+This is how you cancel a Direct Debit Standalone Credit request.
+
+**Note:** Direct Debit Standalone Credits can be cancelled only *before* they are batched, which varies with the downstream processor. Batching can occur shortly after or as long as one business day after the transaction is submitted. If you are uncertain, you can try the cancel transaction – the response will indicate whether the attempt occurred too late.
+
++ Request Cancel Standalone Credit (application/json)
+
+    + Parameters
+        + STANDALONE_CREDIT_ID:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Standalone Credit ID returned in the response.
+        
+    + Attributes
+        + status:CANCELLED (string, required) - This is the status of the transaction request.
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY        
+        
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:CANCELLED (string, required) - This is the status of the transaction request.
+
+## Get Standalone Credit [GET /standalonecredits/{STANDALONE_CREDIT_ID}]
+
+This is how you look up a Direct Debit Standalone Credit request using the ID returned in the response to the original request.
+
++ Parameters
+    + STANDALONE_CREDIT_ID:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Standalone Credit ID returned in the response.
+
++ Request Get Direct Debit Standalone Credit (application/json)
+    
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+            
++ Response 200 (application/json)
+
+    + Attributes    
+        + Include Links Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Response
+        + Include profile
+        + Include billingDetails
+
+## Get Standalone Credit Using Merchant Reference Number [GET /standalonecredits?merchantRefNum=merchant-ABC-123&limit=2]
+
+This is how you look up a Standalone Credit request using the merchant reference number.
+
++ Parameters
+    + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* returned in the response to the Standalone Credit request.
+    + limit:2 (string, optional) - This is the total number of records to return. Default value is 10. Max value is 50.
+
+
++ Request Get Standalone Credit (application/json)
+
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+        
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links GET Standalone Credit
+        + Include Response Base
+        + status:PENDING (string, required) - This is the status of the transaction request.
+        + Include Purchase Base
+        + Include ACH Response
+        + Include profile
+        + Include billingDetails
+
+# Data Structures
+
+## ACH
++ ach (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + accountType:CHECKING (string, required) - This is the bank account type.
+        + payMethod:WEB (string, required) - This is the payment type.
+        + accountNumber:998772192 (string, required) - This is the bank account number.
+        + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
+        + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+        
+## ACH Payment Token
++ ach (object, required) - If the payment token is provided, no other bank account information is necessary.
+
+    + Properties
+        + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + payMethod:WEB (string, required) - This is the payment type.
+        + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+
+## ACH Response
++ ach (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + accountType:CHECKING (string, required) - This is the bank account type.
+        + payMethod:WEB (string, required) - This is the payment type.
+        + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
+        + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+## ACH Token Response
++ ach (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + accountType:CHECKING (string, required) - This is the bank account type.
+        + payMethod:WEB (string, required) - This is the payment type.
+        + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
+        + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+
+## BACS
++ bacs (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + sortCode:321654 (string, required) - This is the 6-digit sort code of the customer’s bank.
+        + accountNumber:998772192 (string, required) - This is the bank account number.
+        + mandateReference:SUBSCRIP10 (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
+
+## BACS Payment Token
++ bacs (object, required) - If the payment token is provided, no other bank account information is necessary.
+
+    + Properties
+        + paymentToken:BNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
+
+
+## BACS Response
++ bacs (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + sortCode:321654 (string, required) - This is the 6-digit sort code of the customer’s bank.
+        + mandateReference:SUBSCRIP10 (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+## BACS Token Response
++ bacs (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + paymentToken:BNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + sortCode:321654 (string, required) - This is the 6-digit sort code of the customer’s bank.
+        + mandateReference:SUBSCRIP10 (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+
+## billingDetails
++ billingDetails (object, optional) - These are the billing details for the request.
+
+    + Properties
+        + street:100 Queen Street West 
+        + street2:Apt. 55 
+        + city:Ottawa
+        + state:ON
+        + country:Canada 
+        + zip:M1M 1M1
+        + phone:6139991100
+
+## dateOfBirth
++ dateOfBirth (object, optional) - This is the customer's date of birth.
+
+    + Properties
+        + day:24 (number, required) - This is the day of the customer's birth.
+        + month:10 (number, required) - This is the month of the customer's birth.
+        + year:1981 (number, required) - This is the year of the customer's birth.
+
+## EFT
++ eft (object, required) - These are the details of the bank account used for the request.
+    
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + accountNumber:998772192 (string, required) - This is the bank account number.
+        + transitNumber:22446 (string, required) - This is the 5-digit transit number of the customer's bank branch.
+        + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
+
+## EFT Payment Token
++ eft (object, required) - If the payment token is provided, no other bank account information is necessary.
+
+    + Properties
+        + paymentToken:DTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+
+## EFT Response
++ eft (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + transitNumber:22446 (string, required) - This is the 5-digit transit number of the customer's bank branch.
+        + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+## EFT Token Response
++ eft (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + paymentToken:DTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + transitNumber:22446 (string, required) - This is the 5-digit transit number of the customer's bank branch.
+        + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+
+## Links Purchase
++ links (array, required) - This is an array of self-referencing links.
+    + (object)
+        + rel:self (string)
+        + href:https://api.netbanx.com/directdebit/v1/accounts/99000/purchases/a02e52c7-c991-4418-966a-b62989cb0eae
+        
+## Links Standalone Credit
++ links (array, required) - This is an array of self-referencing links.
+    + (object)
+        + rel:self (string)
+        + href:https://api.netbanx.com/directdebit/v1/accounts/99000/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae        
+        
+## Links GET
++ links (array, required) - This is an array of self-referencing links.
+    + (object)
+        + rel:self (string)
+        + href:https://api.netbanx.com/directdebit/v1/accounts/99000/purchases/a02e52c7-c991-4418-966a-b62989cb0eae        
+    + (object)
+        + rel:next (string)
+        + href:https://api.netbanx.com/directdebit/v1/accounts/99000/purchases/a02e52c7-c991-4418-966a-b62989cb0eae 
+        
+## Links GET Standalone Credit
++ links (array, required) - This is an array of self-referencing links.
+    + (object)
+        + rel:self (string)
+        + href:https://api.netbanx.com/directdebit/v1/accounts/99000/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae        
+    + (object)
+        + rel:next (string)
+        + href:https://api.netbanx.com/directdebit/v1/accounts/99000/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae         
+
+## Purchase Base
++ merchantRefNum: 123456789 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
++ amount:25.99  (number, required) -  This is the amount of the request, in minor units.
++ customerIp:192.0.126.111  (string, optional) - This is the customer's IP address.
+
+## profile
++ profile (object, optional) - These are some customer details for the request.
+
+    + Properties
+        + firstName:John (string, required) - This is the customer’s first name.
+        + lastName:Johnson (string, required) - This is the customer's last name.
+        + email:john.johnson@emailserver.com (string, optional) - This is the customer's email address.
+        + ssn:123456789 (string, optional) - This is the customer's social security number.
+        + dateOfBirth (object, optional) - This is the customer's date of birth.
+            + day:24 (number, required) - This is the day of the customer's birth.
+            + month:10 (number, required) - This is the month of the customer's birth.
+            + year:1981 (number, required) - This is the year of the customer's birth.
+    
+## Response Base
++ id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
++ txnTime:`2014-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+
+## SEPA
++ sepa (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
+        + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
+
+## SEPA Payment Token
++ sepa (object, required) - If the payment token is provided, no other bank account information is necessary.
+
+    + Properties
+        + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.
+
+
+## SEPA Response
++ sepa (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
+        + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+
+## SEPA Token Response
++ sepa (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
+        + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
