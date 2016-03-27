@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Paysafe Direct Debit API v1</title>
+    <script src="https://api.apiary.io/seeds/embed.js"></script>
+    <!-- Inline Styles -->
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .humanColumn.content {
+            color: #6b6b6b;
+        }
+
+        .myHeader {
+            float: left;
+            width: 100%;
+            height: 80px;;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-image: url(https://www.paysafe.com/fileadmin/user_upload/Paysafe-Logo.png);
+            background-repeat: no-repeat;
+            background-position: 30px center;
+            background-size: 250px;
+        }
+    </style>
+    <!-- /Inline Styles -->
+</head>
+<body>
+<!-- Header -->
+<header class="myHeader">
+</header>
+<!-- /Header -->
+<script>
+    var embed = new Apiary.Embed({
+        header: '.myHeader',
+        subdomain: 'paysafeapidirectdebitv1',
+        tableOfContents: '.tableOfContents.section',
+        humanColumn: '.humanColumn.content',
+        preferences: {
+            permalinks: true,
+            fluidHumanColumn: true,
+            collapseMachineColumnByDefault: true,
+            displayUriParametersInHumanColumn: false,
+            displayHttpMethods: false,
+            defaultHost: 'production'
+        },
+        theme: {
+            tableOfContents: {
+                section: {
+                    color: '#6B6B6B',
+                    fontFamily: 'Tahoma,sans-serif',
+                    fontSize: '15px',
+
+                    item: {
+                        color: '#66CC99',
+                        fontFamily: 'Tahoma,sans-serif',
+                        fontSize: '15px'
+                    }
+                }
+            },
+            humanColumn: {
+                content: {
+                    color: '#6B6B6B',
+                    fontFamily: 'Tahoma,sans-serif',
+                    fontSize: '14px',
+                    apiName: {
+                        color: '#6B6B6B',
+                        fontFamily: 'Tahoma,sans-serif',
+                        fontSize: '36px'
+                    },
+                    section: {
+                        apiDescription: {
+                            h1: {
+                                fontSize: '18px'
+                            },
+                            h2: {
+                                fontSize: '16px'
+                            },
+                            p: {
+                                fontSize: '14px',
+                                a: {
+                                    color: '#6B6B6B',
+                                    borderBottom: '2px solid #6B6B6B'
+                                }
+                            },
+                            a: {
+                                color: '#6B6B6B',
+                                borderBottom: '2px solid #6B6B6B',
+                                fontWeight: 'normal'
+                            },
+                            pre: {
+                                code: {
+//                                  color: '#6B6B6B',
+                                    fontSize: '12px'
+                                }
+                            },
+                            code: {
+//                              color: '#6B6B6B',
+                                fontSize: '12px'
+                            },
+                            table: {
+                                fontSize: '14px'
+                            },
+                            blockquote: {
+                                fontFamily: 'Verdana, Geneva, sans-serif',
+                                fontWeight: 'bold',
+                                fontSize: '12px',
+                                border: '2px solid #6B6B6B',
+                                padding: '15px'
+                            }
+                        }
+                    }
+                }
+            },
+            machineColumn: {
+                console: {
+                    form: {
+                        buttons: {
+                            submit: {
+                                button: {
+                                    color: '#FFFFFF',
+                                    backgroundColor: '#6B6B6B',
+                                    fontFamily: 'Tahoma,sans-serif',
+                                    fontSize: '14px'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        hosts: [
+            'mock',
+            'production'
+        ]
+    });
+</script>
+</body>
+</html>
