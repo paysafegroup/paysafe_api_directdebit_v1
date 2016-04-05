@@ -193,41 +193,41 @@ A purchase request allows you to transfer money from a customer's bank account t
   
 ## Purchase Response
 
-    {
-        "links": [
             {
-                "rel": "self",
-                "href": "https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
-            }
-        ],
-        "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
-        "merchantRefNum": "ORDER_ID:1231",
-        "amount": 10098,
-        "ach": {
-            "accountHolderName": "XYZ Company",
-            "accountType": "CHECKING",
-            "lastDigits": "92",
-            "routingNumber": "211589828",
-            "payMethod": "WEB"
-        },
-        "customerIp": "192.0.126.111",
-        "profile": {
-            "firstName": "Joe",
-            "lastName": "Smith",
-            "email": "Joe.Smith@hotmail.com"
-        },
-        "billingDetails": {
-            "street": "100 Queen Street West",
-            "city": "Los Angeles",
-            "state": "CA",
-            "country": "US",
-            "zip": "90210",
-            "phone": "3102649010"
-        },
-        "txnTime": "2014-12-14T15:12:18Z",
-        "currencyCode": "USD",
-        "status": "PENDING"
-    }
+                    "links": [
+                        {
+                            "rel": "self",
+                            "href": "https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+                        }
+                    ],
+                    "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                    "merchantRefNum": "ORDER_ID:1231",
+                    "amount": 10098,
+                    "ach": {
+                        "accountHolderName": "XYZ Company",
+                        "accountType": "CHECKING",
+                        "lastDigits": "92",
+                        "routingNumber": "211589828",
+                        "payMethod": "WEB"
+                    },
+                    "customerIp": "192.0.126.111",
+                    "profile": {
+                        "firstName": "Joe",
+                        "lastName": "Smith",
+                        "email": "Joe.Smith@hotmail.com"
+                    },
+                    "billingDetails": {
+                        "street": "100 Queen Street West",
+                        "city": "Los Angeles",
+                        "state": "CA",
+                        "country": "US",
+                        "zip": "90210",
+                        "phone": "3102649010"
+                    },
+                    "txnTime": "2014-12-14T15:12:18Z",
+                    "currencyCode": "USD",
+                    "status": "PENDING"
+                }
     
 ## Purchase Message Sequence
 
@@ -235,11 +235,11 @@ A purchase request allows you to transfer money from a customer's bank account t
 
 ## Look Up a Purchase Transaction
 
-You can look up an existing purchase transaction by providing the account number and transaction ID in the URL as follows: 
+You can look up an existing purchase transaction by providing the account number and transaction ID in the URL as follows:
 
-    curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae \
-      -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
-      -H 'Content-Type: application/json'
+            curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae \
+                  -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
+                  -H 'Content-Type: application/json'
   
 **Note:** Prior to trying the example, you should:
 
@@ -248,10 +248,9 @@ You can look up an existing purchase transaction by providing the account number
   
 If you do not have a transaction ID, you can look up a transaction based on the *merchantRefNum* you supplied with the original request:
 
-    curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases?merchantRefNum=ORDER_ID:1231&limit=2 \
-      -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
-      -H 'Content-Type: application/json'
-  
+            curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases?merchantRefNum=ORDER_ID:1231&limit=2 \
+                    -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
+                    -H 'Content-Type: application/json'
 
 # Testing Instructions
 
@@ -268,8 +267,7 @@ With the NETBANX Direct Debit API you can test the following:
   
 To use the test environment, you must post your requests to the following endpoint:
 
-`https://api.test.netbanx.com/directdebit/v1/accounts/<test account number>`
-
+    `https://api.test.netbanx.com/directdebit/v1/accounts/<test account number>`
 
 # ISO Standards
 
@@ -657,7 +655,7 @@ When providing ACH bank account information, merchants can provide either a paym
 |Element            |Type                       |Required       |Description                        |
 |---                |---                        |---            |---       |
 |paymentToken       |string <br/>`length<=50`   |Yes            |If the payment token is provided, no other bank account information is necessary.<br/>**Note:** The payment token is the *paymentToken* value returned in the response to the ACH bank account creation request.|
-|payMethod          |string                     |Yes            |This is the payment type. <ul><li>WEB (Personal bank accounts only)</li><li>TEL (Personal bank accounts only)</li><li>PPD (Personal bank accounts only</li><li>CCD (Business bank accounts only)</li></ul>**Note:** Standalone Credits support only PPD and CCD.|
+|payMethod          |enum                       |Yes            |This is the payment type. <ul><li>WEB (Personal bank accounts only)</li><li>TEL (Personal bank accounts only)</li><li>PPD (Personal bank accounts only</li><li>CCD (Business bank accounts only)</li></ul>**Note:** Standalone Credits support only PPD and CCD.|
 |paymentDescriptor  |string<br/>`length<=12`    |               |This is the descriptor that will appear on the customer's bank statement.|
 
 **OR**
@@ -665,8 +663,8 @@ When providing ACH bank account information, merchants can provide either a paym
 |Element            |Type                       |Required       |Description                        |
 |---                |---                        |---            |---       |
 |accountHolderName  |string <br/>`length<=22`   |Yes            |This is the name of the customer or company.|
-|accountType        |string                     |Yes            |This is the bank account type.<ul><li>SAVINGS</li><li>CHECKING</li><li>LOAN</li></ul>|
-|payMethod          |string                     |Yes            |This is the payment type. <ul><li>WEB (Personal bank accounts only)</li><li>TEL (Personal bank accounts only)</li><li>PPD (Personal bank accounts only</li><li>CCD (Business bank accounts only)</li></ul>**Note:** Standalone Credits support only PPD and CCD.|
+|accountType        |enum                       |Yes            |This is the bank account type.<ul><li>SAVINGS</li><li>CHECKING</li><li>LOAN</li></ul>|
+|payMethod          |enum                       |Yes            |This is the payment type. <ul><li>WEB (Personal bank accounts only)</li><li>TEL (Personal bank accounts only)</li><li>PPD (Personal bank accounts only</li><li>CCD (Business bank accounts only)</li></ul>**Note:** Standalone Credits support only PPD and CCD.|
 |accountNumber      |string <br/>`length=4-17`  |Yes            |This is the bank account number.|
 |routingNumber      |string<br/>`length=9`      |Yes            |For USD accounts, this is the 9-digit routing number of the customer's bank.|
 |paymentDescriptor  |string<br/>`length<=12`    |               |This is the descriptor that will appear on the customer's bank statement.|
@@ -875,7 +873,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |txnTime            |UTC formatted date                     |This is the date and time the request was processed. For example:<br/>2014-01-26T10:32:28Z|
 |currencyCode       |string<br/>`length=3`                  |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
 |error              |[error](#errorobject)                  |       |
-|status             |string                                 |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
+|status             |enum                                   |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
 
 
 <a name="sepaobject"></a>
@@ -912,8 +910,8 @@ When providing SEPA bank account information, merchants can provide either a pay
 
 |Element            |Type                       |Required   |Description |
 |---                |---                        |---        |---        |
-|carrier            |enumeration                |           |This is the shipment carrier. Possible values are:<ul><li>APC &ndash; APC Overnight</li><li>APS &ndash; Anpost</li><li>CAD &ndash; Canada Postal Service</li><li>DHL &ndash; DHL</li><li>FEX &ndash; Fedex</li><li>RML &ndash; Royal Mail</li><li>UPS &ndash; United Parcel Service</li><li>USPS &ndash; United States Postal Service</li><li>CLK &ndash; CityLink</li><li>EMS &ndash; EMS (US Postal Service)</li><li>NEX &ndash; Nexworldwide</li><li>OTHER</li></ul>|
-|shipMethod         |enumeration                |           |This is the method of shipment. Possible values are:<ul><li>T &ndash; Next Day/Overnight</li><li>T &ndash; Two-Day Service</li><li>C &ndash; Lowest Cost</li><li>O &ndash; Other</li></ul>|
+|carrier            |enum                       |           |This is the shipment carrier. Possible values are:<ul><li>APC &ndash; APC Overnight</li><li>APS &ndash; Anpost</li><li>CAD &ndash; Canada Postal Service</li><li>DHL &ndash; DHL</li><li>FEX &ndash; Fedex</li><li>RML &ndash; Royal Mail</li><li>UPS &ndash; United Parcel Service</li><li>USPS &ndash; United States Postal Service</li><li>CLK &ndash; CityLink</li><li>EMS &ndash; EMS (US Postal Service)</li><li>NEX &ndash; Nexworldwide</li><li>OTHER</li></ul>|
+|shipMethod         |enum                       |           |This is the method of shipment. Possible values are:<ul><li>T &ndash; Next Day/Overnight</li><li>T &ndash; Two-Day Service</li><li>C &ndash; Lowest Cost</li><li>O &ndash; Other</li></ul>|
 |recipientName      |string<br/>`length<=255`   |           |This is the name of the person receiving the goods.|
 |street             |string<br/>`length<=50`    |           |This is the recipient's street address.|
 |street2            |string<br/>`length<=50`    |           |This is the second line of the street address in the shipping address, if required (e.g., apartment number).|
@@ -955,7 +953,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |txnTime            |UTC formatted date                         |This is the date and time the request was processed. For example:<br/>2014-01-26T10:32:28Z|
 |currencyCode       |string<br/>`length=3`                      |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
 |error              |[error](#errorobject)                      |       |
-|status             |string                                     |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
+|status             |enum                                       |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
 
 
 # Error Summary
@@ -1010,7 +1008,6 @@ When providing SEPA bank account information, merchants can provide either a pay
 |402                |4002           |The transaction was declined by our Risk Management department.|
   
 
-
 # Purchases [/purchases]
 <a name="purchaserequest"></a>
 
@@ -1038,7 +1035,7 @@ This is how you process an ACH Direct Debit Purchase request.
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Response
         + Include profile
@@ -1066,7 +1063,7 @@ This is how you process an ACH Direct Debit Purchase request using a payment tok
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Token Response
         + Include profile
@@ -1096,7 +1093,7 @@ This is how you process an EFT Direct Debit Purchase request.
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
         + Include Purchase Base
         + Include EFT Response
         + Include profile
@@ -1124,7 +1121,7 @@ This is how you process an EFT Direct Debit Purchase request using a payment tok
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
         + Include Purchase Base
         + Include EFT Token Response
         + Include profile
@@ -1154,7 +1151,7 @@ This is how you process a BACS Direct Debit Purchase request.
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
         + Include Purchase Base
         + Include BACS Response
         + Include profile
@@ -1182,7 +1179,7 @@ This is how you process a BACS Direct Debit Purchase request using a payment tok
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
         + Include Purchase Base
         + Include BACS Token Response
         + Include profile
@@ -1212,7 +1209,7 @@ This is how you process a SEPA Direct Debit Purchase request.
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
         + Include Purchase Base
         + Include SEPA Response
         + Include profile
@@ -1240,7 +1237,7 @@ This is how you process a SEPA Direct Debit Purchase request using a payment tok
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.        
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
         + Include Purchase Base
         + Include SEPA Token Response
         + Include profile
@@ -1259,7 +1256,7 @@ This is how you cancel a Direct Debit Purchase request.
         + PURCHASE_ID:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Purchase ID returned in the response.
         
     + Attributes
-        + status:CANCELLED (string, required) - This is the status of the transaction request.
+        + status:CANCELLED (enum, required) - This is the status of the transaction request.
         
     + Headers
     
@@ -1270,7 +1267,7 @@ This is how you cancel a Direct Debit Purchase request.
     + Attributes
         + Include Links Purchase
         + Include Response Base
-        + status:CANCELLED (string, required) - This is the status of the transaction request.        
+        + status:CANCELLED (enum, required) - This is the status of the transaction request.        
         
         
 ## Get Purchase [GET /purchases/{PURCHASE_ID}]
@@ -1291,7 +1288,7 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
     + Attributes    
         + Include Links Purchase
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Response
         + Include profile
@@ -1317,7 +1314,7 @@ This is how you look up a Purchase request using the merchant reference number.
     + Attributes
         + Include Links GET
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Response
         + Include profile
@@ -1352,7 +1349,7 @@ This is how you process an ACH Direct Debit Standalone Credit request.
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Response
         + Include profile
@@ -1380,7 +1377,7 @@ This is how you process an ACH Direct Debit Standalone Credit request using a pa
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Token Response
         + Include profile
@@ -1410,7 +1407,7 @@ This is how you process an EFT Direct Debit Standalone Credit request.
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include EFT Response
         + Include profile
@@ -1438,7 +1435,7 @@ This is how you process an EFT Direct Debit Standalone Credit request using a pa
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include EFT Token Response
         + Include profile
@@ -1468,7 +1465,7 @@ This is how you process a BACS Direct Debit Standalone Credit request.
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include BACS Response
         + Include profile
@@ -1496,7 +1493,7 @@ This is how you process a BACS Direct Debit Standalone Credit request using a pa
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include BACS Token Response
         + Include profile
@@ -1514,7 +1511,7 @@ This is how you cancel a Direct Debit Standalone Credit request.
         + STANDALONE_CREDIT_ID:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Standalone Credit ID returned in the response.
         
     + Attributes
-        + status:CANCELLED (string, required) - This is the status of the transaction request.
+        + status:CANCELLED (enum, required) - This is the status of the transaction request.
         
     + Headers
     
@@ -1525,7 +1522,7 @@ This is how you cancel a Direct Debit Standalone Credit request.
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
-        + status:CANCELLED (string, required) - This is the status of the transaction request.
+        + status:CANCELLED (enum, required) - This is the status of the transaction request.
 
 ## Get Standalone Credit [GET /standalonecredits/{STANDALONE_CREDIT_ID}]
 
@@ -1545,7 +1542,7 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
     + Attributes    
         + Include Links Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Response
         + Include profile
@@ -1571,7 +1568,7 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Attributes
         + Include Links GET Standalone Credit
         + Include Response Base
-        + status:PENDING (string, required) - This is the status of the transaction request.
+        + status:PENDING (enum, required) - This is the status of the transaction request.
         + Include Purchase Base
         + Include ACH Response
         + Include profile
@@ -1584,8 +1581,8 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + accountType:CHECKING (string, required) - This is the bank account type.
-        + payMethod:WEB (string, required) - This is the payment type.
+        + accountType:CHECKING (enum, required) - This is the bank account type.
+        + payMethod:WEB (enum, required) - This is the payment type.
         + accountNumber:998772192 (string, required) - This is the bank account number.
         + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
@@ -1595,7 +1592,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
-        + payMethod:WEB (string, required) - This is the payment type.
+        + payMethod:WEB (enum, required) - This is the payment type.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
 
 ## ACH Response
@@ -1603,8 +1600,8 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + accountType:CHECKING (string, required) - This is the bank account type.
-        + payMethod:WEB (string, required) - This is the payment type.
+        + accountType:CHECKING (enum, required) - This is the bank account type.
+        + payMethod:WEB (enum, required) - This is the payment type.
         + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
@@ -1615,8 +1612,8 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
         + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
-        + accountType:CHECKING (string, required) - This is the bank account type.
-        + payMethod:WEB (string, required) - This is the payment type.
+        + accountType:CHECKING (enum, required) - This is the bank account type.
+        + payMethod:WEB (enum, required) - This is the payment type.
         + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
@@ -1745,7 +1742,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + href:https://api.netbanx.com/directdebit/v1/accounts/99000/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae         
 
 ## Purchase Base
-+ merchantRefNum: 123456789 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
++ merchantRefNum:123456789 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
 + amount:25.99  (number, required) -  This is the amount of the request, in minor units.
 + customerIp:192.0.126.111  (string, optional) - This is the customer's IP address.
 
