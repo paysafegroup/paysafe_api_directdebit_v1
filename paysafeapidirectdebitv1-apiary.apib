@@ -1,7 +1,7 @@
 FORMAT: 1A
 HOST: https://api.netbanx.com/directdebit/v1/
 
-# NETBANX Direct Debit API
+# Paysafe Direct Debit API
 
 # Overview
 Connect your application directly with our payment engine to process a full suite of methods that are REST-based – designed to be easy to understand and use. Ultimate control puts you in the driver’s seat.
@@ -12,13 +12,13 @@ Connect your application directly with our payment engine to process a full suit
 
 **Start accepting Direct Debit payments**
 
-Once you have set up a NETBANX merchant account, you can connect to the NETBANX gateway with our simple-to-use API. See our [Getting Started](#gettingstarted) section for a quick integration overview.
+Once you have set up a Paysafe merchant account, you can connect to the Paysafe gateway with our simple-to-use API. See our [Getting Started](#gettingstarted) section for a quick integration overview.
 
 Here is a summary of the process:
  1. You send a transaction request, including bank information and purchase amount. 
- 2. NETBANX processes the request. 
+ 2. Paysafe processes the request. 
  3. The transaction is completed in real time, though in most cases the request clears in 3–5 business days, at which time payment will be deposited in your business bank account.
- 4. You can look up any Direct Debit transaction you have processed with NETBANX, including charges and credits. 
+ 4. You can look up any Direct Debit transaction you have processed with Paysafe, including charges and credits. 
  
 **Direct Debit workflow**
 
@@ -27,16 +27,16 @@ The flow of funds in a Direct Debit charge transaction is depicted in the diagra
 ![](https://github.com/paysafegroup/paysafe_api_directdebit_v1/raw/master/images/DD_Processing_Overview.png)
 
 1. The consumer places an order.
-2. The merchant securely transfers the order information to NETBANX. Note that for certain bank schemes, a mandate reference number must be included in the request.
-3. NETBANX transmits the transaction request through its payment gateway to a Direct Debit clearing house.
+2. The merchant securely transfers the order information to Paysafe. Note that for certain bank schemes, a mandate reference number must be included in the request.
+3. Paysafe transmits the transaction request through its payment gateway to a Direct Debit clearing house.
 4. The Direct Debit charge request is routed to the consumer's bank. At this point, the bank information is verified.
 5. The transaction is approved by the consumer's bank.
-6. NETBANX returns the message to the merchant.
+6. Paysafe returns the message to the merchant.
 7. The consumer's bank transfers the money to the merchant's bank account.
 
 <a name="apikey" /a>
 # Authentication 
-In order for you to use the NETBANX REST API, NETBANX must first set you up on their system
+In order for you to use the Paysafe REST API, Paysafe must first set you up on their system
 and provide you with an API key. Your API key looks something like this:
  * Key ID – MerchantXYZ
  * Key Password – B-tst1-0-51ed39e4-312d02345d3f123120881dff9bb4020a89e8ac44cdfdcecd702151182fdc952272661d290ab2e5849e31bb03deede7e
@@ -58,7 +58,7 @@ For additional details, please refer to [http://en.wikipedia.org/wiki/Basic_acce
 # URLs 
 
 ##  Test URL
-In order to test your integration with NETBANX, use the following Test URL:
+In order to test your integration with Paysafe, use the following Test URL:
 
 `https://api.test.netbanx.com`
 
@@ -67,7 +67,7 @@ For example:
 `https://api.test.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`
 
 ## Production URL
-In order to process live requests with NETBANX, use the following Production URL:
+In order to process live requests with Paysafe, use the following Production URL:
 
 `https://api.netbanx.com`
 
@@ -77,7 +77,7 @@ For example:
 
 # Pagination
 
-In the case where an API GET request returns multiple results, NETBANX returns the first 10 records by default and uses HATEOAS links to provide page navigation. In addition to the default behavior, it is also possible to control the number of results and starting point by passing in query parameters as follows:
+In the case where an API GET request returns multiple results, Paysafe returns the first 10 records by default and uses HATEOAS links to provide page navigation. In addition to the default behavior, it is also possible to control the number of results and starting point by passing in query parameters as follows:
 
 ## Query Parameters for Pagination
 
@@ -254,11 +254,11 @@ If you do not have a transaction ID, you can look up a transaction based on the 
 
 # Testing Instructions
 
-The NETBANX Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment.
+The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment.
 
 **Note:** Direct Debit check transactions processed in the Test environment are not sent to the banking network, but through a simulator. Depending on the information provided with the transaction request, the simulator returns either a successful (approved) or failed (declined) response.
 
-With the NETBANX Direct Debit API you can test the following:
+With the Paysafe Direct Debit API you can test the following:
 
   * Verify support for all the operation types that you require.
   * Review all common errors as well as errors that may occur for each operation, and ensure your application can handle them.
@@ -1582,7 +1582,14 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
         + accountType:CHECKING (enum, required) - This is the bank account type.
+            - SAVINGS
+            - CHECKING
+            - LOAN
         + payMethod:WEB (enum, required) - This is the payment type.
+            - WEB - personal bank accounts only
+            - TEL - personal bank accounts only
+            - PPD - personal bank accounts only
+            - CCD - business bank accounts only
         + accountNumber:998772192 (string, required) - This is the bank account number.
         + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
@@ -1593,6 +1600,10 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
         + payMethod:WEB (enum, required) - This is the payment type.
+            - WEB - personal bank accounts only
+            - TEL - personal bank accounts only
+            - PPD - personal bank accounts only
+            - CCD - business bank accounts only
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement.
 
 ## ACH Response
@@ -1601,7 +1612,14 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
         + accountType:CHECKING (enum, required) - This is the bank account type.
+            - SAVINGS
+            - CHECKING
+            - LOAN
         + payMethod:WEB (enum, required) - This is the payment type.
+            - WEB - personal bank accounts only
+            - TEL - personal bank accounts only
+            - PPD - personal bank accounts only
+            - CCD - business bank accounts only
         + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
@@ -1613,7 +1631,14 @@ This is how you look up a Standalone Credit request using the merchant reference
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
         + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
         + accountType:CHECKING (enum, required) - This is the bank account type.
+            - SAVINGS
+            - CHECKING
+            - LOAN
         + payMethod:WEB (enum, required) - This is the payment type.
+            - WEB - personal bank accounts only
+            - TEL - personal bank accounts only
+            - PPD - personal bank accounts only
+            - CCD - business bank accounts only
         + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
         + paymentDescriptor:Transaction Request (string, optional) - This is the descriptor that will appear on the customer's bank statement
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
