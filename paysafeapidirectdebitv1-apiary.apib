@@ -1803,7 +1803,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             - PROCESSING
             - FAILED
             - CANCELLED
-        + merchantRefNum:123456789 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
+        + merchantRefNum:merchant-ABC-123 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
         + amount:2599  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
         + customerIp:192.0.126.111  (string, optional) - This is the customer's IP address.
         + ach
@@ -1840,6 +1840,60 @@ This is how you look up a Standalone Credit request using the merchant reference
         + links
             + rel:self (string, required)
             + href:`https://api.netbanx.com/directdebit/v1/accounts/99000/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+    + (object)
+        + id:`4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required) - This is the ID returned in the response.
+        + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+        + status:PENDING (enum, required) - This is the status of the transaction request.        
+            - COMPLETED
+            - RECEIVED
+            - PENDING
+            - PROCESSING
+            - FAILED
+            - CANCELLED
+        + merchantRefNum:merchant-ABC-123 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
+        + amount:2599  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
+        + customerIp:192.0.126.111  (string, optional) - This is the customer's IP address.
+        + ach
+            + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+            + accountType:CHECKING (enum, required) - This is the bank account type.
+                - SAVINGS
+                - CHECKING
+                - LOAN
+            + payMethod:WEB (enum, required) - This is the payment type.
+                - WEB
+                - TEL
+                - PPD
+                - CCD
+            + routingNumber:211589828 (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
+            + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement
+            + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + profile
+            + firstName:John (string, required) - This is the customer’s first name.
+            + lastName:Johnson (string, required) - This is the customer's last name.
+            + email:john.johnson@emailserver.com (string, optional) - This is the customer's email address.
+            + ssn:123456789 (string, optional) - This is the customer's social security number.
+            + dateOfBirth (object, optional) - This is the customer's date of birth.
+                + day:24 (number, required) - This is the day of the customer's birth.
+                + month:10 (number, required) - This is the month of the customer's birth.
+                + year:1981 (number, required) - This is the year of the customer's birth.
+        + billingDetails
+            + street:100 Queen Street West 
+            + street2:Apt. 55 
+            + city:Ottawa
+            + state:ON
+            + country:Canada 
+            + zip:M1M 1M1
+            + phone:6139991100
+        + links
+            + rel:self (string, required)
+            + href:`https://api.netbanx.com/directdebit/v1/accounts/99000/purchases/4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required)
+    +links
+        "rel": "self",
+        "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z"
+        "rel": "next",
+        "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z"
+        "rel": "previous",
+        "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z"
 
 ## Links GET Standalone Credit
 + links (array, required) - This is an array of links.
