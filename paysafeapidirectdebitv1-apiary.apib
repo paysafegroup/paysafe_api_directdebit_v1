@@ -1792,9 +1792,11 @@ This is how you look up a Standalone Credit request using the merchant reference
     + (object)
         + rel:self (string, required)
         + href:`https://api.netbanx.com/directdebit/v1/accounts/99000/purchases?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
++ links (array, required) - This is an array of links.
     + (object)
         + rel:next (string, required)
         + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
++ links (array, required) - This is an array of links.        
     + (object)
         + rel:previous (string, required)
         + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
