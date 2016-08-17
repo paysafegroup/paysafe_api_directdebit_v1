@@ -1908,6 +1908,12 @@ This is how you look up a Standalone Credit request using the merchant reference
     + (object)
         + rel:self (string, required)
         + href:`https://api.netbanx.com/directdebit/v1/accounts/99000/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
+    + (object)
+        + rel:next (string, required)
+        + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
+    + (object)
+        + rel:previous (string, required)
+        + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)             
 + standalonecredits (array) - This array lists Standalone Credits processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
