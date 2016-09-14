@@ -2118,9 +2118,8 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
-        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.
 
 ## SEPA Token Response
 + sepa (object, required) - These are the details of the bank account used for the request.
@@ -2128,9 +2127,8 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
-        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.
         
 ## SEPA Credit Token Response
 + sepa (object, required) - These are the details of the bank account used for the request.
@@ -2138,8 +2136,7 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
-        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.        
+        + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.        
         
 ## Status Purchase
 + status:PENDING (enum, required) - This is the status of the transaction request.        
