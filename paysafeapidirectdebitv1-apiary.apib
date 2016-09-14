@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: https://api.netbanx.com/directdebit/v1/
+HOST: https://api.paysafe.com/directdebit/v1/
 
 # Paysafe Direct Debit API
 
@@ -60,20 +60,20 @@ For additional details, please refer to [http://en.wikipedia.org/wiki/Basic_acce
 ##  Test URL
 In order to test your integration with Paysafe, use the following Test URL:
 
-`https://api.test.netbanx.com`
+`https://api.test.paysafe.com`
 
 For example:
 
-`https://api.test.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`
+`https://api.test.paysafe.com/directdebit/v1/accounts/{ACCOUNT_ID}`
 
 ## Production URL
 In order to process live requests with Paysafe, use the following Production URL:
 
-`https://api.netbanx.com`
+`https://api.paysafe.com`
 
 For example:
 
-`https://api.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`
+`https://api.paysafe.com/directdebit/v1/accounts/{ACCOUNT_ID}`
 
 # Pagination
 
@@ -118,7 +118,7 @@ The following request types are supported:
  
 **API Endpoint**
 
-`https://api.netbanx.com/directdebit/v1/accounts/{ACCOUNT_ID}`  
+`https://api.paysafe.com/directdebit/v1/accounts/{ACCOUNT_ID}`  
 
 **Resource Patterns**
 
@@ -144,7 +144,7 @@ The following request verifies that the service is up and accessible from your n
 
 Request:
 
-`curl -X GET https://api.test.netbanx.com/directdebit/monitor`
+`curl -X GET https://api.test.paysafe.com/directdebit/monitor`
 
 Response:
 
@@ -158,7 +158,7 @@ Response:
 
 A Purchase request allows you to transfer money from a customer's bank account to your merchant account. To process a Purchase, you must initiate a POST request to the purchases endpoint. The transaction is completed in real time, though the banking network typically takes 3&ndash;5 days to transfer the funds.
 
-    curl -X POST https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases \
+    curl -X POST https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases \
       -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
       -H 'Content-Type: application/json' \
       -d ' {
@@ -199,7 +199,7 @@ By default the Direct Debit processing system will check for duplicate transacti
                     "links": [
                         {
                             "rel": "self",
-                            "href": "https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+                            "href": "https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
                         }
                     ],
                     "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
@@ -239,7 +239,7 @@ By default the Direct Debit processing system will check for duplicate transacti
 
 You can look up an existing Purchase transaction by providing the account number and transaction ID in the URL as follows:
 
-            curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae \
+            curl -X GET https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae \
                   -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
                   -H 'Content-Type: application/json'
   
@@ -250,7 +250,7 @@ Prior to trying the example, you should:
   
 If you do not have a transaction ID, you can look up a transaction based on the *merchantRefNum* you supplied with the original request:
 
-            curl -X GET https://api.test.netbanx.com/directdebit/v1/accounts/89987201/purchases?merchantRefNum=ORDER_ID:1231&limit=2 \
+            curl -X GET https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases?merchantRefNum=ORDER_ID:1231&limit=2 \
                     -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
                     -H 'Content-Type: application/json'
 
@@ -269,7 +269,7 @@ With the Paysafe Direct Debit API you can test the following:
   
 To use the test environment, you must post your requests to the following endpoint:
 
-    `https://api.test.netbanx.com/directdebit/v1/accounts/<test account number>`
+    `https://api.test.paysafe.com/directdebit/v1/accounts/<test account number>`
 
 # ISO Standards
 
@@ -763,8 +763,8 @@ When providing BACS bank account information, merchants can provide either a pay
 |---                |---                        |---            |---       |
 |accountHolderName  |string <br/>`length<=18`   |Yes            |This is the name of the customer or company.|
 |sortCode           |string<br/>`length=6`      |Yes            |This is the sort code for the customer's bank account.|
-|accountNumber      |string <br/>`length=8`  |Yes            |This is the bank account number.|
-|mandateReference   |string<br/>`length=10`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.|
+|accountNumber      |string <br/>`length=8`     |Yes            |This is the bank account number.|
+|mandateReference   |string<br/>`length=10`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This element is not required for SEPA standalone credits.|
 |lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
 
 
@@ -905,7 +905,7 @@ When providing EFT bank account information, merchants can provide either a paym
     "links": [
         {
         "rel": "self",
-        "href": "https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+        "href": "https://api.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
         }
         ],
 }
@@ -1770,34 +1770,34 @@ This is how you look up a Standalone Credit request using the merchant reference
 + links (array, required) - This is an array of links.
     + (object)
         + rel:self (string, required) - This is the link type that allows different endpoints to be targeted depending on the end state of the transaction.
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the URI of the resource.
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the URI of the resource.
         
 ## Links Standalone Credit
 + links (array, required) - This is an array of links.
     + (object)
         + rel:self (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)        
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)        
         
 ## Links GET
 + links (array, required) - This is an array of links.
     + (object)
         + rel:self (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
     + (object)
         + rel:next (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
         
 ## Links GET Reference
 + links (array, required) - This is an array of links.
     + (object)
         + rel:self (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
     + (object)
         + rel:next (string, required)
-        + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
     + (object)
         + rel:previous (string, required)
-        + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)        
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)        
 + purchases (array) - This array lists Purchases processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
@@ -1845,7 +1845,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             + phone:6139991100
         + links
             + rel:self (string, required)
-            + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
     + (object)
         + id:`4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required) - This is the ID returned in the response.
         + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
@@ -1892,28 +1892,28 @@ This is how you look up a Standalone Credit request using the merchant reference
             + phone:6139991100
         + links
             + rel:self (string, required)
-            + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/purchases/4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required)
+            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required)
 
 ## Links GET Standalone Credit
 + links (array, required) - This is an array of links.
     + (object)
         + rel:self (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
     + (object)
         + rel:next (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
 
 ## Links GET Standalone Credit Reference
 + links (array, required) - This is an array of links.
     + (object)
         + rel:self (string, required)
-        + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
     + (object)
         + rel:next (string, required)
-        + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
     + (object)
         + rel:previous (string, required)
-        + href:`https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)             
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)             
 + standalonecredits (array) - This array lists Standalone Credits processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
@@ -1961,7 +1961,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             + phone:6139991100
         + links
             + rel:self (string, required)
-            + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
+            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
     + (object)
         + id:`bg4h52c7-c991-4418-966a-b62989cb1a3f` (string, required) - This is the ID returned in the response.
         + txnTime:`2016-13-14T15:10:11Z` (string, required) - This is the date and time the transaction was processed.
@@ -2008,7 +2008,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             + phone:6139991100
         + links
             + rel:self (string, required)
-            + href:`https://api.netbanx.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)            
+            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)            
     
 
 ## Purchase Base
