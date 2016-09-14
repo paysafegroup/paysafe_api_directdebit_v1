@@ -764,7 +764,7 @@ When providing BACS bank account information, merchants can provide either a pay
 |accountHolderName  |string <br/>`length<=18`   |Yes            |This is the name of the customer or company.|
 |sortCode           |string<br/>`length=6`      |Yes            |This is the sort code for the customer's bank account.|
 |accountNumber      |string <br/>`length=8`     |Yes            |This is the bank account number.|
-|mandateReference   |string<br/>`length=10`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This element is not required for SEPA standalone credits.|
+|mandateReference   |string<br/>`length=10`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.|
 |lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
 
 
@@ -975,7 +975,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |---                |---                        |---            |---       |
 |accountHolderName  |string <br/>`length<=32`   |Yes            |This is the name of the customer or company.|
 |iban               |string<br/>`length=1-34`   |Yes            |This is the International Bank Account Number for the customer's bank account.|
-|mandateReference   |string<br/>`length=35`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.|
+|mandateReference   |string<br/>`length=35`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system. <br/>**Note:** This element is not required for SEPA standalone credits.|
 |lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
 
 
