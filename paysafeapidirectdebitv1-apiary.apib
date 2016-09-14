@@ -1530,6 +1530,71 @@ You can then use the *paymentToken* associated with the BACS bank account to pro
         + Include profile
         + Include billingDetails
 
+## SEPA Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process a SEPA Direct Debit Standalone Credit request.
+
++ Parameters
+
+    + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+
++ Request SEPA Standalone Credit (application/json)
+
+    + Attributes
+        + Include Purchase Base
+        + Include SEPA
+        + Include profile
+        + Include billingDetails
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + Include Status Purchase
+        + Include Purchase Base
+        + Include SEPA Response
+        + Include profile
+        + Include billingDetails
+
+## SEPA Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+
+This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
+ * Create a profile
+ * Add a SEPA bank account to the profile
+ 
+You can then use the *paymentToken* associated with the SEPA bank account to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+
+
++ Parameters
+
+    + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
+
++ Request SEPA Standalone Credit with Payment Token (application/json)
+
+    + Attributes
+        + Include Purchase Base
+        + Include SEPA Payment Token
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
++ Response 200 (application/json)
+
+    + Attributes
+        + Include Links Standalone Credit
+        + Include Response Base
+        + Include Status Purchase
+        + Include Purchase Base
+        + Include SEPA Credit Token Response
+        + Include profile
+        + Include billingDetails
+
 ## Cancel Standalone Credit [PUT /standalonecredits/{STANDALONE_CREDIT_ID}]
 
 This is how you cancel a Direct Debit Standalone Credit request.
@@ -2039,7 +2104,7 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
         + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
-        + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
+        + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
 
 ## SEPA Payment Token
 + sepa (object, required) - If the payment token is provided, no other bank account information is necessary.
@@ -2066,6 +2131,15 @@ This is how you look up a Standalone Credit request using the merchant reference
         + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        
+## SEPA Credit Token Response
++ sepa (object, required) - These are the details of the bank account used for the request.
+
+    + Properties
+        + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
+        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
+        + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.        
         
 ## Status Purchase
 + status:PENDING (enum, required) - This is the status of the transaction request.        
