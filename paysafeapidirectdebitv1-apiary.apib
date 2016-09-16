@@ -2081,7 +2081,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 + merchantRefNum:123456789 (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
 + amount:2599  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
 + customerIp:192.0.126.111  (string, optional) - This is the customer's IP address.
-+ dupCheck (boolean, optional) - This validates that this request is not a duplicate.
++ dupCheck:true (boolean, optional) - This validates that this request is not a duplicate.
 
 ## profile
 + profile (object, optional) - These are some customer details for the request.
