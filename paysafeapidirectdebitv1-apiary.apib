@@ -1227,7 +1227,7 @@ This is how you process a BACS Direct Debit Purchase request using a payment tok
  * Add a BACS bank account to the profile
  * Add a mandate to the BACS bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* associated with the BACS bank account to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -1262,7 +1262,7 @@ This is how you process a SEPA Direct Debit Purchase request using a payment tok
  * Add a SEPA bank account to the profile
  * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* associated with the SEPA bank account to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -1503,7 +1503,7 @@ This is how you process a BACS Direct Debit Standalone Credit request using a pa
  * Add a BACS bank account to the profile
  * Add a mandate to the BACS bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* associated with the BACS bank account to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 
 + Parameters
@@ -1567,9 +1567,9 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
 This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
  * Create a profile
  * Add a SEPA bank account to the profile
+ * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* associated with the SEPA bank account to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
-
+You can then use the *paymentToken* associated with the SEPA bank account or the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-sepa-mandate)to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
