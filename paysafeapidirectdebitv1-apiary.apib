@@ -1078,6 +1078,14 @@ When providing SEPA bank account information, merchants can provide either a pay
 |400                |2017           |The payment token bank scheme does not match the merchant account bank scheme.|
 |402                |4002           |The transaction was declined by our Risk Management department.|
   
+  
+# Using the Console Window
+To configure and test the example in the Console window, select the "Switch to Console" button.
+In the Console window, you can update the API endpoint, parameters, headers, and request body. For example, you can update the API endpoint with the id of the required order or transaction for a lookup request or include your account_id, which is required when using some API endpoints. You can also include your Test or Live account user name and password  (for details, see Using your API key below). 
+When you are ready to test your example, you can switch  between the Production and Mock server environment:
+* Production server – calls the resource on the Paysafe test production system. You should replace with your test account details to test these examples.
+* Mock server – local test environment which returns an example response. No account details are required, as you can use those provided in the request example.
+To call the API resource, click the "Call Resource" button. The response is displayed in the Console window.
 
 # Purchases [/purchases]
 <a name="purchaserequest"></a>
