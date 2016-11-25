@@ -1344,7 +1344,7 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
         + Include profile
         + Include billingDetails
 
-## Get Purchase Using Merchant Reference Number [GET /accounts/{ACCOUNT_ID}/purchases?merchantRefNum=merchant-ABC-123&limit=2]
+## Get Purchase Using Merchant Reference Number [GET /accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}]
 
 This is how you look up a Purchase request using the merchant reference number used in the original request.
 
@@ -1673,7 +1673,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 # Data Structures
 
 ## ACH
-+ ach (object, required) - These are the details of the bank account used for the request.
++ ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1691,7 +1691,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement.
         
 ## ACH Payment Token
-+ ach (object, required) - If the payment token is provided, no other bank account information is necessary.
++ ach (object, required) - If the [payment token](#achobject) is provided, no other bank account information is necessary.
 
     + Properties
         + paymentToken:DNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
@@ -1703,7 +1703,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement.
 
 ## ACH Response
-+ ach (object, required) - These are the details of the bank account used for the request.
++ ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1721,7 +1721,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
 
 ## ACH Token Response
-+ ach (object, required) - These are the details of the bank account used for the request.
++ ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1741,7 +1741,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
 
 ## BACS
-+ bacs (object, required) - These are the details of the bank account used for the request.
++ bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1750,14 +1750,14 @@ This is how you look up a Standalone Credit request using the merchant reference
         + mandateReference:SUBSCRIP10 (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
 
 ## BACS Payment Token
-+ bacs (object, required) - If the payment token is provided, no other bank account information is necessary.
++ bacs (object, required) - If the [payment token](#bacsobject) is provided, no other bank account information is necessary.
 
     + Properties
         + paymentToken:BNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
 
 
 ## BACS Response
-+ bacs (object, required) - These are the details of the bank account used for the request.
++ bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1766,7 +1766,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
 
 ## BACS Token Response
-+ bacs (object, required) - These are the details of the bank account used for the request.
++ bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
         + paymentToken:BNjEzMTM4NDg1 (string, required) - If the payment token is provided, no other bank account information is necessary.
@@ -1777,7 +1777,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
 
 ## billingDetails
-+ billingDetails (object, optional) - These are the billing details for the request.
++ billingDetails (object, optional) - These are the [billing details](#billingdetailsobject) for the request.
 
     + Properties
         + street:100 Queen Street West 
@@ -1789,7 +1789,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + phone:6139991100
 
 ## dateOfBirth
-+ dateOfBirth (object, optional) - This is the customer's date of birth.
++ dateOfBirth (object, optional) - This is the [customer's date of birth](#dateofbirthobject).
 
     + Properties
         + day:24 (number, required) - This is the day of the customer's birth.
@@ -1797,7 +1797,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + year:1981 (number, required) - This is the year of the customer's birth.
 
 ## EFT
-+ eft (object, required) - These are the details of the bank account used for the request.
++ eft (object, required) - These are the details of the [EFT bank account](#eftobject) used for the request.
     
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1806,14 +1806,14 @@ This is how you look up a Standalone Credit request using the merchant reference
         + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
 
 ## EFT Payment Token
-+ eft (object, required) - If the payment token is provided, no other bank account information is necessary.
++ eft (object, required) - If the [payment token](#eftobject) is provided, no other bank account information is necessary.
 
     + Properties
         + paymentToken:DTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.
         + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement.
 
 ## EFT Response
-+ eft (object, required) - These are the details of the bank account used for the request.
++ eft (object, required) - These are the details of the [EFT bank account](#eftobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -1822,7 +1822,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
 
 ## EFT Token Response
-+ eft (object, required) - These are the details of the bank account used for the request.
++ eft (object, required) - These are the details of the [EFT bank account](#eftobject) used for the request.
 
     + Properties
         + paymentToken:DTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
@@ -1833,19 +1833,19 @@ This is how you look up a Standalone Credit request using the merchant reference
 
 
 ## Links Purchase
-+ links (array, required) - This is an array of links.
++ links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required) - This is the link type that allows different endpoints to be targeted depending on the end state of the transaction.
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the URI of the resource.
         
 ## Links Standalone Credit
-+ links (array, required) - This is an array of links.
++ links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)        
         
 ## Links GET
-+ links (array, required) - This is an array of links.
++ links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
@@ -1854,7 +1854,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
         
 ## Links GET Reference
-+ links (array, required) - This is an array of links.
++ links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
@@ -1864,7 +1864,7 @@ This is how you look up a Standalone Credit request using the merchant reference
     + (object)
         + rel:previous (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)        
-+ purchases (array) - This array lists Purchases processed using this merchant reference number.
++ purchases (array) - This array lists [Purchases](#purchaseobject) processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
         + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
@@ -1961,7 +1961,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required)
 
 ## Links GET Standalone Credit
-+ links (array, required) - This is an array of links.
++ links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
@@ -1970,7 +1970,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
 
 ## Links GET Standalone Credit Reference
-+ links (array, required) - This is an array of links.
++ links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
@@ -1980,7 +1980,7 @@ This is how you look up a Standalone Credit request using the merchant reference
     + (object)
         + rel:previous (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)             
-+ standalonecredits (array) - This array lists Standalone Credits processed using this merchant reference number.
++ standalonecredits (array) - This array lists [Standalone Credits](#standalonecreditobject) processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
         + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
@@ -2084,14 +2084,14 @@ This is how you look up a Standalone Credit request using the merchant reference
 + dupCheck:true (boolean, optional) - This validates that this request is not a duplicate.
 
 ## profile
-+ profile (object, optional) - These are some customer details for the request.
++ profile (object, optional) - These are some [customer details](#profileobject) for the request.
 
     + Properties
         + firstName:John (string, required) - This is the customer’s first name.
         + lastName:Johnson (string, required) - This is the customer's last name.
         + email:john.johnson@emailserver.com (string, optional) - This is the customer's email address.
         + ssn:123456789 (string, optional) - This is the customer's social security number.
-        + dateOfBirth (object, optional) - This is the customer's date of birth.
+        + dateOfBirth (object, optional) - This is the [customer's date of birth](#dateofbirthobject).
             + day:24 (number, required) - This is the day of the customer's birth.
             + month:10 (number, required) - This is the month of the customer's birth.
             + year:1981 (number, required) - This is the year of the customer's birth.
@@ -2101,7 +2101,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
 
 ## SEPA
-+ sepa (object, required) - These are the details of the bank account used for the request.
++ sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -2109,14 +2109,14 @@ This is how you look up a Standalone Credit request using the merchant reference
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
 
 ## SEPA Payment Token
-+ sepa (object, required) - If the payment token is provided, no other bank account information is necessary.
++ sepa (object, required) - If the [payment token](#sepaobject) is provided, no other bank account information is necessary.
 
     + Properties
         + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.
 
 
 ## SEPA Response
-+ sepa (object, required) - These are the details of the bank account used for the request.
++ sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -2124,7 +2124,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.
 
 ## SEPA Token Response
-+ sepa (object, required) - These are the details of the bank account used for the request.
++ sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
         + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
@@ -2133,7 +2133,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.
         
 ## SEPA Credit Token Response
-+ sepa (object, required) - These are the details of the bank account used for the request.
++ sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
         + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
