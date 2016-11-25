@@ -44,15 +44,15 @@ The flow of funds in a Direct Debit charge transaction is depicted in the diagra
 # Authentication 
 In order for you to use the Paysafe REST API, Paysafe must first set you up on their system
 and provide you with an API key. Your API key looks something like this:
- * Key ID – MerchantXYZ
+ * Key Username – MerchantXYZ
  * Key Password – B-tst1-0-51ed39e4-312d02345d3f123120881dff9bb4020a89e8ac44cdfdcecd702151182fdc952272661d290ab2e5849e31bb03deede7e
-
+Note this is not the same as your Merchant Back Office username and password.Ke
 The case-sensitive API key is sent using HTTP Basic Authentication. To use HTTP Basic Authentication, you must send the API key credentials using the Authorization header with every request. The Authorization header is constructed as follows:
- 1. The Key ID and Key Password are combined into a string separated by a colon, e.g.,“Key ID:Key Password”.
+ 1. The Key Username and Key Password are combined into a string separated by a colon, e.g.,“Key Username:Key Password”.
  2. The resulting string literal is then encoded using Base64.
  3. The authorization method and a space (i.e., “Basic”) are then put before the encoded string.
 
-For example, using the Key ID and Password examples above, the header is formed as follows:
+For example, using the Key Username and Password examples above, the header is formed as follows:
 
 ``Authorization: Basic
 TWVyY2hhbnRYWVo6Qi10c3QxLTAtNTFlZDM5ZTQtMzEyZDAyMzQ1ZDNmMTIzMTIwODgxZGZmOWJiNDAyMGE4OWU4YWM0NGNkZmRjZWNkNzAyMTUxMTgyZmRjOTU yMjcyNjYxZDI5MGFiMmU1ODQ5ZTMxYmIwM2RlZWRlN2U=``
