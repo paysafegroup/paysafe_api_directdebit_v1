@@ -30,7 +30,7 @@ Here is a summary of the process:
 
 The flow of funds in a Direct Debit charge transaction is depicted in the diagram below.
 
-![](http://admin:1234neu!@p368327.webspaceconfig.de/fileadmin/flarecontent/devcentre/Content/Resources/Images/DD_Processing_Overview_Paysafe.png)
+![](https://developer.paysafe.com/fileadmin/flarecontent/devcentre/Content/Resources/Images/DD_Processing_Overview_Paysafe.png)
 
 1. The customer places an order.
 2. The merchant securely transfers the order information to Paysafe. Note that for certain bank schemes, a mandate reference number must be included in the request.
@@ -225,7 +225,7 @@ By default the Direct Debit processing system will check for duplicate transacti
     
 ## Purchase Message Sequence
 
-![](http://admin:1234neu!@p368327.webspaceconfig.de/fileadmin/flarecontent/devcentre/Content/Resources/Images/DD_Purchase_Message_Sequence.png)
+![](https://developer.paysafe.com/fileadmin/flarecontent/devcentre/Content/Resources/Images/DD_Purchase_Message_Sequence.png)
 
 ## Look Up a Purchase Transaction
 
@@ -1648,7 +1648,7 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
         + Include profile
         + Include billingDetails
 
-## Get Standalone Credit Using Merchant Reference Number [GET /accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2]
+## Get Standalone Credit Using Merchant Reference Number [GET /accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}]
 
 This is how you look up a Standalone Credit request using the merchant reference number used in the original request.
 
