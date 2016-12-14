@@ -16,7 +16,7 @@ Connect your application with the Paysafe payment engine through our RESTful API
 
 **Start accepting Direct Debit payments**
 
-Once you have set up a Paysafe merchant account, you can connect to the Paysafe gateway with our simple-to-use API. See our [Getting Started](#gettingstarted) section for a quick integration overview.
+Once you have set up a Paysafe merchant account, you can connect to the Paysafe gateway with our simple-to-use API. 
 
 Here is a summary of the process:
  1. You send a transaction request, including bank information and purchase amount. 
@@ -124,142 +124,11 @@ The following request types are supported:
 <a name="gettingstarted"></a>
 # Getting Started
 
-This section outlines some common scenarios for making Direct Debit payments. To get started you must first sign up for a test account and get an API key.
-
-All examples in this section use cURL, which is a command line tool for transferring data using protocols such as HTTPS.
-
-## Verify That the Service Is Accessible
-
-The following request verifies that the service is up and accessible from your network.
-
-Request:
-
-`curl -X GET https://api.test.paysafe.com/directdebit/monitor`
-
-Response:
-
-`{
-"status" : "READY"
-}`
-
-**Note:** The system should respond with a status of READY if it is available.
-
-## Process a Purchase
-
-A Purchase request allows you to transfer money from a customer's bank account to your merchant account. To process a Purchase, you must initiate a POST request to the purchases endpoint. The transaction is completed in real time, though the banking network typically takes 3&ndash;5 days to transfer the funds.
-
-    curl -X POST https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases \
-      -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
-      -H 'Content-Type: application/json' \
-      -d ' {
-            "merchantRefNum": "ORDER_ID:1231",
-            "amount": 10098,
-            "ach": {
-                "accountHolderName": "XYZ Company",
-                "accountType": "CHECKING",
-                "accountNumber": "988772192",
-                "routingNumber": "211589828",
-                "payMethod": "WEB"
-            },
-            "customerIp": "192.0.126.111",
-            "profile": {
-                "firstName": "Joe",
-                "lastName": "Smith",
-                "email": "Joe.Smith@hotmail.com"
-            },
-            "billingDetails": {
-                "street": "100 Queen Street West",
-                "city": "Los Angeles",
-                "state": "CA",
-                "country": "US",
-                "zip": "90210",
-                "phone": "3102649010"
-            }
-        } '
-        
-By default the Direct Debit processing system will check for duplicate transactions. Prior to trying the example, you should:
-
- * Provide a unique merchant reference number for each transaction.
- * Replace the account number (89987201) in the URL with the test account number you received.
- * Replace the [API key](#apikey) (after the -u) with the API key you have received.
-  
-## Purchase Response
-
-            {
-                    "links": [
-                        {
-                            "rel": "self",
-                            "href": "https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
-                        }
-                    ],
-                    "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
-                    "merchantRefNum": "ORDER_ID:1231",
-                    "amount": 10098,
-                    "ach": {
-                        "accountHolderName": "XYZ Company",
-                        "accountType": "CHECKING",
-                        "lastDigits": "92",
-                        "routingNumber": "211589828",
-                        "payMethod": "WEB"
-                    },
-                    "customerIp": "192.0.126.111",
-                    "profile": {
-                        "firstName": "Joe",
-                        "lastName": "Smith",
-                        "email": "Joe.Smith@hotmail.com"
-                    },
-                    "billingDetails": {
-                        "street": "100 Queen Street West",
-                        "city": "Los Angeles",
-                        "state": "CA",
-                        "country": "US",
-                        "zip": "90210",
-                        "phone": "3102649010"
-                    },
-                    "txnTime": "2016-12-14T15:12:18Z",
-                    "currencyCode": "USD",
-                    "status": "PENDING"
-                }
-    
-## Purchase Message Sequence
-
-![](https://developer.paysafe.com/fileadmin/flarecontent/devcentre/Content/Resources/Images/DD_Purchase_Message_Sequence.png)
-
-## Look Up a Purchase Transaction
-
-You can look up an existing Purchase transaction by providing the account number and transaction ID in the URL as follows:
-
-            curl -X GET https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases/a02e52c7-c991-4418-966a-b62989cb0eae \
-                  -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
-                  -H 'Content-Type: application/json'
-  
-Prior to trying the example, you should:
-
-  * Replace the account number (89987201) in the URL with the test account number you received.
-  * Replace the [API key](#apikey) (after the -u) with the API key you have received.
-  
-If you do not have a transaction ID, you can look up a transaction based on the *merchantRefNum* you supplied with the original request:
-
-            curl -X GET https://api.test.paysafe.com/directdebit/v1/accounts/89987201/purchases?merchantRefNum=ORDER_ID:1231&limit=2 \
-                    -u devcentre322:B-qa2-0-53625f86-302c021476f52bdc9deab7aea876bb28762e62f92fc6712d0214736abf501e9675e55940e83ef77f5c304edc7968 \
-                    -H 'Content-Type: application/json'
+Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/using-the-api/scenarios/) for some common scenarios for making Direct Debit payments. 
 
 # Testing Instructions
 
-The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment.
-
-**Note:** Direct Debit check transactions processed in the Test environment are not sent to the banking network, but through a simulator. Depending on the information provided with the transaction request, the simulator returns either a successful (approved) or failed (declined) response.
-
-With the Paysafe Direct Debit API you can test the following:
-
-  * Verify support for all the operation types that you require.
-  * Review all common errors as well as errors that may occur for each operation, and ensure your application can handle them.
-  * Verify the lengths and format for all attributes you send.
-  * Use the details in this section to simulate different responses.
-  
-To use the test environment, you must post your requests to the following endpoint:
-
-    `https://api.test.paysafe.com/directdebit/v1/accounts/<test account number>`
+The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment. Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/test-and-go-live/testing-instructions/) for details of how to use the test environment.
 
 # ISO Standards
 
@@ -849,36 +718,28 @@ When providing EFT bank account information, merchants can provide either a paym
 <a name="errorobject"></a>
 ## error
 
-|Element            |Type     |Description                        |
-|---                |---      |---       |
-|code               |string   |This is the error code.|
-|message            |string   |This is a description of the error.|
-|details            |array    |This is a detailed description.|
-|fieldErrors        |array    |This is a list of fields that have problems.|
+|Element            |Type       |Description                        |
+|---                |---        |---                                |
+|code               |string     |The error code. Also shown in the X-Application-Status-Code response header.            |
+|message            |string     |A description of the error.                 |
+|details            |string array |Details of any parameter value errors (optional).       |
+|links              |array      |One or more rel/href pairs, where rel is "errorinfo", and href is the Developer Center URL containing a description of the error.|
 
 ```apib
 {
-   "error":{
-      "code":5068,
-      "message":"Field Error(s)",
-      "fieldErrors":[
-         {
-            "field":"recipientEmail",
-            "error":"john@hi@you.c.c.c.c is not a valid e-mail address."
-         },
-         {
-            "field":"transaction.amount",
-            "error":"A transaction amount is required."
-         },
-         {
-            "field":"transaction.currency",
-            "error":"Currency with value [USD] exceeds the maximum size of [3]."
-         }
-      ],
-      "details":[
-           "There are invalid or missing fields in your request."
-        ]
-   }
+    "error":{  
+       "code":"5016",
+       "message":"The merchant account submitted with your request could not be found",
+       "details":[  
+          "Account 89983659 does not exist"
+       ],
+       "links":[  
+          {  
+             "rel":"errorinfo",
+             "href":"https://developer.optimalpayments.com/en/documentation/direct-debit-api/error-5016"
+          }
+       ]
+    }
 }
 ```
 
