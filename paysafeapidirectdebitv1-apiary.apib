@@ -30,13 +30,14 @@ The flow of funds in a Direct Debit charge transaction is depicted in the diagra
 
 ![](https://developer.paysafe.com/fileadmin/flarecontent/devcentre/Content/Resources/Images/DD_Processing_Overview_Paysafe.png)
 
-1. The customer places an order.
-2. The merchant securely transfers the order information to Paysafe. Note that for certain bank schemes, a mandate reference number must be included in the request.
-3. Paysafe transmits the transaction request through its payment gateway to a Direct Debit clearing house.
+1. The customer places an order on the merchant's website.
+2. The merchant securely transfers the order information (including bank information and purchase amount) to Paysafe. Note that for certain bank schemes, a mandate reference number must be included in the request.
+3. Paysafe sends the transaction request to a Direct Debit clearing house.
 4. The Direct Debit charge request is routed to the customer's bank. At this point, the bank information is verified.
-5. The transaction is approved by the customer's bank.
-6. Paysafe returns the message to the merchant.
-7. The customer's bank transfers the money to the merchant's bank account.
+5. The transaction is approved by the customer's bank and the approval relayed via Paysafe to the Merchant server.
+6. The customer is informed of the approval.
+7. The customer's bank transfers the moixedney to the merchant's bank account.
+8. The transaction is completed in real time, but in most cases the request clears in 3–5 business days, by which time payment will be deposited in the merchant's business bank account. Merchants can look up any Direct Debit transaction they have processed with Paysafe, including charges and credits, using either the Direct debit API or the Paysafe Merchant Back Office.
 
 <a name="apikey"></a>
 # Authentication 
