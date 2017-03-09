@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: https://api.test.paysafe.com/directdebit/v1/
+HOST: https://api.test.paysafe.com/directdebit/
 
 # Paysafe Direct Debit API
 
@@ -959,10 +959,22 @@ When you are ready to test your example, you can choose between the Production a
 
 To call the API resource, click **Call Resource**. The response is displayed in the Console window.
 
+## Verify the Service is Accessible [GET /monitor]
+
+This call returns a status of READY if the API is available.
+
++ Response 200 (application/json)
+
+  + Body
+    
+            {
+                "status" : "READY"
+            }
+
 # Purchases [/purchases]
 <a name="purchaserequest"></a>
 
-## ACH Purchase [POST /accounts/{ACCOUNT_ID}/purchases]
+## ACH Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 
 This is how you process an ACH Direct Debit Purchase request.
 
@@ -993,7 +1005,7 @@ This is how you process an ACH Direct Debit Purchase request.
         + Include profile
         + Include billingDetails
         
-## ACH Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+## ACH Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 
 This is how you process an ACH Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
 
@@ -1024,7 +1036,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include profile
         + Include billingDetails        
         
-## EFT Purchase [POST /accounts/{ACCOUNT_ID}/purchases]
+## EFT Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 
 This is how you process an EFT Direct Debit Purchase request.
 
@@ -1055,7 +1067,7 @@ This is how you process an EFT Direct Debit Purchase request.
         + Include profile
         + Include billingDetails
         
-## EFT Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+## EFT Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 
 This is how you process an EFT Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
 
@@ -1086,7 +1098,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include profile
         + Include billingDetails         
 
-## BACS Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+## BACS Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 
 This is how you process a BACS Direct Debit Purchase request using a payment token. When processing a BACS Direct Debit Purchase, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
  * Create a profile
@@ -1121,7 +1133,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include billingDetails       
 
 
-## SEPA Purchase with Payment Token [POST /accounts/{ACCOUNT_ID}/purchases]
+## SEPA Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 
 This is how you process a SEPA Direct Debit Purchase request using a payment token. When processing a SEPA Direct Debit Purchase, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
  * Create a profile
@@ -1156,7 +1168,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include billingDetails
 
 
-## Cancel Purchase [PUT /accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
+## Cancel Purchase [PUT /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
 
 This is how you cancel a Direct Debit Purchase request.
 
@@ -1184,7 +1196,7 @@ This is how you cancel a Direct Debit Purchase request.
         + status:CANCELLED (enum, required) - This is the status of the transaction request.        
         
         
-## Get Purchase [GET /accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
+## Get Purchase [GET /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
 
 This is how you look up a Direct Debit Purchase request using the ID returned in the response to the original request.
 
@@ -1210,7 +1222,7 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
         + Include profile
         + Include billingDetails
 
-## Get Purchase Using Merchant Reference Number [GET /accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}]
+## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}]
 
 This is how you look up a Purchase request using the merchant reference number used in the original request.
 
@@ -1237,7 +1249,7 @@ This is how you look up a Purchase request using the merchant reference number u
 
 A Standalone Credit allows a merchant to credit an amount to a customer's bank account.
 
-## ACH Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## ACH Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process an ACH Direct Debit Standalone Credit request.
 
@@ -1268,7 +1280,7 @@ This is how you process an ACH Direct Debit Standalone Credit request.
         + Include profile
         + Include billingDetails
 
-## ACH Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## ACH Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process an ACH Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
 
@@ -1299,7 +1311,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include profile
         + Include billingDetails       
 
-## EFT Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## EFT Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process an EFT Direct Debit Standalone Credit request.
 
@@ -1330,7 +1342,7 @@ This is how you process an EFT Direct Debit Standalone Credit request.
         + Include profile
         + Include billingDetails
 
-## EFT Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## EFT Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process an EFT Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
 
@@ -1362,7 +1374,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include billingDetails
 
 
-## BACS Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## BACS Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process a BACS Direct Debit Standalone Credit request using a payment token. When processing a BACS Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
  * Create a profile
@@ -1397,7 +1409,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include profile
         + Include billingDetails
 
-## SEPA Standalone Credit [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## SEPA Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process a SEPA Direct Debit Standalone Credit request.
 
@@ -1428,7 +1440,7 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
         + Include profile
         + Include billingDetails
 
-## SEPA Standalone Credit with Payment Token [POST /accounts/{ACCOUNT_ID}/standalonecredits]
+## SEPA Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 
 This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
  * Create a profile
@@ -1462,7 +1474,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
         + Include profile
         + Include billingDetails
 
-## Cancel Standalone Credit [PUT /standalonecredits/{STANDALONE_CREDIT_ID}]
+## Cancel Standalone Credit [PUT /v1/standalonecredits/{STANDALONE_CREDIT_ID}]
 
 This is how you cancel a Direct Debit Standalone Credit request.
 
@@ -1488,7 +1500,7 @@ This is how you cancel a Direct Debit Standalone Credit request.
         + Include Response Base
         + status:CANCELLED (enum, required) - This is the status of the transaction request.
 
-## Get Standalone Credit [GET /accounts/{ACCOUNT_ID}/standalonecredits/{STANDALONE_CREDIT_ID}]
+## Get Standalone Credit [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits/{STANDALONE_CREDIT_ID}]
 
 This is how you look up a Direct Debit Standalone Credit request using the ID returned in the response to the original request.
 
@@ -1514,7 +1526,7 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
         + Include profile
         + Include billingDetails
 
-## Get Standalone Credit Using Merchant Reference Number [GET /accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}]
+## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}]
 
 This is how you look up a Standalone Credit request using the merchant reference number used in the original request.
 
