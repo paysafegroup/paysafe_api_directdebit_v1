@@ -80,6 +80,19 @@ For example:
 
 `https://api.paysafe.com/directdebit/v1/accounts/{ACCOUNT_ID}`
 
+# Pagination
+<a name="pagination"></a>
+
+In the case where an API GET request returns multiple results, Paysafe returns the first 10 records by default and uses HATEOAS links to provide page navigation. In addition to the default behavior, it is also possible to control the number of results and starting point by passing in query parameters as follows:
+
+|    Name       | Description   |
+|---            |---            |
+| limit         | This is the total number of records to return. Max = 50. Default = 10. |
+| offset        | This is the starting position, where 0 is the first record. Default = 0. |
+| startDate     | This is the start date in UTC. Default = 30 days before the *endDate*.|
+| endDate       | This is the end date in UTC. Default = current date and time. |
+
+
 # Global Invalid Characters
 
 You must not include any of the characters in the following table as values in any of your request parameters. If you do, your request will result in an error.
@@ -802,7 +815,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |eft                |[eft](#eftobject)                      |These are the details of the bank account used.|
 |bacs               |[bacs](#bacsobject)                    |These are the details of the bank account used.|
 |sepa               |[sepa](#sepaobject)                    |These are the details of the bank account used.|
-|profile            |[profile](#profileobject)              |These are some details about the customer.|
+|profile            |[profile](#profileobject)              |These are some details about the customer. |
 |billingDetails     |[billingDetails](#billingdetailsobject)|These are the billing details for the request.|
 |customerIp         |string<br/>`length<=39`                |This is the customer's IP address.|
 |dupCheck           |boolean                                |This validates that this request is not a duplicate. A request is considered a duplicate if the *merchantRefNum* has already been used in a previous request within the last 90 days.<br/>**Note:** This value defaults to *true*.|
@@ -829,6 +842,8 @@ When providing SEPA bank account information, merchants can provide either a pay
 |iban               |string<br/>`length=1-34`   |Yes            |This is the International Bank Account Number for the customer's bank account.|
 |mandateReference   |string<br/>`length=35`     |Yes            |This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system. <br/>**Note:** This element is not required for SEPA standalone credits.|
 |lastDigits         |string<br/>`length=2`      |               |These are the last two digits of the bank account number, returned in the response. |
+|bic                |string<br/>`length=8-11`   |               |This is the Bank Identifier Code for the customer's bank account.|
+|iban               |string<br/>`length<=34`    |               |This is the International Bank Account Number for the customer's bank account. |
 
 
 ```apib
@@ -945,7 +960,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |402                |4002           |The transaction was declined by our Risk Management department.|
   
   
-# Using the example API calls (Console Window)
+# Using the Example API Calls (Console Window)
 To configure and test the API examples, first click on one of the API calls in the API Reference section and then click **Switch to Console** in the right hand pane. 
 Using the Console window you can update the headers, the request body, and parts of the API endpoint. 
 For example, for many requests you must update the endpoint to include your account ID, which you do by selecting **URI Parameters** and then updating the **ACCOUNT_ID** value. 
@@ -1000,9 +1015,10 @@ This is how you process an ACH Direct Debit Purchase request.
         + Include Links Purchase
         + Include Response Base
         + Include Status Purchase
+        + Include Currency Code US
         + Include Purchase Base
         + Include ACH Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
         
 ## ACH Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
@@ -1031,9 +1047,10 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Links Purchase
         + Include Response Base
         + Include Status Purchase
+        + Include Currency Code US        
         + Include Purchase Base
         + Include ACH Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails        
         
 ## EFT Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
@@ -1061,10 +1078,11 @@ This is how you process an EFT Direct Debit Purchase request.
     + Attributes
         + Include Links Purchase
         + Include Response Base
+        + Include Currency Code CA        
         + Include Status Purchase
         + Include Purchase Base
         + Include EFT Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
         
 ## EFT Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
@@ -1092,10 +1110,11 @@ If you use a payment token, you can submit the request without extra parameters 
     + Attributes
         + Include Links Purchase
         + Include Response Base
+        + Include Currency Code CA        
         + Include Status Purchase
         + Include Purchase Base
         + Include EFT Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails         
 
 ## BACS Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
@@ -1126,10 +1145,11 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Attributes
         + Include Links Purchase
         + Include Response Base
+        + Include Currency Code GBP        
         + Include Status Purchase
         + Include Purchase Base
         + Include BACS Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails       
 
 
@@ -1161,10 +1181,11 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Attributes
         + Include Links Purchase
         + Include Response Base
+        + Include Currency Code EUR        
         + Include Status Purchase
         + Include Purchase Base
         + Include SEPA Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 
@@ -1217,12 +1238,13 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
         + Include Links Purchase
         + Include Response Base
         + Include Status Purchase
+        + Include Currency Code US        
         + Include Purchase Base
         + Include ACH Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
-## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}]
+## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
 
 This is how you look up a Purchase request using the merchant reference number used in the original request.
 
@@ -1231,6 +1253,9 @@ This is how you look up a Purchase request using the merchant reference number u
     + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
     + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* returned in the response to the Purchase request.
     + limit:2 (string, optional) - This is the total number of records to return. Default value is 10. Max value is 50.
+    + offset:2 (string, optional) - This is the starting position, where 0 is the first record. Default = 0.
+    + startDate:`2017-01-14T15:12:18Z` - This is the start date in UTC. Default = 30 days before the *endDate*.
+    + endDate:`2017-04-04T15:12:18Z` - This is the end date in UTC. Default = current date and time.
 
 
 + Request Get Purchase (application/json)
@@ -1275,9 +1300,10 @@ This is how you process an ACH Direct Debit Standalone Credit request.
         + Include Links Standalone Credit
         + Include Response Base
         + Include Status Purchase
+        + Include Currency Code US        
         + Include Purchase Base
         + Include ACH Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 ## ACH Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
@@ -1306,9 +1332,10 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Links Standalone Credit
         + Include Response Base
         + Include Status Purchase
+        + Include Currency Code US        
         + Include Purchase Base
         + Include ACH Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails       
 
 ## EFT Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
@@ -1336,10 +1363,11 @@ This is how you process an EFT Direct Debit Standalone Credit request.
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
+        + Include Currency Code CA        
         + Include Status Purchase
         + Include Purchase Base
         + Include EFT Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 ## EFT Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
@@ -1367,10 +1395,11 @@ If you use a payment token, you can submit the request without extra parameters 
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
+        + Include Currency Code CA        
         + Include Status Purchase
         + Include Purchase Base
         + Include EFT Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 
@@ -1403,10 +1432,11 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
+        + Include Currency Code GBP        
         + Include Status Purchase
         + Include Purchase Base
         + Include BACS Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 ## SEPA Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
@@ -1434,10 +1464,11 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
+        + Include Currency Code EUR
         + Include Status Purchase
         + Include Purchase Base
         + Include SEPA Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 ## SEPA Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
@@ -1468,10 +1499,11 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
     + Attributes
         + Include Links Standalone Credit
         + Include Response Base
+        + Include Currency Code EUR        
         + Include Status Purchase
         + Include Purchase Base
         + Include SEPA Token Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
 ## Cancel Standalone Credit [PUT /v1/standalonecredits/{STANDALONE_CREDIT_ID}]
@@ -1521,12 +1553,13 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
         + Include Links Standalone Credit
         + Include Response Base
         + Include Status Purchase
+        + Include Currency Code US        
         + Include Purchase Base
         + Include ACH Response
-        + Include profile
+        + Include profile response
         + Include billingDetails
 
-## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}]
+## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
 
 This is how you look up a Standalone Credit request using the merchant reference number used in the original request.
 
@@ -1535,8 +1568,11 @@ This is how you look up a Standalone Credit request using the merchant reference
     + ACCOUNT_ID:123456789 (string, required) - This is the merchant account number.
     + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* returned in the response to the Standalone Credit request.
     + limit:2 (string, optional) - This is the total number of records to return. Default value is 10. Max value is 50.
-
-
+    + offset:2 (string, optional) - This is the starting position, where 0 is the first record. Default = 0.
+    + startDate:`2017-01-14T15:12:18Z` - This is the start date in UTC. Default = 30 days before the *endDate*.
+    + endDate:`2017-04-04T15:12:18Z` - This is the end date in UTC. Default = current date and time.    
+    
+    
 + Request Get Standalone Credit (application/json)
 
     + Headers
@@ -1655,7 +1691,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
 
 ## billingDetails
-+ billingDetails (object, optional) - These are the [billing details](#billingdetailsobject) for the request.
++ billingDetails (object, optional) - These are the [billing details](#billingdetailsobject) for the request. Note that this object is required for the request *only when* a payment token is not provided.
 
     + Properties
         + street:100 Queen Street West 
@@ -1665,6 +1701,18 @@ This is how you look up a Standalone Credit request using the merchant reference
         + country:CA 
         + zip:M1M 1M1
         + phone:6139991100
+
+## Currency Code CA
++ currencyCode:CAD  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
+
+## Currency Code EUR
++ currencyCode:EUR  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
+
+## Currency Code GBP
++ currencyCode:GBP  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
+
+## Currency Code US
++ currencyCode:USD  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
 
 ## dateOfBirth
 + dateOfBirth (object, optional) - This is the [customer's date of birth](#dateofbirthobject).
@@ -1682,6 +1730,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + accountNumber:998772192 (string, required) - This is the bank account number.
         + transitNumber:22446 (string, required) - This is the 5-digit transit number of the customer's bank branch.
         + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
+        + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement.        
 
 ## EFT Payment Token
 + eft (object, required) - If the [payment token](#eftobject) is provided, no other bank account information is necessary.
@@ -1698,6 +1747,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + transitNumber:22446 (string, required) - This is the 5-digit transit number of the customer's bank branch.
         + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement.        
 
 ## EFT Token Response
 + eft (object, required) - These are the details of the [EFT bank account](#eftobject) used for the request.
@@ -1708,6 +1758,7 @@ This is how you look up a Standalone Credit request using the merchant reference
         + transitNumber:22446 (string, required) - This is the 5-digit transit number of the customer's bank branch.
         + institutionId:001 (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
         + lastDigits:09 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + paymentDescriptor:Transaction (string, optional) - This is the descriptor that will appear on the customer's bank statement.        
 
 
 ## Links Purchase
@@ -1735,17 +1786,18 @@ This is how you look up a Standalone Credit request using the merchant reference
 + links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
     + (object)
         + rel:next (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
     + (object)
         + rel:previous (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)        
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)        
 + purchases (array) - This array lists [Purchases](#purchaseobject) processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
-        + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+        + Include Currency Code US
         + status:PENDING (enum, required) - This is the status of the transaction request.        
             - COMPLETED
             - RECEIVED
@@ -1792,7 +1844,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
     + (object)
         + id:`4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required) - This is the ID returned in the response.
-        + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
         + status:PENDING (enum, required) - This is the status of the transaction request.        
             - COMPLETED
             - RECEIVED
@@ -1851,17 +1903,18 @@ This is how you look up a Standalone Credit request using the merchant reference
 + links (array, required) - This is an array of [links](#linksobject).
     + (object)
         + rel:self (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
     + (object)
         + rel:next (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
     + (object)
         + rel:previous (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2016-07-13T19:15:45Z&endDate=2016-08-12T19:15:45Z` (string, required)             
+        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)             
 + standalonecredits (array) - This array lists [Standalone Credits](#standalonecreditobject) processed using this merchant reference number.
     + (object)
         + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
-        + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
+        + Include Currency Code US        
         + status:PENDING (enum, required) - This is the status of the transaction request.        
             - COMPLETED
             - RECEIVED
@@ -1908,7 +1961,7 @@ This is how you look up a Standalone Credit request using the merchant reference
             + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
     + (object)
         + id:`bg4h52c7-c991-4418-966a-b62989cb1a3f` (string, required) - This is the ID returned in the response.
-        + txnTime:`2016-13-14T15:10:11Z` (string, required) - This is the date and time the transaction was processed.
+        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
         + status:PENDING (enum, required) - This is the status of the transaction request.        
             - COMPLETED
             - RECEIVED
@@ -1962,7 +2015,8 @@ This is how you look up a Standalone Credit request using the merchant reference
 + dupCheck:true (boolean, optional) - This validates that this request is not a duplicate.
 
 ## profile
-+ profile (object, optional) - These are some [customer details](#profileobject) for the request.
++ profile (object, optional) - These are some [customer details](#profileobject) for the request. Note that this object is required for the request *only when* a payment token is not provided. If included in the request, then any data provided with this element would override the corresponding field(s) that are already associated with the profile in the Customer Vault.
+
 
     + Properties
         + firstName:John (string, required) - This is the customer’s first name.
@@ -1974,6 +2028,20 @@ This is how you look up a Standalone Credit request using the merchant reference
             + month:10 (number, required) - This is the month of the customer's birth.
             + year:1981 (number, required) - This is the year of the customer's birth.
     
+## profile response
++ profile (object, optional) - These are some [customer details](#profileobject) for the request. 
+
+
+    + Properties
+        + firstName:John (string, required) - This is the customer’s first name.
+        + lastName:Johnson (string, required) - This is the customer's last name.
+        + email:john.johnson@emailserver.com (string, optional) - This is the customer's email address.
+        + ssn:123456789 (string, optional) - This is the customer's social security number.
+        + dateOfBirth (object, optional) - This is the [customer's date of birth](#dateofbirthobject).
+            + day:24 (number, required) - This is the day of the customer's birth.
+            + month:10 (number, required) - This is the month of the customer's birth.
+            + year:1981 (number, required) - This is the year of the customer's birth.
+
 ## Response Base
 + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
 + txnTime:`2016-12-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
@@ -1983,7 +2051,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + iban:NL77ABNA0492122466 (string, required) - This is the International Bank Account Number for the customer's bank account.
+        + iban:`NL77ABNA0492122466` (string, required) - This is the International Bank Account Number for the customer's bank account.
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
 
 ## SEPA Payment Token
@@ -1998,8 +2066,9 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+        + iban:`NL77ABNA0492122466` (string, required) - This is the International Bank Account Number for the customer's bank account.        
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
-        + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + lastDigits:`66` (string, optional) - These are the last two digits of the bank account number, returned in the response.
 
 ## SEPA Token Response
 + sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
@@ -2008,7 +2077,10 @@ This is how you look up a Standalone Credit request using the merchant reference
         + paymentToken:MTEyMzYzMjQ3ODg (string, required) - If the payment token is provided, no other bank account information is necessary.        
         + accountHolderName:First Company (string, required) - This is the name of the customer or company.
         + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
-        + lastDigits:66 (string, optional) - These are the last two digits of the bank account number, returned in the response.
+        + lastDigits:66 (string, required) - These are the last two digits of the bank account number, returned in the response.
+        + bic:`ABNANL2B` (string, required) - This is the Bank Identifier Code for the customer's bank account.
+        + iban:`NL77 ABNA 04** **24 66` (string, required) - This is the International Bank Account Number for the customer's bank account.
+
         
 ## SEPA Credit Token Response
 + sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
