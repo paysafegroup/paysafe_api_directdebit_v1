@@ -823,7 +823,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |currencyCode       |string<br/>`length=3`                  |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
 |error              |[error](#errorobject)                  |       |
 |status             |enum                                   |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
-|splitpay           |[splitpay](#splitpayobject)            |This enables you to use Split Pament functionality when authorizing with settlement.|
+|splitpay           |[splitpay](#splitpayobject)            |This enables you to use Split Payouts functionality when processing a purchase.|
 
 <a name="sepaobject"></a>
 ## sepa
@@ -2134,15 +2134,15 @@ This is how you look up a Standalone Credit request using the merchant reference
     - PROCESSING
     - FAILED
     - CANCELLED
-    
+
 ## Splitpay Request
-+ splitpay (object, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount shared with each.
++ splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
     - linkedAccount:123124124 (string, required) - The ID of the linked account. This must have either a percent or amount, but not both.
     - percent:5 (number, optional) - The percentage of the total transaction amount to transfer to the linked account, to two decimal places. The total percentage to all linked accounts cannot exceed 100%. Either this or amount must be specfied, but not both.
-    - amount:505 (number, optional) - The amount to transfer to the linked account in minor currency units. Either this or percent must be specfied, but not both.
+    - amount:505 (number, optional) - The amount to transfer to the linked account in minor currency units. The total amount to all linked accounts cannot exceed the transaction total.  Either this or percent must be specfied, but not both.
 
 ## Splitpay Response
-+ splitpay (object, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount shared with each.
++ splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
     - linkedAccount:123124124 (string, required) - The ID of the linked account.
-    - percent:5 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount to transfer to that account. This is not returned if an amount was specified in the request.
-    - amount:505 (number, required) - The amount to transfer to the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the total transaction amount multiplied by the percentage and divided by 100.
+    - percent:5 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred to that account. This is not returned if an amount was specified in the request.
+    - amount:505 (number, required) - The amount to transfer to the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
