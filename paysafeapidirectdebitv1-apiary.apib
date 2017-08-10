@@ -39,7 +39,7 @@ The flow of funds in a Direct Debit charge transaction is depicted in the diagra
 7. The customer's bank transfers the moixedney to the merchant's bank account.
 8. The transaction is completed in real time, but in most cases the request clears in 3–5 business days, by which time payment will be deposited in the merchant's business bank account. Merchants can look up any Direct Debit transaction they have processed with Paysafe, including charges and credits, using either the Direct debit API or the Paysafe Merchant Back Office.
 
-<a name="apikey"></a>
+<a name="apikey" title="Authentication"></a>
 # Authentication 
 In order for you to use the Paysafe REST API, Paysafe must first set you up on their system
 and provide you with an API key. Your API key looks something like this:
@@ -80,8 +80,8 @@ For example:
 
 `https://api.paysafe.com/directdebit/v1/accounts/{ACCOUNT_ID}`
 
+<a name="pagination" title="Pagination"></a>
 # Pagination
-<a name="pagination"></a>
 
 In the case where an API GET request returns multiple results, Paysafe returns the first 10 records by default and uses HATEOAS links to provide page navigation. In addition to the default behavior, it is also possible to control the number of results and starting point by passing in query parameters as follows:
 
@@ -93,6 +93,7 @@ In the case where an API GET request returns multiple results, Paysafe returns t
 | endDate       | This is the end date in UTC. Default = current date and time. |
 
 
+<a name="globalinvalidcharacters" title="Global Invalid Characters"></a>
 # Global Invalid Characters
 
 You must not include any of the characters in the following table as values in any of your request parameters. If you do, your request will result in an error.
@@ -144,9 +145,10 @@ Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/using-the-ap
 
 The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment. Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/test-and-go-live/testing-instructions/) for details of how to use the test environment.
 
+<a name="isostandards" title="ISO Standards"></a>
 # ISO Standards
 
-<a name="currencycodes"></a>
+<a name="currencycodes" title="Currency Codes"></a>
 ## Currency Codes
 
 **Note:**
@@ -241,7 +243,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 |Viet Nam Dong  |VND  |
 
 
-<a name="provincecodes"></a>
+<a name="provincecodes" title="Province Codes"></a>
 ## Province Codes
 
 |Province               |Code   |
@@ -260,7 +262,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 |Saskatchewan           |SK     |
 |Yukon                  |YT     |
 
-<a name="statecodes"></a>
+<a name="statecodes" title="State Codes"></a>
 ## State Codes
 
 |State                  |Code   |
@@ -329,7 +331,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 |Wyoming                |WY     |
 
 
-<a name="countrycodes"></a>
+<a name="countrycodes" title="Country Codes"></a>
 ## Country Codes
 | **Country**                       | **Code** |
 |---                                |---       |
@@ -585,7 +587,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 
 # Complex JSON Objects
 
-<a name="achobject"></a>
+<a name="achobject" title="ACH Object"></a>
 ## ach
 
 When providing ACH bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -621,7 +623,7 @@ When providing ACH bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="bacsobject"></a>
+<a name="bacsobject" title="BACS Object"></a>
 ## bacs
 
 When providing BACS bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -652,7 +654,7 @@ When providing BACS bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="billingdetailsobject"></a>
+<a name="billingdetailsobject" title="Billing Details Object"></a>
 ## billingDetails
 
 |Element            |Type                       |Required       |Description                        |
@@ -677,7 +679,7 @@ When providing BACS bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="dateofbirthobject"></a>
+<a name="dateofbirthobject" title="Date of Birth Object"></a>
 ## dateOfBirth
 
 |Element            |Type                           |Required       |Description                        |
@@ -696,7 +698,7 @@ When providing BACS bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="eftobject"></a>
+<a name="eftobject" title="EFT Object"></a>
 ## eft
 
 When providing EFT bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -729,7 +731,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="errorobject"></a>
+<a name="errorobject" title="Error Object"></a>
 ## error
 
 |Element            |Type       |Description                        |
@@ -757,7 +759,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="linksobject"></a>
+<a name="linksobject" title="Links Object"></a>
 ## links
 
 |Element    |Type          |Required    |Description|
@@ -776,7 +778,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="profileobject"></a>
+<a name="profileobject" title="Profile Object"></a>
 ## profile
 
 |Element            |Type                           |Required       |Description                        |
@@ -803,7 +805,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="purchaseobject"></a>
+<a name="purchaseobject" title="Purchase Object"></a>
 ## purchase
 
 |Element            |Type                                   |Description                        |
@@ -825,7 +827,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |status             |enum                                   |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
 
 
-<a name="sepaobject"></a>
+<a name="sepaobject" title="SEPA Object"></a>
 ## sepa
 
 When providing SEPA bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -856,7 +858,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="shippingdetailsobject"></a>
+<a name="shippingdetailsobject" title="Shipping Details Object"></a>
 ## shippingDetails
 
 |Element            |Type                       |Required   |Description |
@@ -885,7 +887,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="standalonecreditobject"></a>
+<a name="standalonecreditobject" title="Standalone Credit Object"></a>
 ## standalonecredit
 
 |Element            |Type                                       |Description                        |
@@ -910,6 +912,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 
 # Error Summary
 
+<a name="commonerrors" title="Common Errors"></a>
 ## Common Errors
 |HTTP Status Code   |Error Code     |Description|
 |---                |---            |---|
@@ -948,6 +951,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |405                |5281           |The request uses an action (e.g., GET, POST, or PUT) that is not supported by the resource.|
 |400                |5502           |Either the payment token is invalid or the corresponding profile or bank account is not active.|
 
+<a name="directdebiterrors" title="Direct Debit Errors"></a>
 ## Direct Debit Errors
 |HTTP Status Code   |Error Code     |Description|
 |---                |---            |---|
@@ -960,6 +964,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |402                |4002           |The transaction was declined by our Risk Management department.|
   
   
+<a name="directdebitreturncodes" title="Direct Debit Return Codes"></a>
 ## Direct Debit Return Codes
 
 Occasionally, a Direct Debit API request will be successful, but can fail at the banking network level, e.g., due to insufficient funds or bank account closure. In such cases, the bank scheme provides a Return Code as an explanation. Because Direct Debit requests can take up to 7 days to clear, you cannot be notified of errors such as these via the API response. 
@@ -1223,6 +1228,7 @@ When you are ready to test your example, you can choose between the Production a
 To call the API resource, click **Call Resource**. The response is displayed in the Console window.
 
 ## Verify the Service is Accessible [GET /monitor]
+<a name="verifyservice" title="Verify Service"></a>
 
 This call returns a status of READY if the API is available.
 
@@ -1235,9 +1241,10 @@ This call returns a status of READY if the API is available.
             }
 
 # Purchases [/purchases]
-<a name="purchaserequest"></a>
+<a name="purchaserequest" title="Purchase Request"></a>
 
 ## ACH Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="achpurchaserequest" title="ACH Purchase Request"></a>
 
 This is how you process an ACH Direct Debit Purchase request.
 
@@ -1270,6 +1277,7 @@ This is how you process an ACH Direct Debit Purchase request.
         + Include billingDetails
         
 ## ACH Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="achpurchasetokenrequest" title="ACH Purchase Request with Token"></a>
 
 This is how you process an ACH Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
@@ -1302,6 +1310,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include billingDetails        
         
 ## EFT Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="eftpurchaserequest" title="EFT Purchase Request"></a>
 
 This is how you process an EFT Direct Debit Purchase request.
 
@@ -1334,6 +1343,7 @@ This is how you process an EFT Direct Debit Purchase request.
         + Include billingDetails
         
 ## EFT Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="eftpurchasetokenrequest" title="EFT Purchase Request with Token"></a>
 
 This is how you process an EFT Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
@@ -1366,6 +1376,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include billingDetails         
 
 ## BACS Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="bacspurchasetokenrequest" title="BACS Purchase Request with Token"></a>
 
 This is how you process a BACS Direct Debit Purchase request using a payment token. When processing a BACS Direct Debit Purchase, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
@@ -1402,6 +1413,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
 
 
 ## SEPA Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="sepapurchasetokenrequest" title="SEPA Purchase Request with Token"></a>
 
 This is how you process a SEPA Direct Debit Purchase request using a payment token. When processing a SEPA Direct Debit Purchase, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
@@ -1438,6 +1450,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
 
 
 ## Cancel Purchase [PUT /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
+<a name="cancelpurchaserequest" title="Cancel a Purchase Request"></a>
 
 This is how you cancel a Direct Debit Purchase request.
 
@@ -1466,6 +1479,7 @@ This is how you cancel a Direct Debit Purchase request.
         
         
 ## Get Purchase [GET /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
+<a name="getpurchaserequest" title="Look Up a Purchase Request"></a>
 
 This is how you look up a Direct Debit Purchase request using the ID returned in the response to the original request.
 
@@ -1493,6 +1507,7 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
         + Include billingDetails
 
 ## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
+<a name="getpurchaserequestmerchantrefnum" title="Look Up a Purchase Request Using a Merchant Reference Number"></a>
 
 This is how you look up a Purchase request using the merchant reference number used in the original request.
 
@@ -1518,11 +1533,12 @@ This is how you look up a Purchase request using the merchant reference number u
         + Include Links GET Reference
 
 # Standalone Credits [/standalonecredits]
-<a name="standalonecreditrequest"></a>
+<a name="standalonecreditrequest" title="Standalone Credit Request"></a>
 
 A Standalone Credit allows a merchant to credit an amount to a customer's bank account.
 
 ## ACH Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="achstandalonecreditrequest" title="ACH Standalone Credit Request"></a>
 
 This is how you process an ACH Direct Debit Standalone Credit request.
 
@@ -1555,6 +1571,7 @@ This is how you process an ACH Direct Debit Standalone Credit request.
         + Include billingDetails
 
 ## ACH Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="achstandalonecredittokenrequest" title="ACH Standalone Credit Request with Token"></a>
 
 This is how you process an ACH Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
@@ -1587,6 +1604,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include billingDetails       
 
 ## EFT Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="eftstandalonecreditrequest" title="EFT Standalone Credit Request"></a>
 
 This is how you process an EFT Direct Debit Standalone Credit request.
 
@@ -1619,6 +1637,7 @@ This is how you process an EFT Direct Debit Standalone Credit request.
         + Include billingDetails
 
 ## EFT Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="eftstandalonecredittokenrequest" title="EFT Standalone Credit Request with Token"></a>
 
 This is how you process an EFT Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
@@ -1652,6 +1671,7 @@ If you use a payment token, you can submit the request without extra parameters 
 
 
 ## BACS Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="bacsstandalonecredittokenrequest" title="BACS Standalone Credit Request with Token"></a>
 
 This is how you process a BACS Direct Debit Standalone Credit request using a payment token. When processing a BACS Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
@@ -1688,6 +1708,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include billingDetails
 
 ## SEPA Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="sepastandalonecreditrequest" title="SEPA Standalone Credit Request"></a>
 
 This is how you process a SEPA Direct Debit Standalone Credit request.
 
@@ -1720,6 +1741,7 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
         + Include billingDetails
 
 ## SEPA Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="sepastandalonecredittokenrequest" title="SEPA Standalone Credit Request with Token"></a>
 
 This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
@@ -1755,6 +1777,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
         + Include billingDetails
 
 ## Cancel Standalone Credit [PUT /v1/standalonecredits/{STANDALONE_CREDIT_ID}]
+<a name="cancelstandalonecreditrequest" title="Cancel a Standalone Credit Request"></a>
 
 This is how you cancel a Direct Debit Standalone Credit request.
 
@@ -1781,6 +1804,7 @@ This is how you cancel a Direct Debit Standalone Credit request.
         + status:CANCELLED (enum, required) - This is the status of the transaction request.
 
 ## Get Standalone Credit [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits/{STANDALONE_CREDIT_ID}]
+<a name="getstandalonecreditrequest" title="Look Up a Standalone Credit Request"></a>
 
 This is how you look up a Direct Debit Standalone Credit request using the ID returned in the response to the original request.
 
@@ -1808,6 +1832,7 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
         + Include billingDetails
 
 ## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
+<a name="getstandalonecreditrequestmerchantrefnum" title="Look Up a Standalone Credit Request Using a Merchant Reference Number"></a>
 
 This is how you look up a Standalone Credit request using the merchant reference number used in the original request.
 
