@@ -40,7 +40,7 @@ The flow of funds in a Direct Debit charge transaction is depicted in the diagra
 7. The customer's bank transfers the moixedney to the merchant's bank account.
 8. The transaction is completed in real time, but in most cases the request clears in 3–5 business days, by which time payment will be deposited in the merchant's business bank account. Merchants can look up any Direct Debit transaction they have processed with Paysafe, including charges and credits, using either the Direct debit API or the Paysafe Merchant Back Office.
 
-<a name="apikey"></a>
+<a name="apikey" title="Authentication"></a>
 # Authentication 
 In order for you to use the Paysafe REST API, Paysafe must first set you up on their system
 and provide you with an API key. Your API key looks something like this:
@@ -81,8 +81,8 @@ For example:
 
 `https://api.paysafe.com/directdebit/v1/accounts/{ACCOUNT_ID}`
 
+<a name="pagination" title="Pagination"></a>
 # Pagination
-<a name="pagination"></a>
 
 In the case where an API GET request returns multiple results, Paysafe returns the first 10 records by default and uses HATEOAS links to provide page navigation. In addition to the default behavior, it is also possible to control the number of results and starting point by passing in query parameters as follows:
 
@@ -94,6 +94,7 @@ In the case where an API GET request returns multiple results, Paysafe returns t
 | endDate       | This is the end date in UTC. Default = current date and time. |
 
 
+<a name="globalinvalidcharacters" title="Global Invalid Characters"></a>
 # Global Invalid Characters
 
 You must not include any of the characters in the following table as values in any of your request parameters. If you do, your request will result in an error.
@@ -145,9 +146,10 @@ Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/using-the-ap
 
 The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment. Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/test-and-go-live/testing-instructions/) for details of how to use the test environment.
 
+<a name="isostandards" title="ISO Standards"></a>
 # ISO Standards
 
-<a name="currencycodes"></a>
+<a name="currencycodes" title="Currency Codes"></a>
 ## Currency Codes
 
 **Note:**
@@ -242,7 +244,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 |Viet Nam Dong  |VND  |
 
 
-<a name="provincecodes"></a>
+<a name="provincecodes" title="Province Codes"></a>
 ## Province Codes
 
 |Province               |Code   |
@@ -261,7 +263,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 |Saskatchewan           |SK     |
 |Yukon                  |YT     |
 
-<a name="statecodes"></a>
+<a name="statecodes" title="State Codes"></a>
 ## State Codes
 
 |State                  |Code   |
@@ -330,7 +332,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 |Wyoming                |WY     |
 
 
-<a name="countrycodes"></a>
+<a name="countrycodes" title="Country Codes"></a>
 ## Country Codes
 | **Country**                       | **Code** |
 |---                                |---       |
@@ -586,7 +588,7 @@ The Paysafe Test environment can be used to test websites or applications withou
 
 # Complex JSON Objects
 
-<a name="achobject"></a>
+<a name="achobject" title="ACH Object"></a>
 ## ach
 
 When providing ACH bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -622,7 +624,7 @@ When providing ACH bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="bacsobject"></a>
+<a name="bacsobject" title="BACS Object"></a>
 ## bacs
 
 When providing BACS bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -653,7 +655,7 @@ When providing BACS bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="billingdetailsobject"></a>
+<a name="billingdetailsobject" title="Billing Details Object"></a>
 ## billingDetails
 
 |Element            |Type                       |Required       |Description                        |
@@ -678,7 +680,7 @@ When providing BACS bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="dateofbirthobject"></a>
+<a name="dateofbirthobject" title="Date of Birth Object"></a>
 ## dateOfBirth
 
 |Element            |Type                           |Required       |Description                        |
@@ -697,7 +699,7 @@ When providing BACS bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="eftobject"></a>
+<a name="eftobject" title="EFT Object"></a>
 ## eft
 
 When providing EFT bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -730,7 +732,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="errorobject"></a>
+<a name="errorobject" title="Error Object"></a>
 ## error
 
 |Element            |Type       |Description                        |
@@ -758,7 +760,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="linksobject"></a>
+<a name="linksobject" title="Links Object"></a>
 ## links
 
 |Element    |Type          |Required    |Description|
@@ -777,7 +779,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="profileobject"></a>
+<a name="profileobject" title="Profile Object"></a>
 ## profile
 
 |Element            |Type                           |Required       |Description                        |
@@ -804,7 +806,7 @@ When providing EFT bank account information, merchants can provide either a paym
 }
 ```
 
-<a name="purchaseobject"></a>
+<a name="purchaseobject" title="Purchase Object"></a>
 ## purchase
 
 |Element            |Type                                   |Description                        |
@@ -826,7 +828,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |status             |enum                                   |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
 |splitpay           |[splitpay](#splitpayobject)            |This enables you to use Split Payouts functionality when processing a purchase.|
 
-<a name="sepaobject"></a>
+<a name="sepaobject" title="SEPA Object"></a>
 ## sepa
 
 When providing SEPA bank account information, merchants can provide either a payment token of the customer's bank account, or the bank account details.
@@ -857,7 +859,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 }
 ```
 
-<a name="shippingdetailsobject"></a>
+<a name="shippingdetailsobject" title="Shipping Details Object"></a>
 ## shippingDetails
 
 |Element            |Type                       |Required   |Description |
@@ -908,8 +910,7 @@ When providing SEPA bank account information, merchants can provide either a pay
     }]
   }
 ```
-
-<a name="standalonecreditobject"></a>
+<a name="standalonecreditobject" title="Standalone Credit Object"></a>
 ## standalonecredit
 
 |Element            |Type                                       |Description                        |
@@ -934,6 +935,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 
 # Error Summary
 
+<a name="commonerrors" title="Common Errors"></a>
 ## Common Errors
 |HTTP Status Code   |Error Code     |Description|
 |---                |---            |---|
@@ -972,6 +974,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |405                |5281           |The request uses an action (e.g., GET, POST, or PUT) that is not supported by the resource.|
 |400                |5502           |Either the payment token is invalid or the corresponding profile or bank account is not active.|
 
+<a name="directdebiterrors" title="Direct Debit Errors"></a>
 ## Direct Debit Errors
 |HTTP Status Code   |Error Code     |Description|
 |---                |---            |---|
@@ -983,7 +986,255 @@ When providing SEPA bank account information, merchants can provide either a pay
 |400                |2017           |The payment token bank scheme does not match the merchant account bank scheme.|
 |402                |4002           |The transaction was declined by our Risk Management department.|
   
-  
+<a name="directdebitreturncodes" title="Direct Debit Return Codes"></a>
+## Direct Debit Return Codes
+
+Occasionally, a Direct Debit API request will be successful, but can fail at the banking network level, e.g., due to insufficient funds or bank account closure. In such cases, the bank scheme provides a Return Code as an explanation. Because Direct Debit requests can take up to 7 days to clear, you cannot be notified of errors such as these via the API response. 
+However, you can use the [Paysafe Merchant Back Office](https://developer.paysafe.com/en/rest-api/reference-information/managing-payments/paysafe-merchant-back-office/) to run reports to view Return Codes in the case where a Direct Debit request has failed.
+
+| Code         | Description                                                                                                                                                      | Bank Scheme |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| RT not found |                                                                                                                                                                  | ACH         |
+| CONFIG       | Client configuration problem                                                                                                                                     | ACH         |
+| LIMIT        | The maximum amount per check was exceeded.                                                                                                                       | ACH         |
+| INVACCT      | Invalid account type.                                                                                                                                            | ACH         |
+| INVDIR       | Invalid direction.                                                                                                                                               | ACH         |
+| NOPOP        | Merchant not configured or not allowed to run POP transactions - Electronic Check Conversion.                                                                    | ACH         |
+| PAPER        | Paper draft and can't send paper.                                                                                                                                | ACH         |
+| PARSE        | Parsing problem                                                                                                                                                  | ACH         |
+| THOMSON      | Reject due to Thomson database.                                                                                                                                  | ACH         |
+| UNKMER       | Unknown merchant.                                                                                                                                                | ACH         |
+| DEMO         | Demonstration transaction/ or merchant.                                                                                                                          | ACH         |
+| R90          | Invalid MOD digit                                                                                                                                                | ACH         |
+| R91          | Invalid ABA. Not nine (9) characters or numeric                                                                                                                  | ACH         |
+| R92          | ABA not active                                                                                                                                                   | ACH         |
+| R93          | Invalid Tran Code SEC combo                                                                                                                                      | ACH         |
+| R94          | Invalid amount for pre-note Tran Code                                                                                                                            | ACH         |
+| R95          | Amount is zero (0)                                                                                                                                               | ACH         |
+| R96          | Not a valid Tran code                                                                                                                                            | ACH         |
+| R97          | Not a valid SEC code                                                                                                                                             | ACH         |
+| R98          | Account decryption error                                                                                                                                         | ACH         |
+| R99          | OFAC possible match                                                                                                                                              | ACH         |
+| R37          | Source Document Presented for Payment                                                                                                                            | ACH         |
+| R38          | Stop  Payment on Source Document                                                                                                                                 | ACH         |
+| R39          | Improper Source Document                                                                                                                                         | ACH         |
+| R53          | Item and ACH Entry Presented for Payment                                                                                                                         | ACH         |
+| R75          | Original Return not a Duplicate                                                                                                                                  | ACH         |
+| R76          | No Errors Found                                                                                                                                                  | ACH         |
+| R83          | Foreign Receiving DFI Unable to Settle                                                                                                                           | ACH         |
+| R84          | Entry Not Processed by OGO                                                                                                                                       | ACH         |
+| R01          | Insufficient funds                                                                                                                                               | ACH         |
+| R02          | Account closed                                                                                                                                                   | ACH         |
+| R03          | No account/unable to locate                                                                                                                                      | ACH         |
+| R04          | Invalid account number                                                                                                                                           | ACH         |
+| R05          | Reserved                                                                                                                                                         | ACH         |
+| R06          | Return requested by ODFI                                                                                                                                         | ACH         |
+| R07          | Authorization revoked Note 2                                                                                                                                     | ACH         |
+| R08          | Stop payment                                                                                                                                                     | ACH         |
+| R09          | Uncollected funds                                                                                                                                                | ACH         |
+| R10          | Not authorizedNote 2                                                                                                                                             | ACH         |
+| R11          | Check truncation entry return                                                                                                                                    | ACH         |
+| R12          | Branch sold to another DFI                                                                                                                                       | ACH         |
+| R13          | RDFI not qualified to participate/or invalid route                                                                                                               | ACH         |
+| R14          | Payee deceased                                                                                                                                                   | ACH         |
+| R15          | Beneficiary deceased                                                                                                                                             | ACH         |
+| R16          | Account frozen                                                                                                                                                   | ACH         |
+| R17          | File record edit criteria                                                                                                                                        | ACH         |
+| R18          | Improper effective entry date                                                                                                                                    | ACH         |
+| R19          | Amount field error                                                                                                                                               | ACH         |
+| R20          | Non transaction account                                                                                                                                          | ACH         |
+| R21          | Invalid company ident.                                                                                                                                           | ACH         |
+| R22          | Invalid individual ID number                                                                                                                                     | ACH         |
+| R23          | Credit entry refused by receiver                                                                                                                                 | ACH         |
+| R24          | Duplicate entry                                                                                                                                                  | ACH         |
+| R25          | Addenda error                                                                                                                                                    | ACH         |
+| R26          | Mandatory field error                                                                                                                                            | ACH         |
+| R27          | Trace number error                                                                                                                                               | ACH         |
+| R28          | Routing # check digit error                                                                                                                                      | ACH         |
+| R29          | Corp cust. adviser not auth.                                                                                                                                     | ACH         |
+| R30          | RDFI non-part truncation prob                                                                                                                                    | ACH         |
+| R31          | Permissible return entry                                                                                                                                         | ACH         |
+| R32          | RDFI non-settlement                                                                                                                                              | ACH         |
+| R33          | Return of XCK entry                                                                                                                                              | ACH         |
+| R34          | Limited participation DFI                                                                                                                                        | ACH         |
+| R35          | Return of improper debit entry                                                                                                                                   | ACH         |
+| R36          | Return of improper credit entry                                                                                                                                  | ACH         |
+| R40          | Return of ENR entry by Fed. Gov.                                                                                                                                 | ACH         |
+| R41          | Invalid transaction code                                                                                                                                         | ACH         |
+| R42          | Routing #/check digit error                                                                                                                                      | ACH         |
+| R43          | Inv. DFI acct. number                                                                                                                                            | ACH         |
+| R44          | Inv. Individual ED number                                                                                                                                        | ACH         |
+| R45          | Inv. individual name/company name                                                                                                                                | ACH         |
+| R46          | Inv. rep. payee indicator                                                                                                                                        | ACH         |
+| R47          | Duplicate enrollment                                                                                                                                             | ACH         |
+| R50          | State Law affecting RCK acceptance                                                                                                                               | ACH         |
+| R51          | Item is ineligible (RCK)                                                                                                                                         | ACH         |
+| R52          | Stop payment on item (RCK)                                                                                                                                       | ACH         |
+| R61          | Dishonor                                                                                                                                                         | ACH         |
+| R62          | Dishonor                                                                                                                                                         | ACH         |
+| R63          | Dishonor                                                                                                                                                         | ACH         |
+| R64          | Dishonor                                                                                                                                                         | ACH         |
+| R65          | Dishonor                                                                                                                                                         | ACH         |
+| R66          | Dishonor                                                                                                                                                         | ACH         |
+| R67          | Dishonor                                                                                                                                                         | ACH         |
+| R68          | Dishonor                                                                                                                                                         | ACH         |
+| R69          | Dishonor                                                                                                                                                         | ACH         |
+| R70          | Dishonor                                                                                                                                                         | ACH         |
+| R71          | ContestedNote 4                                                                                                                                                  | ACH         |
+| R72          | ContestedNote 4                                                                                                                                                  | ACH         |
+| R73          | ContestedNote 4                                                                                                                                                  | ACH         |
+| R74          | ContestedNote 4                                                                                                                                                  | ACH         |
+| R80          | Cross- border payment coding error                                                                                                                               | ACH         |
+| R81          | Non-participant in cross-border pgm.                                                                                                                             | ACH         |
+| R82          | Invalid foreign RDFI ID                                                                                                                                          | ACH         |
+| YE           | Transaction code unauthorised for originating Account                                                                                                            | BACS        |
+| 0            | Refer to Payer                                                                                                                                                   | BACS        |
+| 1            | Instruction cancelled by payer                                                                                                                                   | BACS        |
+| 2            | Payer Deceased                                                                                                                                                   | BACS        |
+| 3            | Account Transferred                                                                                                                                              | BACS        |
+| 4            | Advance Notice Disputed                                                                                                                                          | BACS        |
+| 5            | No Account                                                                                                                                                       | BACS        |
+| 6            | No Instruction                                                                                                                                                   | BACS        |
+| 7            | Amount Differs                                                                                                                                                   | BACS        |
+| 8            | Amount not yet due                                                                                                                                               | BACS        |
+| 9            | Presentation Overdue                                                                                                                                             | BACS        |
+| A            | Service User Differs                                                                                                                                             | BACS        |
+| B            | Account Closed                                                                                                                                                   | BACS        |
+| E            | Instruction amended                                                                                                                                              | BACS        |
+| AE           | Originating sort code and/or Account number invalid (bank originated)                                                                                            | BACS        |
+| BE           | Originating sort code and/or Account number invalid (customer originated)                                                                                        | BACS        |
+| CE           | Destination sort code and originating sort code and/or Account number invalid (bank originated)                                                                  | BACS        |
+| DE           | Destination sort code and originating sort code and/or Account number invalid (customer originated)                                                              | BACS        |
+| EE           | Destination sort code invalid                                                                                                                                    | BACS        |
+| FE           | Account type and originating sort code and/or Account number invalid (bank originated)                                                                           | BACS        |
+| GE           | Account type and originating sort code and/or Account number invalid (customer originated)                                                                       | BACS        |
+| HE           | Destination sort code and Account type and originating sort code and/or Account number invalid (bank originated)                                                 | BACS        |
+| IE           | Destination sort code and Account type and originating sort code and/or Account number invalid (customer originated)                                             | BACS        |
+| JE           | Destination sort code and Account type invalid                                                                                                                   | BACS        |
+| KE           | Account type invalid                                                                                                                                             | BACS        |
+| LE           | Destination Account number and destination Account name and other fields invalid                                                                                 | BACS        |
+| ME           | Destination Account number and destination Account name invalid                                                                                                  | BACS        |
+| NE           | Contra record was amended                                                                                                                                        | BACS        |
+| OE           | Reference number was invalid                                                                                                                                     | BACS        |
+| PE           | Originating Account does not support the file currency                                                                                                           | BACS        |
+| QE           | Automated reversal due to an error                                                                                                                               | BACS        |
+| RE           | Reversal of another item (same day)                                                                                                                              | BACS        |
+| SE           | Automated recall                                                                                                                                                 | BACS        |
+| TE           | Originating Account invalid and was substituted with the default main Account details, but this Account does not support the file currency (customer originated) | BACS        |
+| UE           | Unpaid direct debit reference was in error (bank originated)                                                                                                     | BACS        |
+| XE           | Originator's service user number invalid (bank originated)                                                                                                       | BACS        |
+| ZE           | Unpaid direct debit reference and other fields were in error (bank originated)                                                                                   | BACS        |
+| 1I           | Amount and / or date of Direct Debit differ from Advance Notice                                                                                                  | BACS        |
+| 2I           | No Advance Notice received by Payer/or the amount quoted is disputed                                                                                             | BACS        |
+| 3I           | DDI cancelled by paying bank                                                                                                                                     | BACS        |
+| 4I           | Payer has cancelled DDI direct with service user                                                                                                                 | BACS        |
+| 5I           | AUDDIS service users only - No Instruction held. Payer disputes having given authority                                                                           | BACS        |
+| 6I           | AUDDIS service users only - Signature on DDI is fraudulent or not in accordance with account authorised signature(s)                                             | BACS        |
+| 7I           | Claim raised at service users request after Direct Debit applied to payers account                                                                               | BACS        |
+| 8I           | Service user name disputed. Payer does not recognise service user collecting Direct Debit                                                                        | BACS        |
+| CC           | Requested by originator                                                                                                                                          | BACS        |
+| 0C           | Invalid details                                                                                                                                                  | BACS        |
+| 2C           | Beneficiary deceased                                                                                                                                             | BACS        |
+| 3C           | Account transferred                                                                                                                                              | BACS        |
+| 5C           | No account                                                                                                                                                       | BACS        |
+| BC           | Account closed                                                                                                                                                   | BACS        |
+| C            | Account transferred to a different branch of bank / building society                                                                                             | BACS        |
+| D            | Advance notice disputed                                                                                                                                          | BACS        |
+| F            | Invalid account type                                                                                                                                             | BACS        |
+| G            | Bank will not accept Direct Debits on account                                                                                                                    | BACS        |
+| H            | Instruction has expired                                                                                                                                          | BACS        |
+| I            | Payer reference is not unique                                                                                                                                    | BACS        |
+| K            | Instruction cancelled by paying bank                                                                                                                             | BACS        |
+| L            | Incorrect payer's account details                                                                                                                                | BACS        |
+| M            | Transaction code / user status incompatible                                                                                                                      | BACS        |
+| N            | Transaction disallowed at payer's branch                                                                                                                         | BACS        |
+| O            | Invalid reference                                                                                                                                                | BACS        |
+| P            | Payer's Name not present                                                                                                                                         | BACS        |
+| Q            | Service user's name blank                                                                                                                                        | BACS        |
+| R            | Instruction re-instated (maximum 2 months from original DDI cancellation date)                                                                                   | BACS        |
+| 900          | Validation Rejection                                                                                                                                             | EFT         |
+| 901          | Not sufficient funds (debits only)                                                                                                                               | EFT         |
+| 902          | Cannot trace                                                                                                                                                     | EFT         |
+| 903          | Payment stopped/recalled                                                                                                                                         | EFT         |
+| 904          | Post dated/stale dated                                                                                                                                           | EFT         |
+| 905          | Account closed                                                                                                                                                   | EFT         |
+| 906          | Account transferred                                                                                                                                              | EFT         |
+| 907          | No chequing privileges                                                                                                                                           | EFT         |
+| 908          | Funds not cleared                                                                                                                                                | EFT         |
+| 909          | Currency/Account Mismatch                                                                                                                                        | EFT         |
+| 910          | Payor/payee deceased                                                                                                                                             | EFT         |
+| 911          | Account frozen                                                                                                                                                   | EFT         |
+| 912          | Invalid/incorrect account number                                                                                                                                 | EFT         |
+| 914          | Incorrect payor/payee name                                                                                                                                       | EFT         |
+| 915          | Refused by payor/payee                                                                                                                                           | EFT         |
+| 916          | Not in accordance with Agreement - Personal                                                                                                                      | EFT         |
+| 917          | Agreement Revoked - Personal                                                                                                                                     | EFT         |
+| 918          | No Pre-Notification - Personal                                                                                                                                   | EFT         |
+| 919          | Not in accordance with Agreement - Business                                                                                                                      | EFT         |
+| 920          | Agreement Revoked - Business                                                                                                                                     | EFT         |
+| 921          | No Pre-Notification - Business                                                                                                                                   | EFT         |
+| 922          | Customer Initiated Return Credit Only                                                                                                                            | EFT         |
+| 990          | Institution in Default                                                                                                                                           | EFT         |
+| 998          | No Return Agreement                                                                                                                                              | EFT         |
+| 4            | TRANSACTION TYPE is invalid or blank. See Appendix 3 for a list of CPA Transaction Types.                                                                        | EFT         |
+| 5            | AMOUNT is blank, or not greater than zero.                                                                                                                       | EFT         |
+| 6            | DUE DATE is invalid or blank.                                                                                                                                    | EFT         |
+| 7            | INSTITUTION (route and/or transit) is not in the correct format, does not exist or is blank.                                                                     | EFT         |
+| 8            | ACCOUNT NUMBER is not a valid format for the specified INSTITUTION.                                                                                              | EFT         |
+| 9            | ITEM TRACE NO. is invalid.                                                                                                                                       | EFT         |
+| 10           | STORED TRANSACTION TYPE is invalid or blank.                                                                                                                     | EFT         |
+| 11           | ORIGINATOR SHORT NAME is blank.                                                                                                                                  | EFT         |
+| 12           | PAYOR/PAYEE NAME is blank.                                                                                                                                       | EFT         |
+| 13           | ORIGINATOR LONG NAME is blank.                                                                                                                                   | EFT         |
+| 14           | Originating Direct Clearer ID is invalid or blank.                                                                                                               | EFT         |
+| 15           | CROSS REFERENCE is blank.                                                                                                                                        | EFT         |
+| 16           | INSTITUTION FOR RETURNS (route and/or transit) is invalid or blank. It should specify your credit union.                                                         | EFT         |
+| 19           | Original item trace number is invalid or blank.                                                                                                                  | EFT         |
+| 21           | DATA ELEMENT ID is invalid or blank.                                                                                                                             | EFT         |
+| E            | Accepted but errors were noted                                                                                                                                   | EFT         |
+| M            | Rejected, message authentication code (MAC) failed                                                                                                               | EFT         |
+| P            | Partially accepted, at least one transaction set was rejected                                                                                                    | EFT         |
+| R            | Rejected                                                                                                                                                         | EFT         |
+| W            | Rejected, assurance failed validity tests                                                                                                                        | EFT         |
+| X            | Rejected, content after decryption could not be analyzed                                                                                                         | EFT         |
+| TR           | Rejected by 824                                                                                                                                                  | EFT         |
+| AC01         | Account identifier incorrect                                                                                                                                     | SEPA        |
+| UPAY         | Undue payment                                                                                                                                                    | SEPA        |
+| AC06         | Account blocked                                                                                                                                                  | SEPA        |
+| AC13         | Invalid debtor account type                                                                                                                                      | SEPA        |
+| AG01         | Direct debit forbidden                                                                                                                                           | SEPA        |
+| AG02         | Invalid bank operation code                                                                                                                                      | SEPA        |
+| AGNT         | Incorrect agent                                                                                                                                                  | SEPA        |
+| AM04         | Insufficient funds                                                                                                                                               | SEPA        |
+| AM05         | Duplication                                                                                                                                                      | SEPA        |
+| BE04         | Missing creditor address                                                                                                                                         | SEPA        |
+| BE05         | Unrecognized creditor                                                                                                                                            | SEPA        |
+| CURR         | Incorrect currency                                                                                                                                               | SEPA        |
+| CUST         | Recall by customer                                                                                                                                               | SEPA        |
+| CUTA         | Recall due to investigation request                                                                                                                              | SEPA        |
+| DT01         | Invalid date                                                                                                                                                     | SEPA        |
+| DUPL         | Duplicate payment                                                                                                                                                | SEPA        |
+| ED05         | Settlement failed                                                                                                                                                | SEPA        |
+| FF01         | Invalid file format                                                                                                                                              | SEPA        |
+| FF05         | Direct debit type incorrect                                                                                                                                      | SEPA        |
+| FRAD         | Fraud                                                                                                                                                            | SEPA        |
+| MD01         | No valid mandate                                                                                                                                                 | SEPA        |
+| MD02         | Mandate data missing or incorrect                                                                                                                                | SEPA        |
+| MD06         | Disputed authorized transaction                                                                                                                                  | SEPA        |
+| MD07         | Debtor deceased                                                                                                                                                  | SEPA        |
+| MS02         | Refusal by debtor                                                                                                                                                | SEPA        |
+| MS03         | Reason not specified                                                                                                                                             | SEPA        |
+| PY01         | Not routable                                                                                                                                                     | SEPA        |
+| RC01         | Bank identifier incorrect                                                                                                                                        | SEPA        |
+| RR01         | Missing debtor account or identification                                                                                                                         | SEPA        |
+| RR02         | Missing debtor name or address                                                                                                                                   | SEPA        |
+| RR03         | Missing creditor name or address                                                                                                                                 | SEPA        |
+| RR04         | Regulatory reason                                                                                                                                                | SEPA        |
+| SL01         | Specific service offered by debtor agent                                                                                                                         | SEPA        |
+| TECH         | Payment in error due to technical problem                                                                                                                        | SEPA        |
+| TM01         | Invalid cut off time                                                                                                                                             | SEPA        |
+| AC04         | Account closed                                                                                                                                                   | SEPA        |
+
 # Using the Example API Calls (Console Window)
 To configure and test the API examples, first click on one of the API calls in the API Reference section and then click **Switch to Console** in the right hand pane. 
 Using the Console window you can update the headers, the request body, and parts of the API endpoint. 
@@ -999,6 +1250,7 @@ When you are ready to test your example, you can choose between the Production a
 To call the API resource, click **Call Resource**. The response is displayed in the Console window.
 
 ## Verify the Service is Accessible [GET /monitor]
+<a name="verifyservice" title="Verify Service"></a>
 
 This call returns a status of READY if the API is available.
 
@@ -1011,9 +1263,10 @@ This call returns a status of READY if the API is available.
             }
 
 # Purchases [/purchases]
-<a name="purchaserequest"></a>
+<a name="purchaserequest" title="Purchase Request"></a>
 
 ## ACH Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="achpurchaserequest" title="ACH Purchase Request"></a>
 
 This is how you process an ACH Direct Debit Purchase request.
 
@@ -1048,8 +1301,9 @@ This is how you process an ACH Direct Debit Purchase request.
         + Include Splitpay Response
         
 ## ACH Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="achpurchasetokenrequest" title="ACH Purchase Request with Token"></a>
 
-This is how you process an ACH Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
+This is how you process an ACH Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
 If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
@@ -1083,6 +1337,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Splitpay Response
 
 ## EFT Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="eftpurchaserequest" title="EFT Purchase Request"></a>
 
 This is how you process an EFT Direct Debit Purchase request.
 
@@ -1117,8 +1372,9 @@ This is how you process an EFT Direct Debit Purchase request.
         + Include Splitpay Response
         
 ## EFT Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="eftpurchasetokenrequest" title="EFT Purchase Request with Token"></a>
 
-This is how you process an EFT Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
+This is how you process an EFT Direct Debit Purchase request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
 If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
@@ -1151,13 +1407,14 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Splitpay Response
 
 ## BACS Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="bacspurchasetokenrequest" title="BACS Purchase Request with Token"></a>
 
-This is how you process a BACS Direct Debit Purchase request using a payment token. When processing a BACS Direct Debit Purchase, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
+This is how you process a BACS Direct Debit Purchase request using a payment token. When processing a BACS Direct Debit Purchase, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
  * Add a BACS bank account to the profile
  * Add a mandate to the BACS bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -1188,13 +1445,14 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include Splitpay Response
 
 ## SEPA Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
+<a name="sepapurchasetokenrequest" title="SEPA Purchase Request with Token"></a>
 
-This is how you process a SEPA Direct Debit Purchase request using a payment token. When processing a SEPA Direct Debit Purchase, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
+This is how you process a SEPA Direct Debit Purchase request using a payment token. When processing a SEPA Direct Debit Purchase, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
  * Add a SEPA bank account to the profile
  * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -1225,6 +1483,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include Splitpay Response
 
 ## Cancel Purchase [PUT /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
+<a name="cancelpurchaserequest" title="Cancel a Purchase Request"></a>
 
 This is how you cancel a Direct Debit Purchase request.
 
@@ -1253,6 +1512,7 @@ This is how you cancel a Direct Debit Purchase request.
         
         
 ## Get Purchase [GET /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
+<a name="getpurchaserequest" title="Look Up a Purchase Request"></a>
 
 This is how you look up a Direct Debit Purchase request using the ID returned in the response to the original request.
 
@@ -1281,6 +1541,7 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
         + Include Splitpay Response
 
 ## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
+<a name="getpurchaserequestmerchantrefnum" title="Look Up a Purchase Request Using a Merchant Reference Number"></a>
 
 This is how you look up a Purchase request using the merchant reference number used in the original request.
 
@@ -1307,11 +1568,12 @@ This is how you look up a Purchase request using the merchant reference number u
         + Include Splitpay Response
 
 # Standalone Credits [/standalonecredits]
-<a name="standalonecreditrequest"></a>
+<a name="standalonecreditrequest" title="Standalone Credit Request"></a>
 
 A Standalone Credit allows a merchant to credit an amount to a customer's bank account.
 
 ## ACH Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="achstandalonecreditrequest" title="ACH Standalone Credit Request"></a>
 
 This is how you process an ACH Direct Debit Standalone Credit request.
 
@@ -1344,8 +1606,9 @@ This is how you process an ACH Direct Debit Standalone Credit request.
         + Include billingDetails
 
 ## ACH Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="achstandalonecredittokenrequest" title="ACH Standalone Credit Request with Token"></a>
 
-This is how you process an ACH Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
+This is how you process an ACH Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
 If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
@@ -1376,6 +1639,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include billingDetails       
 
 ## EFT Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="eftstandalonecreditrequest" title="EFT Standalone Credit Request"></a>
 
 This is how you process an EFT Direct Debit Standalone Credit request.
 
@@ -1408,8 +1672,9 @@ This is how you process an EFT Direct Debit Standalone Credit request.
         + Include billingDetails
 
 ## EFT Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="eftstandalonecredittokenrequest" title="EFT Standalone Credit Request with Token"></a>
 
-This is how you process an EFT Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview).
+This is how you process an EFT Direct Debit Standalone Credit request using a payment token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
 
 If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
@@ -1441,13 +1706,14 @@ If you use a payment token, you can submit the request without extra parameters 
 
 
 ## BACS Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="bacsstandalonecredittokenrequest" title="BACS Standalone Credit Request with Token"></a>
 
-This is how you process a BACS Direct Debit Standalone Credit request using a payment token. When processing a BACS Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
+This is how you process a BACS Direct Debit Standalone Credit request using a payment token. When processing a BACS Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
  * Add a BACS bank account to the profile
  * Add a mandate to the BACS bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 
 + Parameters
@@ -1477,6 +1743,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include billingDetails
 
 ## SEPA Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="sepastandalonecreditrequest" title="SEPA Standalone Credit Request"></a>
 
 This is how you process a SEPA Direct Debit Standalone Credit request.
 
@@ -1509,13 +1776,14 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
         + Include billingDetails
 
 ## SEPA Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
+<a name="sepastandalonecredittokenrequest" title="SEPA Standalone Credit Request with Token"></a>
 
-This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/introduction/overview) to:
+This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
  * Add a SEPA bank account to the profile
  * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* associated with the SEPA bank account or the *paymentToken* returned in the response to the [mandate creation request](http://paysafegroup.github.io/paysafe_api_customervault_v1/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+You can then use the *paymentToken* associated with the SEPA bank account or the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -1544,6 +1812,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
         + Include billingDetails
 
 ## Cancel Standalone Credit [PUT /v1/standalonecredits/{STANDALONE_CREDIT_ID}]
+<a name="cancelstandalonecreditrequest" title="Cancel a Standalone Credit Request"></a>
 
 This is how you cancel a Direct Debit Standalone Credit request.
 
@@ -1570,6 +1839,7 @@ This is how you cancel a Direct Debit Standalone Credit request.
         + status:CANCELLED (enum, required) - This is the status of the transaction request.
 
 ## Get Standalone Credit [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits/{STANDALONE_CREDIT_ID}]
+<a name="getstandalonecreditrequest" title="Look Up a Standalone Credit Request"></a>
 
 This is how you look up a Direct Debit Standalone Credit request using the ID returned in the response to the original request.
 
@@ -1597,8 +1867,23 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
         + Include billingDetails
 
 ## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
+<a name="getstandalonecreditrequestmerchantrefnum" title="Look Up a Standalone Credit Request Using a Merchant Reference Number"></a>
 
 This is how you look up a Standalone Credit request using the merchant reference number used in the original request.
+
+<br>
+<br>
+<br>
+<a name="footer">
+<h1>Legal and Community</h1>
+<ul class="footer-menu">
+<li><a href="https://www.paysafe.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
+<li><a href="https://developer.paysafe.com/en/resources-and-support/terms-of-use/" target="_blank">Terms of Use</a></li>
+<li><a href="http://www.paysafe.com/regulatory-disclosure/" target="_blank">Regulatory Disclosures</a></li>
+<li><a href="http://community.paysafe.com/spaces/11/index.html" target="_blank">FAQs</a></li>
+<li><a href="http://community.paysafe.com/index.html" target="_blank">Community</a></li>
+<li><a href="http://community.paysafe.com/spaces/10/index.html" target="_blank">Paysafe Blog</a></li>
+</ul>
 
 + Parameters
 
