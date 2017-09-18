@@ -7,7 +7,8 @@ HOST: https://api.test.paysafe.com/directdebit/
 
 | Version   | Date          | Details |
 |---        |---            |---      |
-| 1.0       | November 2016 | <ul><li>Document release</li></ul>|
+| 1.0       | November 2016 | Document release |
+| 2.0       | September 2017 | Added Turnkey Features |
 
 # Overview
 Connect your application with the Paysafe payment engine through our RESTful API and access a full suite of methods, including Purchases and Standalone Credits.
@@ -825,7 +826,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |currencyCode       |string<br/>`length=3`                  |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
 |error              |[error](#errorobject)                  |       |
 |status             |enum                                   |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
-
+|splitpay           |[splitpay](#splitpayobject)            |This enables you to use Split Payouts functionality when processing a purchase.|
 
 <a name="sepaobject" title="SEPA Object"></a>
 ## sepa
@@ -887,6 +888,28 @@ When providing SEPA bank account information, merchants can provide either a pay
 }
 ```
 
+<a name="splitpayobject"></a>
+## splitpay
+
+|Element            |Type    |Required |Description |
+|---                |---     |---      |---        |
+|linkedaccount      |string  |Yes      |This is the ID of the linked account.
+|amount             |number  |         |The amount to transfer to the linked account in minor currency units. Either this or percent must be specified.|
+|percent            |number  |         |This is the percentage of the total transaction amount to transfer to the linked account, to two decimal places. The total percentage to all linked accounts cannot exceed 100%. Either this or amount must be specified.|
+
+```apib
+  {
+  "splitpay": [
+    {
+    "linkedAccount": "123124124",
+    "percent": 5
+    },
+    {
+    "linkedAccount": "767862873",
+    "amount": 500
+    }]
+  }
+```
 <a name="standalonecreditobject" title="Standalone Credit Object"></a>
 ## standalonecredit
 
@@ -962,7 +985,6 @@ When providing SEPA bank account information, merchants can provide either a pay
 |400                |2014           |The mandate reference is already in use for the specified bank account information.|
 |400                |2017           |The payment token bank scheme does not match the merchant account bank scheme.|
 |402                |4002           |The transaction was declined by our Risk Management department.|
-  
   
 <a name="directdebitreturncodes" title="Direct Debit Return Codes"></a>
 ## Direct Debit Return Codes
@@ -1259,7 +1281,8 @@ This is how you process an ACH Direct Debit Purchase request.
         + Include ACH
         + Include profile
         + Include billingDetails
-        
+        + Include Splitpay Request
+
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
@@ -1275,6 +1298,7 @@ This is how you process an ACH Direct Debit Purchase request.
         + Include ACH Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Response
         
 ## ACH Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 <a name="achpurchasetokenrequest" title="ACH Purchase Request with Token"></a>
@@ -1292,6 +1316,8 @@ If you use a payment token, you can submit the request without extra parameters 
     + Attributes
         + Include Purchase Base
         + Include ACH Payment Token
+        + Include Splitpay Request
+
         
     + Headers
     
@@ -1307,8 +1333,9 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Purchase Base
         + Include ACH Token Response
         + Include profile response
-        + Include billingDetails        
-        
+        + Include billingDetails     
+        + Include Splitpay Response
+
 ## EFT Purchase [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 <a name="eftpurchaserequest" title="EFT Purchase Request"></a>
 
@@ -1325,7 +1352,8 @@ This is how you process an EFT Direct Debit Purchase request.
         + Include EFT
         + Include profile
         + Include billingDetails
-        
+        + Include Splitpay Request
+
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
@@ -1341,6 +1369,7 @@ This is how you process an EFT Direct Debit Purchase request.
         + Include EFT Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Response
         
 ## EFT Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 <a name="eftpurchasetokenrequest" title="EFT Purchase Request with Token"></a>
@@ -1358,7 +1387,8 @@ If you use a payment token, you can submit the request without extra parameters 
     + Attributes
         + Include Purchase Base
         + Include EFT Payment Token
-        
+        + Include Splitpay Request
+
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
@@ -1373,7 +1403,8 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Purchase Base
         + Include EFT Token Response
         + Include profile response
-        + Include billingDetails         
+        + Include billingDetails
+        + Include Splitpay Response
 
 ## BACS Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 <a name="bacspurchasetokenrequest" title="BACS Purchase Request with Token"></a>
@@ -1394,7 +1425,8 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Attributes
         + Include Purchase Base
         + Include BACS Payment Token
-        
+        + Include Splitpay Request
+
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
@@ -1409,8 +1441,8 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include Purchase Base
         + Include BACS Token Response
         + Include profile response
-        + Include billingDetails       
-
+        + Include billingDetails
+        + Include Splitpay Response
 
 ## SEPA Purchase with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/purchases]
 <a name="sepapurchasetokenrequest" title="SEPA Purchase Request with Token"></a>
@@ -1431,7 +1463,8 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Attributes
         + Include Purchase Base
         + Include SEPA Payment Token
-        
+        + Include Splitpay Request
+
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
@@ -1447,7 +1480,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include SEPA Token Response
         + Include profile response
         + Include billingDetails
-
+        + Include Splitpay Response
 
 ## Cancel Purchase [PUT /v1/accounts/{ACCOUNT_ID}/purchases/{PURCHASE_ID}]
 <a name="cancelpurchaserequest" title="Cancel a Purchase Request"></a>
@@ -1505,6 +1538,7 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
         + Include ACH Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Response
 
 ## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/purchases?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
 <a name="getpurchaserequestmerchantrefnum" title="Look Up a Purchase Request Using a Merchant Reference Number"></a>
@@ -1531,6 +1565,7 @@ This is how you look up a Purchase request using the merchant reference number u
 
     + Attributes
         + Include Links GET Reference
+        + Include Splitpay Response
 
 # Standalone Credits [/standalonecredits]
 <a name="standalonecreditrequest" title="Standalone Credit Request"></a>
@@ -2385,3 +2420,15 @@ This is how you look up a Standalone Credit request using the merchant reference
     - PROCESSING
     - FAILED
     - CANCELLED
+
+## Splitpay Request
++ splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
+    - linkedAccount:123124124 (string, required) - The ID of the linked account. This must have either a percent or amount, but not both.
+    - percent:5 (number, optional) - The percentage of the total transaction amount to transfer to the linked account, to two decimal places. The total percentage to all linked accounts cannot exceed 100%. Either this or amount must be specfied, but not both.
+    - amount:505 (number, optional) - The amount to transfer to the linked account in minor currency units. The total amount to all linked accounts cannot exceed the transaction total.  Either this or percent must be specfied, but not both.
+
+## Splitpay Response
++ splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
+    - linkedAccount:123124124 (string, required) - The ID of the linked account.
+    - percent:5 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred to that account. This is not returned if an amount was specified in the request.
+    - amount:505 (number, required) - The amount to transfer to the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
