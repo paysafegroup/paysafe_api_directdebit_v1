@@ -2422,10 +2422,13 @@ This is how you look up a Standalone Credit request using the merchant reference
     - CANCELLED
 
 ## Splitpay Request
-+ splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
-    - linkedAccount:123124124 (string, required) - The ID of the linked account. This must have either a percent or amount, but not both.
-    - percent:5 (number, optional) - The percentage of the total transaction amount to transfer to the linked account, to two decimal places. The total percentage to all linked accounts cannot exceed 100%. Either this or amount must be specfied, but not both.
-    - amount:505 (number, optional) - The amount to transfer to the linked account in minor currency units. The total amount to all linked accounts cannot exceed the transaction total.  Either this or percent must be specfied, but not both.
++ splitpay (array, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount shared with each. You must include either *amount* or *percent*. However, you cannot include both values.
+    + (object)
+        + Properties
+            + linkedAccount:`123124124` (string, required) - This is the ID of the linked account.
+            + One of
+                + amount:`505` (number, optional) - This is the amount to transfer to the linked account in minor currency units.
+                + percent:`5` (number, optional) - This is the percentage of the total transaction amount to transfer to that account.
 
 ## Splitpay Response
 + splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
