@@ -2436,12 +2436,12 @@ This is how you look up a Standalone Credit request using the merchant reference
             + linkedAccount:`123816816` (string, required) - This is the ID of the linked account.
             + One of
                 + percent:6 (number, optional) - This is the percentage of the total transaction amount to transfer from the linked account.                
-                + amount:606 (number, optional) - This is the amount to transfer from the linked account in minor currency units.
+                + amount:156 (number, optional) - This is the amount to transfer from the linked account in minor currency units.
     + (object)
         + Properties
             + linkedAccount:`123124124` (string, required) - This is the ID of the linked account.
             + One of
-                + amount:505 (number, optional) - This is the amount to transfer from the linked account in minor currency units.
+                + amount:130 (number, optional) - This is the amount to transfer from the linked account in minor currency units.
                 + percent:5 (number, optional) - This is the percentage of the total transaction amount to transfer from the linked account.
 
 ## Splitpay Refund Response
@@ -2450,12 +2450,12 @@ This is how you look up a Standalone Credit request using the merchant reference
         + Properties    
             + linkedAccount:`123816816` (string, required) - The ID of the linked account.
             + percent:6 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred from that account. This is not returned if an amount was specified in the request.
-            + amount:606 (number, required) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
+            + amount:156 (number, required) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
     + (object)
         + Properties    
             + linkedAccount:`123124124` (string, required) - The ID of the linked account.
             + One of
-                + amount:505 (number, required) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
+                + amount:130 (number, required) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
                 + percent:5 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred from that account. This is not returned if an amount was specified in the request.
 
 ## Splitpay Request
