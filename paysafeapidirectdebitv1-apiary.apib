@@ -1248,6 +1248,16 @@ When you are ready to test your example, you can choose between the Production a
 
 To call the API resource, click **Call Resource**. The response is displayed in the Console window.
 
+# Legal and Community
+<ul>
+<li><a href="https://www.paysafe.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
+<li><a href="https://developer.paysafe.com/en/resources-and-support/terms-of-use/" target="_blank">Terms of Use</a></li>
+<li><a href="http://www.paysafe.com/regulatory-disclosure/" target="_blank">Regulatory Disclosures</a></li>
+<li><a href="http://community.paysafe.com/spaces/11/index.html" target="_blank">FAQs</a></li>
+<li><a href="http://community.paysafe.com/index.html" target="_blank">Community</a></li>
+<li><a href="http://community.paysafe.com/spaces/10/index.html" target="_blank">Paysafe Blog</a></li>
+</ul>
+
 ## Verify the Service is Accessible [GET /monitor]
 <a name="verifyservice" title="Verify Service"></a>
 
@@ -1587,6 +1597,7 @@ This is how you process an ACH Direct Debit Standalone Credit request.
         + Include ACH
         + Include profile
         + Include billingDetails
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1603,6 +1614,7 @@ This is how you process an ACH Direct Debit Standalone Credit request.
         + Include ACH Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 ## ACH Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 <a name="achstandalonecredittokenrequest" title="ACH Standalone Credit Request with Token"></a>
@@ -1653,6 +1665,7 @@ This is how you process an EFT Direct Debit Standalone Credit request.
         + Include EFT
         + Include profile
         + Include billingDetails
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1669,6 +1682,7 @@ This is how you process an EFT Direct Debit Standalone Credit request.
         + Include EFT Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 ## EFT Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 <a name="eftstandalonecredittokenrequest" title="EFT Standalone Credit Request with Token"></a>
@@ -1757,6 +1771,7 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
         + Include SEPA
         + Include profile
         + Include billingDetails
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1773,6 +1788,7 @@ This is how you process a SEPA Direct Debit Standalone Credit request.
         + Include SEPA Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 ## SEPA Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 <a name="sepastandalonecredittokenrequest" title="SEPA Standalone Credit Request with Token"></a>
@@ -1864,25 +1880,12 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
         + Include ACH Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 ## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{ACCOUNT_ID}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
 <a name="getstandalonecreditrequestmerchantrefnum" title="Look Up a Standalone Credit Request Using a Merchant Reference Number"></a>
 
 This is how you look up a Standalone Credit request using the merchant reference number used in the original request.
-
-<br>
-<br>
-<br>
-<a name="footer">
-<h1>Legal and Community</h1>
-<ul class="footer-menu">
-<li><a href="https://www.paysafe.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
-<li><a href="https://developer.paysafe.com/en/resources-and-support/terms-of-use/" target="_blank">Terms of Use</a></li>
-<li><a href="http://www.paysafe.com/regulatory-disclosure/" target="_blank">Regulatory Disclosures</a></li>
-<li><a href="http://community.paysafe.com/spaces/11/index.html" target="_blank">FAQs</a></li>
-<li><a href="http://community.paysafe.com/index.html" target="_blank">Community</a></li>
-<li><a href="http://community.paysafe.com/spaces/10/index.html" target="_blank">Paysafe Blog</a></li>
-</ul>
 
 + Parameters
 
@@ -1904,6 +1907,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Attributes
         + Include Links GET Standalone Credit Reference
+        + Include Splitpay Refund Response
 
 # Data Structures
 
@@ -2420,14 +2424,43 @@ This is how you look up a Standalone Credit request using the merchant reference
     - FAILED
     - CANCELLED
 
+## Splitpay Refund Request
++ splitpay (array, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount to refund from each. You must include either *amount* or *percent*. However, you cannot include both values. You can specify any number of linked accounts, but the example here uses two.
+    + (object)
+        + Properties
+            + linkedAccount:`123816816` (string, required) - This is the ID of the linked account.
+            + One of
+                + percent:6 (number, optional) - This is the percentage of the total transaction amount to transfer from the linked account.                
+                + amount:156 (number, optional) - This is the amount to transfer from the linked account in minor currency units.
+    + (object)
+        + Properties
+            + linkedAccount:`123124124` (string, required) - This is the ID of the linked account.
+            + One of
+                + amount:130 (number, optional) - This is the amount to transfer from the linked account in minor currency units.
+                + percent:5 (number, optional) - This is the percentage of the total transaction amount to transfer from the linked account.
+
+## Splitpay Refund Response
++ splitpay (array, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount to refund from each. The example is for a merchant with two linked accounts.
+    + (object)
+        + Properties    
+            + linkedAccount:`123816816` (string, required) - The ID of the linked account.
+            + percent:6 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred from that account. This is not returned if an amount was specified in the request.
+            + amount:156 (number, required) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
+    + (object)
+        + Properties    
+            + linkedAccount:`123124124` (string, required) - The ID of the linked account.
+            + One of
+                + amount:130 (number, required) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
+                + percent:5 (number, optional) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred from that account. This is not returned if an amount was specified in the request.
+
 ## Splitpay Request
 + splitpay (array, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount shared with each. You must include either *amount* or *percent*. However, you cannot include both values.
     + (object)
         + Properties
             + linkedAccount:`123124124` (string, required) - This is the ID of the linked account.
             + One of
-                + amount:`505` (number, optional) - This is the amount to transfer to the linked account in minor currency units.
-                + percent:`5` (number, optional) - This is the percentage of the total transaction amount to transfer to that account.
+                + percent:5 (number, optional) - This is the percentage of the total transaction amount to transfer to the linked account.
+                + amount:505 (number, optional) - This is the amount to transfer to the linked account in minor currency units.
 
 ## Splitpay Response
 + splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
