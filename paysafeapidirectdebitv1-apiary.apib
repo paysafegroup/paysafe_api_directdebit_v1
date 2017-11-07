@@ -1632,6 +1632,7 @@ If you use a payment token, you can submit the request without extra parameters 
     + Attributes
         + Include Purchase Base
         + Include ACH Payment Token
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1647,7 +1648,8 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include Purchase Base
         + Include ACH Token Response
         + Include profile response
-        + Include billingDetails       
+        + Include billingDetails      
+        + Include Splitpay Refund Response
 
 ## EFT Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 <a name="eftstandalonecreditrequest" title="EFT Standalone Credit Request"></a>
@@ -1700,6 +1702,7 @@ If you use a payment token, you can submit the request without extra parameters 
     + Attributes
         + Include Purchase Base
         + Include EFT Payment Token
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1716,6 +1719,7 @@ If you use a payment token, you can submit the request without extra parameters 
         + Include EFT Token Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 
 ## BACS Standalone Credit with Payment Token [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
@@ -1738,6 +1742,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Attributes
         + Include Purchase Base
         + Include BACS Payment Token
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1754,6 +1759,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
         + Include BACS Token Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 ## SEPA Standalone Credit [POST /v1/accounts/{ACCOUNT_ID}/standalonecredits]
 <a name="sepastandalonecreditrequest" title="SEPA Standalone Credit Request"></a>
@@ -1809,6 +1815,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
     + Attributes
         + Include Purchase Base
         + Include SEPA Payment Token
+        + Include Splitpay Refund Request
         
     + Headers
     
@@ -1825,6 +1832,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
         + Include SEPA Token Response
         + Include profile response
         + Include billingDetails
+        + Include Splitpay Refund Response
 
 ## Cancel Standalone Credit [PUT /v1/standalonecredits/{STANDALONE_CREDIT_ID}]
 <a name="cancelstandalonecreditrequest" title="Cancel a Standalone Credit Request"></a>
