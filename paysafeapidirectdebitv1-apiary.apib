@@ -2243,7 +2243,7 @@ In the case of a Standalone Credit request using a payment token, you can use ei
     + Include Splitpay Refund Request
     + Include Links Standalone Credit
 
-+ Request ACH Standalone Credit (application/json)
++ Request Submit an ACH Standalone Credit Request (application/json)
         
     + Headers
     
@@ -2333,7 +2333,7 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                 }]
             }
 
-+ Request ACH Standalone Credit with Payment Token (application/json)
++ Request Submit an ACH Standalone Credit Request Using a Payment Token (application/json)
 
     + Headers
     
@@ -2410,13 +2410,7 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                 }]
             }
 
-+ Request ACH Standalone Credit with Single-use Token and Create Permanent Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + merchantCustomerId:`ach_standalonecredit01` - This is a customer ID that the merchant provides with the request for their own internal customer identification. This value must be unique for each customer belonging to a merchant.
-        + Include ACH Payment Token Create from SUT
-
++ Request Submit an ACH Standalone Credit Using a Single-use Token and Create a Permanent Payment Token (application/json)
         
     + Headers
     
@@ -2484,107 +2478,283 @@ In the case of a Standalone Credit request using a payment token, you can use ei
 ## EFT Standalone Credit [POST /v1/accounts/{account_id}/standalonecredits]
 <a name="eftstandalonecreditrequest" title="EFT Standalone Credit Request"></a>
 
-This is how you process an EFT Direct Debit Standalone Credit request.
+This shows you three examples of an EFT Standalone Credit request:
+* A regular Standalone Credit request
+* A Standalone Credit request using a payment token
+* A Standalone Credit request using a single-use token that also creates a permanent, reusable payment token representing the ACH account
+
+In the case of a Standalone Credit request using a payment token, you can use either of two payment token types:
+
+* The permanent, reusable payment token that you receive in the response to a Customer Vault [EFT bank account creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/eft-bank-accounts/create-an-eft-bank-account)
+* The temporary payment token that you receive in the response to a Customer Vault [EFT single-use token creation request](https://developer.paysafe.com/en/vault/api/#/reference/direct-debit-single-use-tokens/direct-debit-single-use-tokens/create-an-eft-single-use-token)
+
++ Attributes
+    + Include Purchase Base
+    + Include EFT
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Refund Request
+    + Include Links Standalone Credit
 
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request EFT Standalone Credit (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + Include EFT
-        + Include profile
-        + Include billingDetails
-        + Include Splitpay Refund Request
++ Request Submit an EFT Standalone Credit Request (application/json)
         
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "eft": {
+                    "accountHolderName": "First Company",
+                    "accountNumber": "998772192",
+                    "transitNumber": "22446",
+                    "institutionId": "001",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Currency Code CA        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include EFT Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
+    + Body
 
-## EFT Standalone Credit with Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
-<a name="eftstandalonecredittokenrequest" title="EFT Standalone Credit Request with Token"></a>
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "currencyCode": "CAD",
+                "status": "PENDING",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "eft": {
+                    "accountHolderName": "First Company",
+                    "transitNumber": "22446",
+                    "institutionId": "001",
+                    "lastDigits": "09",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
 
-This is how you process an EFT Direct Debit Standalone Credit request using a regular payment token or a single-use token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
++ Request Bubmit an EFT Standalone Credit Request Using a Payment Token (application/json)
 
-If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
-
-+ Parameters
-
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request EFT Standalone Credit with Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + Include EFT Payment Token
-        + Include Splitpay Refund Request
-        
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "eft": {
+                    "paymentToken": "DTEyMzYzMjQ3ODg",
+                    "paymentDescriptor": "Transaction"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Currency Code CA        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include EFT Token Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "currencyCode": "CAD",
+                "status": "PENDING",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "eft": {
+                    "paymentToken": "DTEyMzYzMjQ3ODg",
+                    "accountHolderName": "First Company",
+                    "transitNumber": "22446",
+                    "institutionId": "001",
+                    "lastDigits": "09",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
 
 
-## EFT Standalone Credit and Create Permanent Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
-<a name="eftstandalonetokenrequestpermanent" title="EFT Standalone Credit Request and Create Permanent Token"></a>
++ Request Submit an EFT Standalone Credit Request Using a Single-use Token and Create a Permanent Payment Token (application/json)
 
-This is how you use a single-use token created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to process an EFT Direct Debit Standalone Credit request and also create a permanent, reusable *paymentToken*.
-
-+ Parameters
-    
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request EFT Standalone Credit with Single-use Token and Create Permanent Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + merchantCustomerId:`eft_standalonecredit01` - This is a customer ID that the merchant provides with the request for their own internal customer identification. This value must be unique for each customer belonging to a merchant.
-        + Include EFT Payment Token Create from SUT
-
-        
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "merchantCustomerId": "eft_standalonecredit01",
+                "eft": {
+                    "paymentToken": "DNjEzMTM4NDg1",
+                    "replaceWithMultiUsePaymentToken": true,
+                    "paymentDescriptor": "Transaction"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + merchantCustomerId:`eft_standalonecredit01` - This is a customer ID that the merchant provided with the request for their own internal customer identification.
-        + Include Response Base
-        + Include Status Create Token
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include EFT Token Response Create from SUT
-        + Include Profile Response Create Token
-        + Include billingDetails
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "merchantCustomerId": "eft_standalonecredit01",
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "status": "COMPLETED",
+                "currencyCode": "USD",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "eft": {
+                    "replaceWithMultiUsePaymentToken": true,
+                    "multiUsePaymentToken": "Def6jC0Opljot9d",
+                    "accountHolderName": "First Company",
+                    "paymentToken": "DNjEzMTM4NDg1",
+                    "transitNumber": "22446",
+                    "institutionId": "001",
+                    "paymentDescriptor": "`Transaction",
+                    "accountNumber": "******55"
+                },
+                "profile": {
+                    "id": "ef2abd0c-8475-4cd9-85c6-70e1e226533c"
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                }
+            }
 
 ## BACS Standalone Credit with Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
 <a name="bacsstandalonecredittokenrequest" title="BACS Standalone Credit Request with Token"></a>
