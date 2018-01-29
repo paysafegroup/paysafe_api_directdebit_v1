@@ -665,7 +665,7 @@ When providing BACS bank account information, merchants can provide either a pay
 |city               |string<br/>`length<=40`    |               |This is the city in the billing address.|
 |state              |string<br/>`length<=40`    |               |Use the 2-character state or province codes for Canada or the United States.|
 |country            |enum  <br/>`length<=2`     |               |See [Country Codes](#countrycodes).|
-|zip                |striing<br/>`length<=10`   |               |This is the postal/zip code in the billing address.|
+|zip                |string<br/>`length<=10`   |               |This is the postal/zip code in the billing address.|
 |phone              |string<br/>`length<=40`    |               |This is the customer's telephone number.|
 
 ```apib
@@ -1278,213 +1278,654 @@ This call returns a status of READY if the API is available.
 ## ACH Purchase [POST /v1/accounts/{account_id}/purchases]
 <a name="achpurchaserequest" title="ACH Purchase Request"></a>
 
-This is how you process an ACH Direct Debit Purchase request.
+This shows you four examples of an ACH Purchase request:
+* A regular Purchase request
+* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/turnkey/split-payouts/split-payouts-overview/)
+* A Purchase request using a payment token
+* A Purchase request using a single-use token that also creates a permanent, reusable payment token representing the ACH account
+
+In the case of a Purchase request using a payment token, you can use either of two payment token types:
+
+* The permanent, reusable payment token that you receive in the response to a Customer Vault [ACH bank account creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/ach-bank-accounts/create-an-ach-bank-account)
+* The temporary payment token that you receive in the response to a Customer Vault [ACH single-use token creation request](https://developer.paysafe.com/en/vault/api/#/reference/direct-debit-single-use-tokens/direct-debit-single-use-tokens/create-an-ach-single-use-token)
 
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request ACH Purchase (application/json)
++ Attributes
+    + Include Purchase Base
+    + Include ACH
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Request
+    + Include links
 
-    + Attributes
-        + Include Purchase Base
-        + Include ACH
-        + Include profile
-        + Include billingDetails
-        + Include Splitpay Request
++ Request Submit an ACH Purchase Request (application/json)
 
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "customerIp": "192.0.126.111",
+                "ach": {
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "accountNumber": "998772192",
+                    "routingNumber": "211589828",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + Include Status Purchase
-        + Include Currency Code US
-        + Include Purchase Base
-        + Include ACH Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Response
+    + Body
+
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "ach": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction",
+                    "routingNumber": "211589828",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 1981,
+                        "month": 10,
+                        "day": 24
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "7afd1d4a-39b8-4756-ba58-d886ad4aa35c",
+                "txnTime": "2017-04-04T13:35:17Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/7afd1d4a-39b8-4756-ba58-d886ad4aa35c"
+                }]
+            }
         
-## ACH Purchase with Payment Token [POST /v1/accounts/{account_id}/purchases]
-<a name="achpurchasetokenrequest" title="ACH Purchase Request with Token"></a>
++ Request Submit an ACH Purchase Request with Split Payouts (application/json)
 
-This is how you process an ACH Direct Debit Purchase request using a regular payment token or a single-use token. These tokens are created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
-
-If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
-
-+ Parameters
-    
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request ACH Purchase with Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + Include ACH Payment Token
-        + Include Splitpay Request
-
-        
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "customerIp": "192.0.126.111",
+                "ach": {
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "accountNumber": "998772192",
+                    "routingNumber": "211589828",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": {
+                    "linkedAccount": "123124124",
+                    "percent": 5
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + Include Status Purchase
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Token Response
-        + Include profile response
-        + Include billingDetails     
-        + Include Splitpay Response
+    + Body
 
-## ACH Purchase and Create Permanent Payment Token [POST /v1/accounts/{account_id}/purchases]
-<a name="achpurchasetokenrequestpermanent" title="ACH Purchase Request and Create Permanent Token"></a>
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "ach": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction",
+                    "routingNumber": "211589828",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 1981,
+                        "month": 10,
+                        "day": 24
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": {
+                    "linkedAccount": "123124124",
+                    "percent": 5,
+                    "amount":135
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "7afd1d4a-39b8-4756-ba58-d886ad4aa35c",
+                "txnTime": "2017-04-04T13:35:17Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/7afd1d4a-39b8-4756-ba58-d886ad4aa35c"
+                }]
+            }
 
-This is how you use a single-use token created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to process an ACH Direct Debit Purchase request and and at the same time create a permanent, reusable *paymentToken*.
++ Request Submit an ACH Purchase Request Using a Payment Token (application/json)
 
-+ Parameters
-    
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request ACH Purchase with Single-use Token and Create Permanent Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + merchantCustomerId:`ach_purchase01` (string, required) - This is a customer ID that the merchant provides with the request for their own internal customer identification. This value must be unique for each customer belonging to a merchant.
-        + Include ACH Payment Token Create from SUT
-
-        
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "61544433",
+                "amount": 9988,
+                "customerIp": "192.0.126.111",
+                "ach": {
+                    "paymentToken": "SA0j0hpubDz5ETNH",
+                    "payMethod": "WEB"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + merchantCustomerId:`ach_purchase01` (string) - This is a customer ID that the merchant provided with the request for their own internal customer identification.
-        + Include Response Base
-        + Include Status Create Token
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Token Response Create from SUT
-        + Include Profile Response Create Token
-        + Include billingDetails     
+    + Body
+
+            {
+                "merchantRefNum": "61544433",
+                "amount": 9988,
+                "ach": {
+                    "lastDigits": "22",
+                    "paymentToken": "SA0j0hpubDz5ETNH",
+                    "accountHolderName": "Argon Corp.",
+                    "accountType": "CHECKING",
+                    "payMethod": "WEB",
+                    "routingNumber": "123456789",
+                    "accountNumber": "******22"
+                },
+                "profile": {
+                    "firstName": "Jane",
+                    "lastName": "Smith"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "6c7fd6c4-6045-49ec-96ec-bb256d1fa191",
+                "txnTime": "2016-09-19T13:57:20Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058140/purchases/6c7fd6c4-6045-49ec-96ec-bb256d1fa191"
+                }]
+            }
+
++ Request Submit an ACH Purchase Using a Single-Use Token and Create a Permanent Token (application/json)
+
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
+    + Body
+
+            {
+                "merchantRefNum": "1513262210",
+                "amount": 9988,
+                "merchantCustomerId": "ID_{{$timestamp}}",
+                "customerIp": "192.0.126.111",
+                "ach": {
+                    "paymentToken": "SAfQqTAIcTAnP0jz",
+                    "replaceWithMultiUsePaymentToken": true,
+                    "payMethod": "WEB"
+                }
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "merchantRefNum": "1513262210",
+                "amount": 9988,
+                "ach": {
+                    "replaceWithMultiUsePaymentToken": true,
+                    "multiUsePaymentToken": "DjI4CIG1KeKEWJw",
+                    "paymentToken": "SAfQqTAIcTAnP0jz",
+                    "accountHolderName": "Argon Corp",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "routingNumber": "123456789",
+                    "accountNumber": "*****66"
+                },
+                "profile": {
+                    "id": "7168af9e-865f-43c3-a90d-090275552958"
+                },
+                "billingDetails": {
+                    "street": "100 Queen",
+                    "street2": "Unit 201",
+                    "city": "Toronto",
+                    "state": "QC",
+                    "country": "CA",
+                    "zip": "M5H 2N2"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "e8795266-c9f5-47a4-a675-ef0d088a7e7a",
+                "merchantCustomerId": "ID_1513262210",
+                "txnTime": "2017-12-14T14:36:49Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001175610/purchases/e8795266-c9f5-47a4-a675-ef0d088a7e7a"
+                }]
+            }
 
 ## EFT Purchase [POST /v1/accounts/{account_id}/purchases]
 <a name="eftpurchaserequest" title="EFT Purchase Request"></a>
 
-This is how you process an EFT Direct Debit Purchase request.
+This shows you three examples of an EFT Purchase request:
+* A regular Purchase request
+* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/turnkey/split-payouts/split-payouts-overview/)
+* A Purchase request using a payment token
+* A Purchase request using a single-use token that also creates a permanent, reusable payment token representing the EFT account
+
+In the case of a Purchase request using a payment token, you can use either of two payment token types:
+
+* The permanent, reusable payment token that you receive in the response to a Customer Vault [EFT bank account creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/eft-bank-accounts/create-an-eft-bank-account)
+* The temporary payment token that you receive in the response to a Customer Vault [EFT single-use token creation request](https://developer.paysafe.com/en/vault/api/#/reference/direct-debit-single-use-tokens/direct-debit-single-use-tokens/create-an-eft-single-use-token)
 
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request EFT Purchase (application/json)
++ Attributes
+    + Include Purchase Base
+    + Include EFT
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Request
+    + Include links
+
++ Request Submit an EFT Purchase Request (application/json)
         
-    + Attributes
-        + Include Purchase Base
-        + Include EFT
-        + Include profile
-        + Include billingDetails
-        + Include Splitpay Request
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+            
+    + Body
+
+            {
+                "merchantRefNum": "04.05.17",
+                "amount": 2699,
+                "customerIp": "192.0.126.111",
+                "eft": {
+                    "accountHolderName": "First Company",
+                    "accountNumber": "998772192",
+                    "transitNumber": "22446",
+                    "institutionId": "001",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                }
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "merchantRefNum": "04.05.17",
+                "amount": 2699,
+                "eft": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "institutionId": "001",
+                    "transitNumber": "22446",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 0,
+                        "month": 0,
+                        "day": 0
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "6ce1dc9a-2231-4ad5-8953-3740ccdaf411",
+                "txnTime": "2016-04-28T18:58:55Z",
+                "currencyCode": "CAD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058110/purchases/6ce1dc9a-2231-4ad5-8953-3740ccdaf411"
+                }]
+            }
+        
++ Request Submit an EFT Purchase Request with Split Payouts (application/json)
+        
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+            
+    + Body
+
+            {
+                "merchantRefNum": "04.05.17",
+                "amount": 2699,
+                "customerIp": "192.0.126.111",
+                "eft": {
+                    "accountHolderName": "First Company",
+                    "accountNumber": "998772192",
+                    "transitNumber": "22446",
+                    "institutionId": "001",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": {
+                    "linkedAccount": "123124124",
+                    "percent": 5
+                }
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "merchantRefNum": "04.05.17",
+                "amount": 2699,
+                "eft": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "institutionId": "001",
+                    "transitNumber": "22446",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 0,
+                        "month": 0,
+                        "day": 0
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": {
+                    "linkedAccount": "123124124",
+                    "percent": 5,
+                    "amount":135
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "6ce1dc9a-2231-4ad5-8953-3740ccdaf411",
+                "txnTime": "2016-04-28T18:58:55Z",
+                "currencyCode": "CAD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058110/purchases/6ce1dc9a-2231-4ad5-8953-3740ccdaf411"
+                }]
+            }
+
++ Request Submit an EFT Purchase Request Using a Payment Token (application/json)
 
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "777",
+                "amount": 2799,
+                "customerIp": "192.0.126.111",
+                "eft": {
+                    "paymentToken": "Du049MgJ6Nrpy2r"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + Include Currency Code CA        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include EFT Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Response
-        
-## EFT Purchase with Payment Token [POST /v1/accounts/{account_id}/purchases]
-<a name="eftpurchasetokenrequest" title="EFT Purchase Request with Token"></a>
+    + Body
 
-This is how you process an EFT Direct Debit Purchase request using a regular payment token or a single-use token. These tokens are created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
+            {
+                "merchantRefNum": "777",
+                "amount": 2799,
+                "eft": {
+                    "lastDigits": "01",
+                    "paymentToken": "Du049MgJ6Nrpy2r",
+                    "accountHolderName": "Argon Corp.",
+                    "institutionId": "001",
+                    "transitNumber": "35039",
+                    "accountNumber": "****01"
+                },
+                "profile": {
+                    "firstName": "Jane",
+                    "lastName": "Smith"
+                },
+                "billingDetails": {
+                    "street": "100 Queen",
+                    "street2": "Unit 201",
+                    "city": "Toronto",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M5H 2N2"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "dc80adbd-85d8-4856-99f6-e70f1445be12",
+                "txnTime": "2016-09-19T14:32:09Z",
+                "currencyCode": "CAD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058110/purchases/dc80adbd-85d8-4856-99f6-e70f1445be12"
+                }]
+            }
 
-If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token. 
-
-+ Parameters
-
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request EFT Purchase with Payment Token (application/json)
-        
-    + Attributes
-        + Include Purchase Base
-        + Include EFT Payment Token
-        + Include Splitpay Request
++ Request Submit an EFT Purchase Using a Single-Use Token and Create a Permanent Token (application/json)
 
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
-+ Response 200 (application/json)
+    + Body
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + Include Currency Code CA        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include EFT Token Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Response
-
-## EFT Purchase and Create Permanent Payment Token [POST /v1/accounts/{account_id}/purchases]
-<a name="eftpurchasetokenrequestpermanent" title="EFT Purchase Request and Create Permanent Token"></a>
-
-This is how you use a single-use token created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to process an EFT Direct Debit Purchase request and and the same time create a permanent, reusable *paymentToken*.
-
-+ Parameters
-    
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request EFT Purchase with Single-use Token and Create Permanent Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + merchantCustomerId:`eft_purchase01` (string, required) - This is a customer ID that the merchant provides with the request for their own internal customer identification. This value must be unique for each customer belonging to a merchant.
-        + Include EFT Payment Token Create from SUT
-
-        
-    + Headers
-    
-            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+            {
+                "merchantRefNum": "1513263700",
+                "amount": 2799,
+                "merchantCustomerId": "eft_purchase01",
+                "customerIp": "192.0.126.111",
+                "eft": {
+                    "paymentToken": "SASMPohbRkniJ7hL",
+                    "replaceWithMultiUsePaymentToken": true
+                }
+            }
 
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + merchantCustomerId:`eft_purchase01` - This is a customer ID that the merchant provided with the request for their own internal customer identification.
-        + Include Response Base
-        + Include Status Create Token
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include EFT Token Response Create from SUT
-        + Include Profile Response Create Token
-        + Include billingDetails
+    + Body
 
-## BACS Purchase with Payment Token [POST /v1/accounts/{account_id}/purchases]
+            {
+                "merchantRefNum": "1513263700",
+                "amount": 2799,
+                "eft": {
+                    "replaceWithMultiUsePaymentToken": true,
+                    "multiUsePaymentToken": "DrO1fktvYgAabsR",
+                    "paymentToken": "SASMPohbRkniJ7hL",
+                    "accountHolderName": "Argon Corp",
+                    "institutionId": "001",
+                    "transitNumber": "20250",
+                    "accountNumber": "*****11"
+                },
+                "profile": {
+                    "id": "7626ce2f-e862-4927-b56e-662172354998"
+                },
+                "billingDetails": {
+                    "street": "100 Queen",
+                    "street2": "Unit 201",
+                    "city": "Toronto",
+                    "state": "QC",
+                    "country": "CA",
+                    "zip": "M5H 2N2"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "bd26fdbe-55c2-47f6-9903-54cae80d5663",
+                "txnTime": "2017-12-14T15:01:39Z",
+                "currencyCode": "CAD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001175620/purchases/bd26fdbe-55c2-47f6-9903-54cae80d5663"
+                }]
+            }
+
+
+## BACS Purchase [POST /v1/accounts/{account_id}/purchases]
 <a name="bacspurchasetokenrequest" title="BACS Purchase Request with Token"></a>
 
 This is how you process a BACS Direct Debit Purchase request using a payment token. When processing a BACS Direct Debit Purchase, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
@@ -1498,29 +1939,69 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request BACS Purchase with Payment Token (application/json)
++ Attributes
+    + Include Purchase Base
+    + Include BACS
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Request
+    + Include links
 
-    + Attributes
-        + Include Purchase Base
-        + Include BACS Payment Token
-        + Include Splitpay Request
++ Request Submit a BACS Purchase Request Using a Payment Token (application/json)
 
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "111456789",
+                "amount": 3599,
+                "customerIp": "192.0.126.111",
+                "bacs": {
+                    "paymentToken": "MXwtFyyID1cNF31"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + Include Currency Code GBP        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include BACS Token Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Response
+    + Body
+
+            {
+                "merchantRefNum": "111456789",
+                "amount": 3599,
+                "bacs": {
+                    "lastDigits": "64",
+                    "paymentToken": "MXwtFyyID1cNF31",
+                    "accountHolderName": "Sally Barnes",
+                    "sortCode": "207405",
+                    "accountNumber": "******64",
+                    "mandateReference": "ABCDEF432107956200"
+                },
+                "profile": {
+                    "firstName": "Jane",
+                    "lastName": "Smith"
+                },
+                "billingDetails": {
+                    "street": "100 Queen",
+                    "street2": "Unit 201",
+                    "city": "Toronto",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M5H 2N2"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "bc70a7d4-b8e1-4050-9578-b0d285914569",
+                "txnTime": "2016-06-06T19:38:05Z",
+                "currencyCode": "GBP",
+                "status": "PENDING",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058130/purchases/bc70a7d4-b8e1-4050-9578-b0d285914569"
+                }]
+            }
 
 ## SEPA Purchase with Payment Token [POST /v1/accounts/{account_id}/purchases]
 <a name="sepapurchasetokenrequest" title="SEPA Purchase Request with Token"></a>
@@ -1536,29 +2017,68 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request SEPA Purchase with Payment Token (application/json)
++ Attributes
+    + Include Purchase Base
+    + Include SEPA Token
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Request
+    + Include links
 
-    + Attributes
-        + Include Purchase Base
-        + Include SEPA Payment Token
-        + Include Splitpay Request
++ Request Submit a SEPA Purchase Request Using a Payment Token (application/json)
 
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "ORDER_ID:12356789",
+                "amount": 10098,
+                "sepa": {
+                    "paymentToken": "MPyFGPEjxTYvdDj"
+                },
+                "customerIp": "192.0.126.111"
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + Include Currency Code EUR        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include SEPA Token Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Response
+    + Body
+
+            {
+                "merchantRefNum": "ORDER_ID:12356789",
+                "amount": 10098,
+                "sepa": {
+                    "lastDigits": "66",
+                    "paymentToken": "DuPrewyIiZNHGeC",
+                    "accountHolderName": "Sally Barnes",
+                    "bic": "ABNANL2B",
+                    "iban": "NL77 ABNA 04** **24 66",
+                    "mandateReference": "ABCDEF9870"
+                },
+                "profile": {
+                    "firstName": "Jane",
+                    "lastName": "Smith"
+                },
+                "billingDetails": {
+                    "street": "100 Queen",
+                    "street2": "Unit 201",
+                    "city": "Toronto",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M5H 2N2"
+                },
+                "dupCheck": true,
+                "id": "9e6cc31a-10d9-4e72-ab55-34f471fa04b1",
+                "txnTime": "2016-09-19T14:50:28Z",
+                "currencyCode": "EUR",
+                "status": "PENDING",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/1001058120/purchases/9e6cc31a-10d9-4e72-ab55-34f471fa04b1"
+                }]
+            }
 
 ## Cancel Purchase [PUT /v1/accounts/{account_id}/purchases/{purchase_id}]
 <a name="cancelpurchaserequest" title="Cancel a Purchase Request"></a>
@@ -1572,21 +2092,34 @@ This is how you cancel a Direct Debit Purchase request.
     + account_id:123456789 (string, required) - This is the merchant account number.
     + purchase_id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Purchase ID returned in the response.
 
++ Attributes
+    + status:CANCELLED (enum, required) - This is the status of the transaction request.
+
 + Request Cancel Purchase (application/json)
 
-    + Attributes
-        + status:CANCELLED (enum, required) - This is the status of the transaction request.
-        
     + Headers
     
-            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY        
-        
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
+    + Body
+
+            {
+                "status": "CANCELLED"
+            }
+    
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Purchase
-        + Include Response Base
-        + status:CANCELLED (enum, required) - This is the status of the transaction request.        
+    + Body
+
+            {
+                "status": "CANCELLED",
+                "id": "c3310f83-eeb7-45f1-bea5-0d297ef8ce21",
+                "txnTime": "2016-04-28T19:40:32Z",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.netbanx.com/directdebit/v1/accounts/123456789/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
+            }
         
         
 ## Get Purchase [GET /v1/accounts/{account_id}/purchases/{purchase_id}]
@@ -1607,16 +2140,51 @@ This is how you look up a Direct Debit Purchase request using the ID returned in
             
 + Response 200 (application/json)
 
-    + Attributes    
-        + Include Links Purchase
-        + Include Response Base
-        + Include Status Purchase
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Response
+    + Body
+
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "ach": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction",
+                    "routingNumber": "211589828",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 1981,
+                        "month": 10,
+                        "day": 24
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "7afd1d4a-39b8-4756-ba58-d886ad4aa35c",
+                "txnTime": "2017-04-04T13:35:17Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/123456789/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
+            }
 
 ## Get Purchase Using Merchant Reference Number [GET /v1/accounts/{account_id}/purchases?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
 <a name="getpurchaserequestmerchantrefnum" title="Look Up a Purchase Request Using a Merchant Reference Number"></a>
@@ -1633,7 +2201,7 @@ This is how you look up a Purchase request using the merchant reference number u
     + endDate:`2017-04-04T15:12:18Z` - This is the end date in UTC. Default = current date and time.
 
 
-+ Request Get Purchase (application/json)
++ Request Get Direct Debt Purchase Using Merchant Reference Number (application/json)
 
     + Headers
     
@@ -1653,81 +2221,194 @@ A Standalone Credit allows a merchant to credit an amount to a customer's bank a
 ## ACH Standalone Credit [POST /v1/accounts/{account_id}/standalonecredits]
 <a name="achstandalonecreditrequest" title="ACH Standalone Credit Request"></a>
 
-This is how you process an ACH Direct Debit Standalone Credit request.
+This shows you three examples of an ACH Standalone Credit request:
+* A regular Standalone Credit request
+* A Standalone Credit request using a payment token
+* A Standalone Credit request using a single-use token that also creates a permanent, reusable payment token representing the ACH account
+
+In the case of a Standalone Credit request using a payment token, you can use either of two payment token types:
+
+* The permanent, reusable payment token that you receive in the response to a Customer Vault [ACH bank account creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/ach-bank-accounts/create-an-ach-bank-account)
+* The temporary payment token that you receive in the response to a Customer Vault [ACH single-use token creation request](https://developer.paysafe.com/en/vault/api/#/reference/direct-debit-single-use-tokens/direct-debit-single-use-tokens/create-an-ach-single-use-token)
 
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request ACH Standalone Credit (application/json)
++ Attributes
+    + Include Purchase Base
+    + Include ACH
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Refund Request
+    + Include Links Standalone Credit
 
-    + Attributes
-        + Include Purchase Base
-        + Include ACH
-        + Include profile
-        + Include billingDetails
-        + Include Splitpay Refund Request
++ Request ACH Standalone Credit (application/json)
         
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "customerIp": "192.0.126.111",
+                "ach": {
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "accountNumber": "998772192",
+                    "routingNumber": "211589828",
+                    "paymentDescriptor": "Transaction"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Status Purchase
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
+    + Body
 
-## ACH Standalone Credit with Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
-<a name="achstandalonecredittokenrequest" title="ACH Standalone Credit Request with Token"></a>
-
-This is how you process an ACH Direct Debit Standalone Credit request using a regular payment token or a single-use token. The payment token is created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview).
-
-If you use a payment token, you can submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
-
-+ Parameters
-
-    + account_id:123456789 (string, required) - This is the merchant account number.
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "ach": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction",
+                    "routingNumber": "211589828",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 1981,
+                        "month": 10,
+                        "day": 24
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "7afd1d4a-39b8-4756-ba58-d886ad4aa35c",
+                "txnTime": "2017-04-04T13:35:17Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/7afd1d4a-39b8-4756-ba58-d886ad4aa35c"
+                }]
+            }
 
 + Request ACH Standalone Credit with Payment Token (application/json)
 
-    + Attributes
-        + Include Purchase Base
-        + Include ACH Payment Token
-        + Include Splitpay Refund Request
-        
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+                {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "ach": {
+                    "paymentToken": "DNjEzMTM4NDg1",
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+    
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Status Purchase
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Token Response
-        + Include profile response
-        + Include billingDetails      
-        + Include Splitpay Refund Response
+    + Body
 
-## ACH Standalone Credit and Create Permanent Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
-<a name="achstandalonetokenrequestpermanent" title="ACH Standalone Credit Request and Create Permanent Token"></a>
-
-This is how you use a single-use token created using the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to process an ACH Direct Debit Standalone Credit request and also create a permanent, reusable *paymentToken*.
-
-+ Parameters
-    
-    + account_id:123456789 (string, required) - This is the merchant account number.
+            {
+                "merchantRefNum": "04.04.17_2",
+                "amount": 10155,
+                "ach": {
+                    "lastDigits": "92",
+                    "accountHolderName": "First Company",
+                    "accountType": "SAVINGS",
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction",
+                    "routingNumber": "211589828",
+                    "accountNumber": "*******92"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "*******89",
+                    "dateOfBirth": {
+                        "year": 1981,
+                        "month": 10,
+                        "day": 24
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "id": "7afd1d4a-39b8-4756-ba58-d886ad4aa35c",
+                "txnTime": "2017-04-04T13:35:17Z",
+                "currencyCode": "USD",
+                "status": "COMPLETED",
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/7afd1d4a-39b8-4756-ba58-d886ad4aa35c"
+                }]
+            }
 
 + Request ACH Standalone Credit with Single-use Token and Create Permanent Payment Token (application/json)
 
@@ -1741,18 +2422,64 @@ This is how you use a single-use token created using the [Paysafe Customer Vault
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "merchantCustomerId": "ach_standalonecredit01",
+                "ach": {
+                    "paymentToken": "DNjEzMTM4NDg1",
+                    "replaceWithMultiUsePaymentToken": true,
+                    "payMethod": "WEB",
+                    "paymentDescriptor": "Transaction"
+                }
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + merchantCustomerId:`ach_standalonecredit01` - This is a customer ID that the merchant provided with the request for their own internal customer identification.
-        + Include Response Base
-        + Include Status Create Token
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Token Response Create from SUT
-        + Include Profile Response Create Token
-        + Include billingDetails
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "merchantCustomerId": "ach_standalonecredit01",
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "status": "COMPLETED",
+                "currencyCode": "USD",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "ach": {
+                    "replaceWithMultiUsePaymentToken": true,
+                    "multiUsePaymentToken": "Def6jC0Opljot9d",
+                    "accountHolderName": "First Company",
+                    "paymentToken": "DNjEzMTM4NDg1",
+                    "accountType": "CHECKING",
+                    "payMethod": "WEB",
+                    "routingNumber": "211589828",
+                    "paymentDescriptor": "Transaction",
+                    "accountNumber": "******09"
+                },
+                "profile": {
+                    "id": "ef2abd0c-8475-4cd9-85c6-70e1e226533c"
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                }
+            }
 
 ## EFT Standalone Credit [POST /v1/accounts/{account_id}/standalonecredits]
 <a name="eftstandalonecreditrequest" title="EFT Standalone Credit Request"></a>
@@ -2060,19 +2787,35 @@ This is how you look up a Standalone Credit request using the merchant reference
 + ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
 
     + Properties
-        + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-        + accountType:`CHECKING` (enum, required) - This is the bank account type.
-            - SAVINGS
-            - CHECKING
-            - LOAN
-        + payMethod:`WEB` (enum, required) - This is the payment type.
-            - WEB
-            - TEL
-            - PPD
-            - CCD
-        + accountNumber:`998772192` (string, required) - This is the bank account number.
-        + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-        + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+        + One Of
+            + paymentToken:`DNjEzMTM4NDg1` (string, required) - This is the payment token representing the ACH bank account.
+                _length<=50_
+            + ach details
+                + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+                    _length<=22_
+                + accountType:`CHECKING` (enum, required) - This is the bank account type.
+                    + Members
+                        + `SAVINGS`
+                        + `CHECKING`
+                        + `LOAN`
+                + payMethod:`WEB` (enum, required) - This is the payment type.
+        
+                    + Members
+                        + `WEB`
+                        + `TEL`
+                        + `PPD`
+                        + `CCD`
+                + accountNumber:`998772192` (string, required) - This is the bank account number.
+                    _length=4-17_
+                + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
+                    _length=2_
+                + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
+                    _length=9_
+                + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+                    _length<=12_
+                + replaceWithMultiUsePaymentToken:`true` (boolean) - This indicates that you want to create a permanent *paymentToken* from the single-use token, if you have included one in the request.
+                + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a permanent payment token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit ACH transactions.
+                    _Read Only_
         
 ## ACH Payment Token
 + ach (object, required) - If the [payment token](#achobject) is provided, no other bank account information is necessary.
@@ -2162,10 +2905,18 @@ This is how you look up a Standalone Credit request using the merchant reference
 + bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
-        + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-        + sortCode:`321654` (string, required) - This is the 6-digit sort code of the customer’s bank.
-        + accountNumber:`99877219`(string, required) - This is the bank account number.
-        + mandateReference:`SUBSCRIP10` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
+        + paymentToken:`BNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
+            _length<=50_
+        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
+            _length<=18_, _Read Only_
+        + sortCode:`321654` (string) - This is the 6-digit sort code of the customer’s bank.
+            _length=6_, _Read Only_
+        + accountNumber:`99877219`(string) - This is the bank account number.
+            _length=8_, _Read Only_
+        + lastDigits:`19` (string) - These are the last two digits of the bank account number, returned in the response.
+            _length=2_, _Read Only_
+        + mandateReference:`SUBSCRIP10` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.  
+            _length=10_, _Read Only_
 
 ## BACS Payment Token
 + bacs (object, required) - If the [payment token](#bacsobject) is provided, no other bank account information is necessary.
@@ -2173,6 +2924,37 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Properties
         + paymentToken:`BNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
 
+
+## ACH to delete
++ ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
+
+    + Properties
+        + One Of
+            + paymentToken:`DNjEzMTM4NDg1`
+            + ach details
+                + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+                    _length<=22_
+                + accountType:`CHECKING` (enum, required) - This is the bank account type.
+                    + Members
+                        + `SAVINGS`
+                        + `CHECKING`
+                        + `LOAN`
+                + payMethod:`WEB` (enum, required) - This is the payment type.
+        
+                    + Members
+                        + `WEB`
+                        + `TEL`
+                        + `PPD`
+                        + `CCD`
+                + accountNumber:`998772192` (string, required) - This is the bank account number.
+                    _length=4-17_
+                + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
+                    _length=9_
+                + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+                    _length<=12_
+                + replaceWithMultiUsePaymentToken:`true` (boolean) - This indicates that you want to create a permanent *paymentToken* from the single-use token, if you have included one in the request.
+                + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a permanent payment token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit ACH transactions.
+                    _Read Only_
 
 ## BACS Response
 + bacs (object) - These are the details of the [BACS bank account](#bacsobject) used for the request.
@@ -2198,13 +2980,19 @@ This is how you look up a Standalone Credit request using the merchant reference
 + billingDetails (object, optional) - These are the [billing details](#billingdetailsobject) for the request. Note that this object is required for the request *only when* a payment token is not provided.
 
     + Properties
-        + street:`100 Queen Street West`
-        + street2:`Apt. 55` 
-        + city:`Ottawa`
-        + state:`ON`
-        + country:`CA`
-        + zip:`M1M 1M1`
-        + phone:`6139991100`
+        + street:`100 Queen Street West` (string) - This is the first line of the street address in the billing address.
+            _length<=50_
+        + street2:`Apt. 55` (string) - This is the second line of the street address in the billing address, if required (e.g., apartment number).
+            _length<=50_
+        + city:`Ottawa` (string) - This is the city in the billing address.
+            _length<=40_
+        + state:`ON` (string) - Use the 2-character [state codes](#statecodes) or [province codes](#provincecodes) for Canada or the United States.
+            _length=2_
+        + country:`CA` (string) - See [Country Codes](#countrycodes).
+        + zip:`M1M 1M1` (string) - This is the postal/zip code in the billing address.
+            _length<=10_
+        + phone:`6139991100` (string) - This is the customer's telephone number.
+            _length<=40_
 
 ## Currency Code CA
 + currencyCode:`CAD`  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
@@ -2223,18 +3011,32 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + day:`24` (number, required) - This is the day of the customer's birth.
+            _length=2; max=31_
         + month:`10` (number, required) - This is the month of the customer's birth.
+            _length=2; max=12_
         + year:`1981` (number, required) - This is the year of the customer's birth.
+            _length=4; min=1900_
 
 ## EFT
 + eft (object, required) - These are the details of the [EFT bank account](#eftobject) used for the request.
     
     + Properties
-        + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-        + accountNumber:`998772192` (string, required) - This is the bank account number.
-        + transitNumber:`22446` (string, required) - This is the 5-digit transit number of the customer's bank branch.
-        + institutionId:`001` (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
-        + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.        
+        + One Of
+            + paymentToken:`DTEyMzYzMjQ3ODg` (string, required) - This is the payment token representing the ACH bank account.
+                _length<=50_
+            + eft details
+                + accountHolderName:First Company (string, required) - This is the name of the customer or company.
+                    _length<=30_
+                + accountNumber:`998772192` (string, required) - This is the bank account number.
+                    _length=4-12_
+                + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
+                    _length=2_
+                + transitNumber:`22446` (string, required) - This is the 5-digit transit number of the customer's bank branch.
+                    _length=5_
+                + institutionId:`001` (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
+                    _length=3_
+                + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
+                    _length<=15_        
 
 ## EFT Payment Token
 + eft (object, required) - If the [payment token](#eftobject) is provided, no other bank account information is necessary.
@@ -2285,6 +3087,18 @@ This is how you look up a Standalone Credit request using the merchant reference
         + institutionId:`001` (string) - This is the 3-digit institution ID of the customer’s bank branch.
         + paymentDescriptor:`Transaction (string) - This is the descriptor that will appear on the customer's bank statement
         + accountNumber:`******55` (string) - These are the last two digits of the bank account number.
+
+## `link`
++ rel: self 
++ href: `https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae`
+
+## `links`
++ links (array[link]) - This is an array of links related to the resource.  
+
+    Typically you will have reference to any parent resources, and a reference to the child resource (if applicable).
+    You may also see links for any call to action flows.
+    
+    _Read Only_
 
 ## Links Purchase
 + links (array) - This is an array of [links](#linksobject).
@@ -2534,10 +3348,37 @@ This is how you look up a Standalone Credit request using the merchant reference
     
 
 ## Purchase Base
-+ merchantRefNum:`123456789` (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
-+ amount:`2599`  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
-+ customerIp:`192.0.126.111`  (string, optional) - This is the customer's IP address.
-+ dupCheck:`true` (boolean, optional) - This validates that this request is not a duplicate.
++ `id`: `25f6dadf-176a-415f-95c9-6ff39ff697ba` (string) - This is the ID returned in the response. This ID can be used for future associated requests, e,g., Credits.
+
+    _Read Only_
++ `merchantRefNum`: `P1234` (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request.
+
+    _length<=255_
++ `amount`: `100` (number, required) - This is the amount of the request, in minor units.
+
+    _max=99999999999_
++ `customerIp`:`204.91.0.12` (string, optional) - This is the customer's IP address.
+
+    _length<=39_ 
++ `dupCheck`:`false` (boolean, optional) - This validates that this request is not a duplicate. A request is considered a duplicate if the *merchantRefNum* has already been used in a previous request within the past 90 days.
+    
+    + Default: true
+
++ `txnTime`: `2017-12-11T16:33:49Z` (string) - This is the date and time the transaction was processed.
+    _Read Only_
++ `status`:`RECEIVED` (enum) - This is the [status of the request](#refundsobject).
+
+    _Read Only_
+    
+    + Members
+        + `RECEIVED`
+        + `PENDING`
+        + `COMPLETED`
+        + `PROCESSING`
+        + `FAILED`
+        + `CANCELLED`
++ `currencyCode`:`USD` (string) - This is the currency of the merchant account, e.g., USD or CAD, returned in the request response.
+    _Read Only_
 
 ## profile
 + profile (object, optional) - These are some [customer details](#profileobject) for the request. Note that this object is required for the request *only when* a payment token is not provided. If included in the request, then any data provided with this element would override the corresponding field(s) that are already associated with the profile in the Customer Vault.
@@ -2545,13 +3386,14 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + firstName:`John` (string, required) - This is the customer’s first name.
+            _length<=80_
         + lastName:`Johnson` (string, required) - This is the customer's last name.
+            _length<=80_
         + email:`john.johnson@emailserver.com` (string, optional) - This is the customer's email address.
+            _length<=255_
         + ssn:`123456789` (string, optional) - This is the customer's social security number.
-        + dateOfBirth (object, optional) - This is the [customer's date of birth](#dateofbirthobject).
-            + day:`24` (number, required) - This is the day of the customer's birth.
-            + month:`10` (number, required) - This is the month of the customer's birth.
-            + year:`1981` (number, required) - This is the year of the customer's birth.
+            _length<=9_
+        + Include dateOfBirth
     
 ## profile response
 + profile (object) - These are some [customer details](#profileobject) for the request. 
@@ -2582,9 +3424,37 @@ This is how you look up a Standalone Credit request using the merchant reference
 + sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
-        + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-        + iban:`NL77ABNA0492122466` (string, required) - This is the International Bank Account Number for the customer's bank account.
-        + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
+        + One Of
+            + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - If the payment token is provided, no other bank account information is necessary.
+                _length<=50_
+            + sepa details
+                + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
+                    _length<=32_
+                + bic:`ABNANL2B` (string, optional) - This is the Bank Identifier Code for the customer's bank account.
+                    _length<=34_
+                + iban:`NL77ABNA0492122466` (string, required) - This is the International Bank Account Number for the customer's bank account.
+                    _length=1-34_
+                + lastDigits:`66` (string) - These are the last two digits of the bank account number, returned in the response.
+                    _length=2_, _Read Only_
+                + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
+                    _length=35_
+
+## SEPA Token
++ sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
+
+    + Properties
+        + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - If the payment token is provided, no other bank account information is necessary.
+            _length<=50_
+        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
+            _length<=32_, _Read Only_
+        + bic:`ABNANL2B` (string) - This is the Bank Identifier Code for the customer's bank account.
+            _length<=34_,  _Read Only_
+        + iban:`NL77ABNA0492122466` (string) - This is the International Bank Account Number for the customer's bank account.
+            _length=1-34_,  _Read Only_
+        + lastDigits:`66` (string) - These are the last two digits of the bank account number, returned in the response.
+            _length=2_, _Read Only_
+        + mandateReference:`1000-3232659874-65985698` (string) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
+            _length=35_,  _Read Only_
 
 ## SEPA Payment Token
 + sepa (object, required) - If the [payment token](#sepaobject) is provided, no other bank account information is necessary.
