@@ -823,7 +823,7 @@ When providing EFT bank account information, merchants can provide either a paym
 |customerIp         |string<br/>`length<=39`                |This is the customer's IP address.|
 |dupCheck           |boolean                                |This validates that this request is not a duplicate. A request is considered a duplicate if the *merchantRefNum* has already been used in a previous request within the last 90 days.<br/>**Note:** This value defaults to *true*.|
 |txnTime            |UTC formatted date                     |This is the date and time the request was processed. For example:<br/>2017-01-26T10:32:28Z|
-|currencyCode       |string<br/>`length=3`                  |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
+|currencyCode       |string<br/>`length=3`                  |This is the currency of the merchant account, e.g., USD or GBP, returned in the request response. See [Currency Codes](#currencycodes)|
 |error              |[error](#errorobject)                  |       |
 |status             |enum                                   |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
 |splitpay           |[splitpay](#splitpayobject)            |This enables you to use Split Payouts functionality when processing a purchase.|
@@ -928,7 +928,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 |customerIp         |string<br/>`length<=39`                    |This is the customer's IP address.|
 |dupCheck           |boolean                                    |This validates that this request is not a duplicate. A request is considered a duplicate if the *merchantRefNum* has already been used in a previous request within the last 90 days.<br/>**Note:** This value defaults to *true*.|
 |txnTime            |UTC formatted date                         |This is the date and time the request was processed. For example:<br/>2017-01-26T10:32:28Z|
-|currencyCode       |string<br/>`length=3`                      |This is the currency of the merchant account, e.g., USD or CAD, returned in the request response. See [Currency Codes](#currencycodes)|
+|currencyCode       |string<br/>`length=3`                      |This is the currency of the merchant account, e.g., USD or GBP, returned in the request response. See [Currency Codes](#currencycodes)|
 |error              |[error](#errorobject)                      |       |
 |status             |enum                                       |This is the status of the transaction request. Possible values are:<ul><li>RECEIVED &ndash; Our system has received the request and is waiting for the downstream processor’s response.</li><li>PENDING &ndash; Our system has received the request but it has not yet been batched.</li><li>PROCESSING &ndash; The batching has started.</li><li>COMPLETED &ndash; The transaction has been completed.</li><li>FAILED &ndash; The transaction failed, due to either an error or being declined.</li><li>CANCELLED &ndash; The  request has been cancelled.</li></ul>|
 
@@ -2194,7 +2194,7 @@ This is how you look up a Purchase request using the merchant reference number u
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
-    + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* returned in the response to the Purchase request.
+    + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* used in the Purchase request.
     + limit:2 (string, optional) - This is the total number of records to return. Default value is 10. Max value is 50.
     + offset:2 (string, optional) - This is the starting position, where 0 is the first record. Default = 0.
     + startDate:`2017-01-14T15:12:18Z` - This is the start date in UTC. Default = 30 days before the *endDate*.
@@ -2209,9 +2209,110 @@ This is how you look up a Purchase request using the merchant reference number u
         
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links GET Reference
-        + Include Splitpay Response
+    + Body
+
+            {
+                "links": [{
+                        "rel": "self",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "next",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "previous",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    }
+                ],
+                "purchases": [{
+                        "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                        "txnTime": "2017-02-14T15:12:18Z",
+                        "currencyCode": "USD",
+                        "status": "PENDING",
+                        "merchantRefNum": "merchant-ABC-123",
+                        "amount": 2599,
+                        "customerIp": "192.0.126.111",
+                        "ach": {
+                            "accountHolderName": "First Company",
+                            "accountType": "CHECKING",
+                            "payMethod": "WEB",
+                            "routingNumber": "211589828",
+                            "paymentDescriptor": "Transaction",
+                            "lastDigits": "09"
+                        },
+                        "profile": {
+                            "firstName": "John",
+                            "lastName": "Johnson",
+                            "email": "john.johnson@emailserver.com",
+                            "ssn": "123456789",
+                            "dateOfBirth": {
+                                "day": 24,
+                                "month": 10,
+                                "year": 1981
+                            }
+                        },
+                        "billingDetails": {
+                            "street": "100 Queen Street West",
+                            "street2": "Apt. 55",
+                            "city": "Ottawa",
+                            "state": "ON",
+                            "country": "Canada",
+                            "zip": "M1M 1M1",
+                            "phone": "6139991100"
+                        },
+                        "links": {
+                            "rel": "self",
+                            "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae"
+                        }
+                    },
+                    {
+                        "id": "4c99e967-517e-4610-b3bf-364d6b3492a1",
+                        "txnTime": "2017-02-14T15:12:18Z",
+                        "status": "PENDING",
+                        "merchantRefNum": "merchant-ABC-123",
+                        "amount": 2599,
+                        "customerIp": "192.0.126.111",
+                        "ach": {
+                            "accountHolderName": "First Company",
+                            "accountType": "CHECKING",
+                            "payMethod": "WEB",
+                            "routingNumber": "211589828",
+                            "paymentDescriptor": "Transaction",
+                            "lastDigits": "09"
+                        },
+                        "profile": {
+                            "firstName": "John",
+                            "lastName": "Johnson",
+                            "email": "john.johnson@emailserver.com",
+                            "ssn": "123456789",
+                            "dateOfBirth": {
+                                "day": 24,
+                                "month": 10,
+                                "year": 1981
+                            }
+                        },
+                        "billingDetails": {
+                            "street": "100 Queen Street West",
+                            "street2": "Apt. 55",
+                            "city": "Ottawa",
+                            "state": "ON",
+                            "country": "Canada",
+                            "zip": "M1M 1M1",
+                            "phone": "6139991100"
+                        },
+                        "links": {
+                            "rel": "self",
+                            "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/4c99e967-517e-4610-b3bf-364d6b3492a1"
+                        }
+                    }
+                ],
+                "splitpay": {
+                    "linkedAccount": "123124124",
+                    "percent": 5,
+                    "amount": 505
+                }
+            }
 
 # Standalone Credits [/standalonecredits]
 <a name="standalonecreditrequest" title="Standalone Credit Request"></a>
@@ -2350,16 +2451,7 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                     "paymentToken": "DNjEzMTM4NDg1",
                     "payMethod": "WEB",
                     "paymentDescriptor": "Transaction"
-                },
-                "splitpay": [{
-                        "linkedAccount": "123816816",
-                        "percent": 6
-                    },
-                    {
-                        "linkedAccount": "123124124",
-                        "amount": 130
-                    }
-                ]
+                }
             }
     
 + Response 200 (application/json)
@@ -2607,7 +2699,7 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                 ]
             }
 
-+ Request Bubmit an EFT Standalone Credit Request Using a Payment Token (application/json)
++ Request Submit an EFT Standalone Credit Request Using a Payment Token (application/json)
 
     + Headers
     
@@ -2766,74 +2858,109 @@ This is how you process a BACS Direct Debit Standalone Credit request using a pa
  
 You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
++ Attributes
+    + Include Purchase Base
+    + Include BACS Payment Token
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Refund Request
+    + Include Links Standalone Credit
 
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request BACS Standalone Credit with Payment Token (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + Include BACS Payment Token
-        + Include Splitpay Refund Request
++ Request Submit a BACS Standalone Credit Request Using a Payment Token (application/json)
         
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "bacs": {
+                    "paymentToken": "BNjEzMTM4NDg1"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Currency Code GBP        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include BACS Token Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "currencyCode": "GBP",
+                "status": "PENDING",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "bacs": {
+                    "paymentToken": "BNjEzMTM4NDg1",
+                    "accountHolderName": "First Company",
+                    "sortCode": "321654",
+                    "mandateReference": "SUBSCRIP10",
+                    "lastDigits": "09"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
 
 ## SEPA Standalone Credit [POST /v1/accounts/{account_id}/standalonecredits]
 <a name="sepastandalonecreditrequest" title="SEPA Standalone Credit Request"></a>
 
-This is how you process a SEPA Direct Debit Standalone Credit request.
+This shows you two examples of an SEPA Standalone Credit request:
+* A regular Standalone Credit request
+* A Standalone Credit request using a payment token
 
-+ Parameters
-
-    + account_id:123456789 (string, required) - This is the merchant account number.
-
-+ Request SEPA Standalone Credit (application/json)
-
-    + Attributes
-        + Include Purchase Base
-        + Include SEPA
-        + Include profile
-        + Include billingDetails
-        + Include Splitpay Refund Request
-        
-    + Headers
-    
-            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
-
-+ Response 200 (application/json)
-
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Currency Code EUR
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include SEPA Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
-
-## SEPA Standalone Credit with Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
-<a name="sepastandalonecredittokenrequest" title="SEPA Standalone Credit Request with Token"></a>
-
-This is how you process a SEPA Direct Debit Standalone Credit request using a payment token. When processing a SEPA Direct Debit Standalone Credit, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
+When processing a SEPA Direct Debit Standalone Credit using a payment token, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
  * Create a profile
  * Add a SEPA bank account to the profile
  * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
@@ -2844,29 +2971,201 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
 
     + account_id:123456789 (string, required) - This is the merchant account number.
 
-+ Request SEPA Standalone Credit with Payment Token (application/json)
++ Attributes
+    + Include Purchase Base
+    + Include SEPA
+    + Include profile
+    + Include billingDetails
+    + Include Splitpay Refund Request
+    + Include Links Standalone Credit
 
-    + Attributes
-        + Include Purchase Base
-        + Include SEPA Payment Token
-        + Include Splitpay Refund Request
-        
++ Request Submit a SEPA Standalone Credit Request (application/json)
+
     + Headers
     
             Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
 
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "sepa": {
+                    "accountHolderName": "First Company",
+                    "iban": "NL77ABNA0492122466",
+                    "mandateReference": "1000-3232659874-65985698"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Currency Code EUR        
-        + Include Status Purchase
-        + Include Purchase Base
-        + Include SEPA Token Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "currencyCode": "EUR",
+                "status": "PENDING",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "sepa": {
+                    "accountHolderName": "First Company",
+                    "iban": "NL77ABNA0492122466",
+                    "mandateReference": "1000-3232659874-65985698",
+                    "lastDigits": "66"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+
++ Request Submit a SEPA Standalone Credit Request Using a Payment Token (application/json)
+
+    + Headers
+    
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
+    + Body
+
+            {
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "sepa": {
+                    "paymentToken": "MTEyMzYzMjQ3ODg"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "currencyCode": "EUR",
+                "status": "PENDING",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "sepa": {
+                    "paymentToken": "MTEyMzYzMjQ3ODg",
+                    "accountHolderName": "First Company",
+                    "mandateReference": "1000-3232659874-65985698",
+                    "lastDigits": "66",
+                    "bic": "ABNANL2B",
+                    "iban": "NL77 ABNA 04** **24 66"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
 
 ## Cancel Standalone Credit [PUT /v1/standalonecredits/{standalone_credit_id}]
 <a name="cancelstandalonecreditrequest" title="Cancel a Standalone Credit Request"></a>
@@ -2875,25 +3174,38 @@ This is how you cancel a Direct Debit Standalone Credit request.
 
 **Note:** Direct Debit Standalone Credits can be cancelled only *before* they are batched, which varies with the downstream processor. Batching can occur shortly after or as long as one business day after the transaction is submitted. If you are uncertain, you can try the Cancel transaction – the response will indicate whether the attempt occurred too late.
 
++ Attributes
+    + status:CANCELLED (enum, required) - This is the status of the transaction request.
+
 + Parameters
 
     + standalone_credit_id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the Standalone Credit ID returned in the response.
 
-+ Request Cancel Standalone Credit (application/json)
++ Request Cancel a Standalone Credit (application/json)
 
-    + Attributes
-        + status:CANCELLED (enum, required) - This is the status of the transaction request.
-        
     + Headers
     
-            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY        
+            Authorization: Basic YOUR-BASE64-ENCODED-API-KEY
+
+    + Body
+
+            {
+                "status": "CANCELLED"
+            }
         
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links Standalone Credit
-        + Include Response Base
-        + status:CANCELLED (enum, required) - This is the status of the transaction request.
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "status": "CANCELLED"
+            }
 
 ## Get Standalone Credit [GET /v1/accounts/{account_id}/standalonecredits/{standalone_credit_id}]
 <a name="getstandalonecreditrequest" title="Look Up a Standalone Credit Request"></a>
@@ -2913,16 +3225,60 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
             
 + Response 200 (application/json)
 
-    + Attributes    
-        + Include Links Standalone Credit
-        + Include Response Base
-        + Include Status Purchase
-        + Include Currency Code US        
-        + Include Purchase Base
-        + Include ACH Response
-        + Include profile response
-        + Include billingDetails
-        + Include Splitpay Refund Response
+    + Body
+
+            {
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }],
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "status": "PENDING",
+                "currencyCode": "USD",
+                "merchantRefNum": "123456789",
+                "amount": 2599,
+                "customerIp": "192.0.126.111",
+                "dupCheck": true,
+                "ach": {
+                    "accountHolderName": "First Company",
+                    "accountType": "CHECKING",
+                    "payMethod": "WEB",
+                    "routingNumber": "211589828",
+                    "paymentDescriptor": "Transaction",
+                    "lastDigits": "09"
+                },
+                "profile": {
+                    "firstName": "John",
+                    "lastName": "Johnson",
+                    "email": "john.johnson@emailserver.com",
+                    "ssn": "123456789",
+                    "dateOfBirth": {
+                        "day": 24,
+                        "month": 10,
+                        "year": 1981
+                    }
+                },
+                "billingDetails": {
+                    "street": "100 Queen Street West",
+                    "street2": "Apt. 55",
+                    "city": "Ottawa",
+                    "state": "ON",
+                    "country": "CA",
+                    "zip": "M1M 1M1",
+                    "phone": "6139991100"
+                },
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
 
 ## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{account_id}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
 <a name="getstandalonecreditrequestmerchantrefnum" title="Look Up a Standalone Credit Request Using a Merchant Reference Number"></a>
@@ -2932,14 +3288,14 @@ This is how you look up a Standalone Credit request using the merchant reference
 + Parameters
 
     + account_id:123456789 (string, required) - This is the merchant account number.
-    + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* returned in the response to the Standalone Credit request.
+    + merchantRefNum:`merchant-ABC-123` (string, required) - This is the *merchantRefNum* used in the Standalone Credit request.
     + limit:2 (string, optional) - This is the total number of records to return. Default value is 10. Max value is 50.
     + offset:2 (string, optional) - This is the starting position, where 0 is the first record. Default = 0.
     + startDate:`2017-01-14T15:12:18Z` - This is the start date in UTC. Default = 30 days before the *endDate*.
     + endDate:`2017-04-04T15:12:18Z` - This is the end date in UTC. Default = current date and time.    
     
     
-+ Request Get Standalone Credit (application/json)
++ Request Get Direct Debt Standalone Credit Using Merchant Reference Number (application/json)
 
     + Headers
     
@@ -2947,9 +3303,115 @@ This is how you look up a Standalone Credit request using the merchant reference
         
 + Response 200 (application/json)
 
-    + Attributes
-        + Include Links GET Standalone Credit Reference
-        + Include Splitpay Refund Response
+    + Body
+
+            {
+                "links": [{
+                        "rel": "self",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "next",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "previous",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    }
+                ],
+                "standalonecredits": [{
+                        "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                        "txnTime": "2017-02-14T15:12:18Z",
+                        "currencyCode": "USD",
+                        "status": "PENDING",
+                        "merchantRefNum": "merchant-ABC-123",
+                        "amount": 2599,
+                        "customerIp": "192.0.126.111",
+                        "ach": {
+                            "accountHolderName": "First Company",
+                            "accountType": "CHECKING",
+                            "payMethod": "WEB",
+                            "routingNumber": "211589828",
+                            "paymentDescriptor": "Transaction",
+                            "lastDigits": "09"
+                        },
+                        "profile": {
+                            "firstName": "John",
+                            "lastName": "Johnson",
+                            "email": "john.johnson@emailserver.com",
+                            "ssn": "123456789",
+                            "dateOfBirth": {
+                                "day": 24,
+                                "month": 10,
+                                "year": 1981
+                            }
+                        },
+                        "billingDetails": {
+                            "street": "100 Queen Street West",
+                            "street2": "Apt. 55",
+                            "city": "Ottawa",
+                            "state": "ON",
+                            "country": "Canada",
+                            "zip": "M1M 1M1",
+                            "phone": "6139991100"
+                        },
+                        "links": {
+                            "rel": "self",
+                            "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                        }
+                    },
+                    {
+                        "id": "bg4h52c7-c991-4418-966a-b62989cb1a3f",
+                        "txnTime": "2017-02-14T15:12:18Z",
+                        "status": "PENDING",
+                        "merchantRefNum": "merchant-ABC-123",
+                        "amount": 4599,
+                        "customerIp": "192.0.126.111",
+                        "ach": {
+                            "accountHolderName": "First Company",
+                            "accountType": "CHECKING",
+                            "payMethod": "WEB",
+                            "routingNumber": "211589828",
+                            "paymentDescriptor": "Transaction",
+                            "lastDigits": "09"
+                        },
+                        "profile": {
+                            "firstName": "John",
+                            "lastName": "Johnson",
+                            "email": "john.johnson@emailserver.com",
+                            "ssn": "123456789",
+                            "dateOfBirth": {
+                                "day": 24,
+                                "month": 10,
+                                "year": 1981
+                            }
+                        },
+                        "billingDetails": {
+                            "street": "100 Queen Street West",
+                            "street2": "Apt. 55",
+                            "city": "Ottawa",
+                            "state": "ON",
+                            "country": "Canada",
+                            "zip": "M1M 1M1",
+                            "phone": "6139991100"
+                        },
+                        "links": {
+                            "rel": "self",
+                            "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                        }
+                    }
+                ],
+                "splitpay": [{
+                        "linkedAccount": "123816816",
+                        "percent": 6,
+                        "amount": 156
+                    },
+                    {
+                        "linkedAccount": "123124124",
+                        "amount": 130
+                    }
+                ]
+            }
 
 # Data Structures
 
@@ -2958,7 +3420,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 
     + Properties
         + One Of
-            + paymentToken:`DNjEzMTM4NDg1` (string, required) - This is the payment token representing the ACH bank account.
+            + paymentToken:`DNjEzMTM4NDg1` (string, required) - This is the payment token or single-use token representing the ACH bank account.
                 _length<=50_
             + ach details
                 + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -2978,7 +3440,7 @@ This is how you look up a Standalone Credit request using the merchant reference
                 + accountNumber:`998772192` (string, required) - This is the bank account number.
                     _length=4-17_
                 + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-                    _length=2_
+                    _length=2_, _Read Only_
                 + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
                     _length=9_
                 + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
@@ -2987,90 +3449,6 @@ This is how you look up a Standalone Credit request using the merchant reference
                 + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a permanent payment token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit ACH transactions.
                     _Read Only_
         
-## ACH Payment Token
-+ ach (object, required) - If the [payment token](#achobject) is provided, no other bank account information is necessary.
-
-    + Properties
-        + paymentToken:`DNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
-        + payMethod:`WEB` (enum, required) - This is the payment type.
-            - WEB
-            - TEL
-            - PPD
-            - CCD
-        + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
-
-## ACH Payment Token Create from SUT
-+ ach (object, required) - If the [payment token](#achobject) is provided, no other bank account information is necessary.
-
-    + Properties
-        + paymentToken:`DNjEzMTM4NDg1` (string, required) - This is the [single-use token](https://developer.paysafe.com/en/vault/api/#/reference/direct-debit-single-use-tokens/ach-single-use-tokens/create-an-ach-single-use-token) generated for the ACH bank account using the Customer Vault API.
-        + replaceWithMultiUsePaymentToken:`true` (boolean, required) - This indicates that you want to create a permanent *paymentToken* from the single-use token included in the request.
-        + payMethod:`WEB` (enum, required) - This is the payment type.
-            - WEB
-            - TEL
-            - PPD
-            - CCD
-        + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
-
-## ACH Response
-+ ach (object) - These are the details of the [ACH bank account](#achobject) used for the request.
-
-    + Properties
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + accountType:`CHECKING` (enum) - This is the bank account type.
-            - SAVINGS
-            - CHECKING
-            - LOAN
-        + payMethod:`WEB` (enum) - This is the payment type.
-            - WEB
-            - TEL
-            - PPD
-            - CCD
-        + routingNumber:`211589828` (string) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-        + paymentDescriptor:`Transaction` (string) - This is the descriptor that will appear on the customer's bank statement
-        + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-
-## ACH Token Response
-+ ach (object) - These are the details of the [ACH bank account](#achobject) used for the request.
-
-    + Properties
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + paymentToken:`DNjEzMTM4NDg1` (string) - If the payment token is provided, no other bank account information is necessary.
-        + accountType:`CHECKING` (enum) - This is the bank account type.
-            - SAVINGS
-            - CHECKING
-            - LOAN
-        + payMethod:`WEB` (enum) - This is the payment type.
-            - WEB
-            - TEL
-            - PPD
-            - CCD
-        + routingNumber:`211589828` (string) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-        + paymentDescriptor:`Transaction` (string) - This is the descriptor that will appear on the customer's bank statement
-        + lastDigits:`******09` (string) - These are the last two digits of the bank account number.
-
-
-## ACH Token Response Create from SUT
-+ ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
-
-    + Properties
-        + replaceWithMultiUsePaymentToken:`true` (boolean) - This indicates that you wanted to create a permanent *paymentToken* from the single-use token included in the request.
-        + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit ACH transactions. 
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + paymentToken:`DNjEzMTM4NDg1` (string) - This is the single-use token generated for the ACH bank account, included in the request.
-        + accountType:`CHECKING` (enum) - This is the bank account type.
-            - SAVINGS
-            - CHECKING
-            - LOAN
-        + payMethod:`WEB` (enum) - This is the payment type.
-            - WEB
-            - TEL
-            - PPD
-            - CCD
-        + routingNumber:`211589828` (string) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-        + paymentDescriptor:`Transaction` (string) - This is the descriptor that will appear on the customer's bank statement
-        + accountNumber:`******09` (string) - These are the last two digits of the bank account number.
-
 ## BACS
 + bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
@@ -3095,57 +3473,6 @@ This is how you look up a Standalone Credit request using the merchant reference
         + paymentToken:`BNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
 
 
-## ACH to delete
-+ ach (object, required) - These are the details of the [ACH bank account](#achobject) used for the request.
-
-    + Properties
-        + One Of
-            + paymentToken:`DNjEzMTM4NDg1`
-            + ach details
-                + accountHolderName:First Company (string, required) - This is the name of the customer or company.
-                    _length<=22_
-                + accountType:`CHECKING` (enum, required) - This is the bank account type.
-                    + Members
-                        + `SAVINGS`
-                        + `CHECKING`
-                        + `LOAN`
-                + payMethod:`WEB` (enum, required) - This is the payment type.
-        
-                    + Members
-                        + `WEB`
-                        + `TEL`
-                        + `PPD`
-                        + `CCD`
-                + accountNumber:`998772192` (string, required) - This is the bank account number.
-                    _length=4-17_
-                + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-                    _length=9_
-                + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
-                    _length<=12_
-                + replaceWithMultiUsePaymentToken:`true` (boolean) - This indicates that you want to create a permanent *paymentToken* from the single-use token, if you have included one in the request.
-                + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a permanent payment token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit ACH transactions.
-                    _Read Only_
-
-## BACS Response
-+ bacs (object) - These are the details of the [BACS bank account](#bacsobject) used for the request.
-
-    + Properties
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + sortCode:`321654` (string) - This is the 6-digit sort code of the customer’s bank.
-        + mandateReference:`SUBSCRIP10` (string) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
-        + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-
-## BACS Token Response
-+ bacs (object) - These are the details of the [BACS bank account](#bacsobject) used for the request.
-
-    + Properties
-        + paymentToken:`BNjEzMTM4NDg1` (string) - If the payment token is provided, no other bank account information is necessary.
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + sortCode:`321654` (string) - This is the 6-digit sort code of the customer’s bank.
-        + mandateReference:`SUBSCRIP10` (string) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.        
-        + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-
-
 ## billingDetails
 + billingDetails (object, optional) - These are the [billing details](#billingdetailsobject) for the request. Note that this object is required for the request *only when* a payment token is not provided.
 
@@ -3164,18 +3491,6 @@ This is how you look up a Standalone Credit request using the merchant reference
         + phone:`6139991100` (string) - This is the customer's telephone number.
             _length<=40_
 
-## Currency Code CA
-+ currencyCode:`CAD`  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
-
-## Currency Code EUR
-+ currencyCode:`EUR`  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
-
-## Currency Code GBP
-+ currencyCode:`GBP`  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
-
-## Currency Code US
-+ currencyCode:`USD`  (string, required) - This is the currency of the merchant account, e.g. USD or CAD, returned in the request response.  See [Currency Codes](#currencycodes).
-
 ## dateOfBirth
 + dateOfBirth (object, optional) - This is the [customer's date of birth](#dateofbirthobject).
 
@@ -3192,7 +3507,7 @@ This is how you look up a Standalone Credit request using the merchant reference
     
     + Properties
         + One Of
-            + paymentToken:`DTEyMzYzMjQ3ODg` (string, required) - This is the payment token representing the ACH bank account.
+            + paymentToken:`DTEyMzYzMjQ3ODg` (string, required) - This is the payment token or single-use token representing the ACH bank account.
                 _length<=50_
             + eft details
                 + accountHolderName:First Company (string, required) - This is the name of the customer or company.
@@ -3200,63 +3515,16 @@ This is how you look up a Standalone Credit request using the merchant reference
                 + accountNumber:`998772192` (string, required) - This is the bank account number.
                     _length=4-12_
                 + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-                    _length=2_
+                    _length=2_, _Read Only_
                 + transitNumber:`22446` (string, required) - This is the 5-digit transit number of the customer's bank branch.
                     _length=5_
                 + institutionId:`001` (string, required) - This is the 3-digit institution ID of the customer’s bank branch.
                     _length=3_
                 + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
-                    _length<=15_        
-
-## EFT Payment Token
-+ eft (object, required) - If the [payment token](#eftobject) is provided, no other bank account information is necessary.
-
-    + Properties
-        + paymentToken:`DTEyMzYzMjQ3ODg` (string, required) - If the payment token is provided, no other bank account information is necessary.
-        + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
-
-## EFT Payment Token Create from SUT
-+ eft (object, required) - If the [payment token](#eftobject) is provided, no other bank account information is necessary.
-
-    + Properties
-        + paymentToken:`DNjEzMTM4NDg1` (string, required) - This is the [single-use token](https://developer.paysafe.com/en/vault/api/#/reference/direct-debit-single-use-tokens/eft-single-use-tokens/create-an-eft-single-use-token) generated for the EFT bank account using the Customer Vault API.
-        + replaceWithMultiUsePaymentToken:`true` (boolean, required) - This indicates that you want to create a permanent *paymentToken* from the single-use token included in the request.
-        + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement.
-
-## EFT Response
-+ eft (object) - These are the details of the [EFT bank account](#eftobject) used for the request.
-
-    + Properties
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + transitNumber:`22446` (string) - This is the 5-digit transit number of the customer's bank branch.
-        + institutionId:`001` (string) - This is the 3-digit institution ID of the customer’s bank branch.
-        + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-        + paymentDescriptor:`Transaction` (string) - This is the descriptor that will appear on the customer's bank statement.        
-
-## EFT Token Response
-+ eft (object) - These are the details of the [EFT bank account](#eftobject) used for the request.
-
-    + Properties
-        + paymentToken:`DTEyMzYzMjQ3ODg` (string) - If the payment token is provided, no other bank account information is necessary.        
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + transitNumber:`22446` (string) - This is the 5-digit transit number of the customer's bank branch.
-        + institutionId:`001` (string) - This is the 3-digit institution ID of the customer’s bank branch.
-        + lastDigits:`09` (string) - These are the last two digits of the bank account number, returned in the response.
-        + paymentDescriptor:`Transaction` (string) - This is the descriptor that will appear on the customer's bank statement.        
-
-
-## EFT Token Response Create from SUT
-+ eft (object, required) - These are the details of the [EFT bank account](#eftobject) used for the request.
-
-    + Properties
-        + replaceWithMultiUsePaymentToken:`true` (boolean) - This indicates that you wanted to create a permanent *paymentToken* from the single-use token included in the request.
-        + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit ACH transactions. 
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + paymentToken:`DNjEzMTM4NDg1` (string) - This is the single-use token generated for the EFT bank account, included in the request.
-        + transitNumber:`22446` (string) - This is the 5-digit transit number of the customer's bank branch.
-        + institutionId:`001` (string) - This is the 3-digit institution ID of the customer’s bank branch.
-        + paymentDescriptor:`Transaction (string) - This is the descriptor that will appear on the customer's bank statement
-        + accountNumber:`******55` (string) - These are the last two digits of the bank account number.
+                    _length<=15_
+                + replaceWithMultiUsePaymentToken:`true` (boolean) - This indicates that you want to create a permanent *paymentToken* from the single-use token, if you have included one in the request.
+                + multiUsePaymentToken:`Def6jC0Opljot9d` (string) - This is a permanent payment token generated by Paysafe that represents the bank account and that can be used in the place of bank account information in Direct Debit EFT transactions.
+                    _Read Only_
 
 ## `link`
 + rel: self 
@@ -3282,241 +3550,6 @@ This is how you look up a Standalone Credit request using the merchant reference
         + rel:`self` (string, required)
         + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)        
         
-## Links GET
-+ links (array, required) - This is an array of [links](#linksobject).
-    + (object)
-        + rel:`self` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
-    + (object)
-        + rel:`next` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
-        
-## Links GET Reference
-+ links (array, required) - This is an array of [links](#linksobject).
-    + (object)
-        + rel:`self` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
-    + (object)
-        + rel:`next` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
-    + (object)
-        + rel:`previous` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)        
-+ purchases (array) - This array lists [Purchases](#purchaseobject) processed using this merchant reference number.
-    + (object)
-        + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
-        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
-        + Include Currency Code US
-        + status:`PENDING` (enum, required) - This is the status of the transaction request.        
-            - COMPLETED
-            - RECEIVED
-            - PENDING
-            - PROCESSING
-            - FAILED
-            - CANCELLED
-        + merchantRefNum:`merchant-ABC-123` (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
-        + amount:`2599`  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
-        + customerIp:`192.0.126.111`  (string, optional) - This is the customer's IP address.
-        + ach
-            + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-            + accountType:`CHECKING` (enum, required) - This is the bank account type.
-                - SAVINGS
-                - CHECKING
-                - LOAN
-            + payMethod:`WEB` (enum, required) - This is the payment type.
-                - WEB
-                - TEL
-                - PPD
-                - CCD
-            + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-            + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement
-            + lastDigits:`09` (string, optional) - These are the last two digits of the bank account number, returned in the response.
-        + profile
-            + firstName:`John` (string, required) - This is the customer’s first name.
-            + lastName:`Johnson` (string, required) - This is the customer's last name.
-            + email:`john.johnson@emailserver.com` (string, optional) - This is the customer's email address.
-            + ssn:`123456789` (string, optional) - This is the customer's social security number.
-            + dateOfBirth (object, optional) - This is the customer's date of birth.
-                + day:`24` (number, required) - This is the day of the customer's birth.
-                + month:`10` (number, required) - This is the month of the customer's birth.
-                + year:`1981` (number, required) - This is the year of the customer's birth.
-        + billingDetails
-            + street:`100 Queen Street West` 
-            + street2:`Apt. 55` 
-            + city:`Ottawa`
-            + state:`ON`
-            + country:`Canada` 
-            + zip:`M1M 1M1`
-            + phone:`6139991100`
-        + links
-            + rel:`self` (string, required)
-            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
-    + (object)
-        + id:`4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required) - This is the ID returned in the response.
-        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
-        + status:`PENDING` (enum, required) - This is the status of the transaction request.        
-            - COMPLETED
-            - RECEIVED
-            - PENDING
-            - PROCESSING
-            - FAILED
-            - CANCELLED
-        + merchantRefNum:`merchant-ABC-123` (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
-        + amount:`2599`  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
-        + customerIp:`192.0.126.111`  (string, optional) - This is the customer's IP address.
-        + ach
-            + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-            + accountType:`CHECKING` (enum, required) - This is the bank account type.
-                - SAVINGS
-                - CHECKING
-                - LOAN
-            + payMethod:`WEB` (enum, required) - This is the payment type.
-                - WEB
-                - TEL
-                - PPD
-                - CCD
-            + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-            + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement
-            + lastDigits:`09` (string, optional) - These are the last two digits of the bank account number, returned in the response.
-        + profile
-            + firstName:`John` (string, required) - This is the customer’s first name.
-            + lastName:`Johnson` (string, required) - This is the customer's last name.
-            + email:`john.johnson@emailserver.com` (string, optional) - This is the customer's email address.
-            + ssn:`123456789` (string, optional) - This is the customer's social security number.
-            + dateOfBirth (object, optional) - This is the customer's date of birth.
-                + day:`24` (number, required) - This is the day of the customer's birth.
-                + month:`10` (number, required) - This is the month of the customer's birth.
-                + year:`1981` (number, required) - This is the year of the customer's birth.
-        + billingDetails
-            + street:`100 Queen Street West` 
-            + street2:`Apt. 55`
-            + city:`Ottawa`
-            + state:`ON`
-            + country:`Canada` 
-            + zip:`M1M 1M1`
-            + phone:`6139991100`
-        + links
-            + rel:`self` (string, required)
-            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases/4c99e967-517e-4610-b3bf-364d6b3492a1` (string, required)
-
-## Links GET Standalone Credit
-+ links (array, required) - This is an array of [links](#linksobject).
-    + (object)
-        + rel:`self` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
-    + (object)
-        + rel:`next` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
-
-## Links GET Standalone Credit Reference
-+ links (array, required) - This is an array of [links](#linksobject).
-    + (object)
-        + rel:`self` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
-    + (object)
-        + rel:`next` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)
-    + (object)
-        + rel:`previous` (string, required)
-        + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z` (string, required)             
-+ standalonecredits (array) - This array lists [Standalone Credits](#standalonecreditobject) processed using this merchant reference number.
-    + (object)
-        + id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string, required) - This is the ID returned in the response.
-        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
-        + Include Currency Code US        
-        + status:`PENDING` (enum, required) - This is the status of the transaction request.        
-            - COMPLETED
-            - RECEIVED
-            - PENDING
-            - PROCESSING
-            - FAILED
-            - CANCELLED
-        + merchantRefNum:`merchant-ABC-123` (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
-        + amount:`2599`  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
-        + customerIp:`192.0.126.111`  (string, optional) - This is the customer's IP address.
-        + ach
-            + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-            + accountType:`CHECKING` (enum, required) - This is the bank account type.
-                - SAVINGS
-                - CHECKING
-                - LOAN
-            + payMethod:`WEB` (enum, required) - This is the payment type.
-                - WEB
-                - TEL
-                - PPD
-                - CCD
-            + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-            + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement
-            + lastDigits:`09` (string, optional) - These are the last two digits of the bank account number, returned in the response.
-        + profile
-            + firstName:`John` (string, required) - This is the customer’s first name.
-            + lastName:`Johnson` (string, required) - This is the customer's last name.
-            + email:`john.johnson@emailserver.com` (string, optional) - This is the customer's email address.
-            + ssn:`123456789` (string, optional) - This is the customer's social security number.
-            + dateOfBirth (object, optional) - This is the customer's date of birth.
-                + day:`24` (number, required) - This is the day of the customer's birth.
-                + month:`10` (number, required) - This is the month of the customer's birth.
-                + year:`1981` (number, required) - This is the year of the customer's birth.
-        + billingDetails
-            + street:`100 Queen Street West` 
-            + street2:`Apt. 55` 
-            + city:`Ottawa`
-            + state:`ON`
-            + country:`Canada`
-            + zip:`M1M 1M1`
-            + phone:`6139991100`
-        + links
-            + rel:`self` (string, required)
-            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)
-    + (object)
-        + id:`bg4h52c7-c991-4418-966a-b62989cb1a3f` (string, required) - This is the ID returned in the response.
-        + txnTime:`2017-02-14T15:12:18Z` (string, required) - This is the date and time the transaction was processed.
-        + status:`PENDING` (enum, required) - This is the status of the transaction request.        
-            - COMPLETED
-            - RECEIVED
-            - PENDING
-            - PROCESSING
-            - FAILED
-            - CANCELLED
-        + merchantRefNum:`merchant-ABC-123` (string, required) - This is the merchant reference number created by the merchant and submitted as part of the request. It must be unique for each request.
-        + amount:`4599`  (number, required) -  This is the amount of the request, in minor units. For example, to process US $10.99, this value should be 1099.
-        + customerIp:`192.0.126.111`  (string, optional) - This is the customer's IP address.
-        + ach
-            + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
-            + accountType:`CHECKING` (enum, required) - This is the bank account type.
-                - SAVINGS
-                - CHECKING
-                - LOAN
-            + payMethod:`WEB` (enum, required) - This is the payment type.
-                - WEB
-                - TEL
-                - PPD
-                - CCD
-            + routingNumber:`211589828` (string, required) - For USD accounts, this is the 9-digit routing number of the customer’s bank.
-            + paymentDescriptor:`Transaction` (string, optional) - This is the descriptor that will appear on the customer's bank statement
-            + lastDigits:`09` (string, optional) - These are the last two digits of the bank account number, returned in the response.
-        + profile
-            + firstName:`John` (string, required) - This is the customer’s first name.
-            + lastName:`Johnson` (string, required) - This is the customer's last name.
-            + email:`john.johnson@emailserver.com` (string, optional) - This is the customer's email address.
-            + ssn:`123456789` (string, optional) - This is the customer's social security number.
-            + dateOfBirth (object, optional) - This is the customer's date of birth.
-                + day:`24` (number, required) - This is the day of the customer's birth.
-                + month:`10` (number, required) - This is the month of the customer's birth.
-                + year:`1981` (number, required) - This is the year of the customer's birth.
-        + billingDetails
-            + street:`100 Queen Street West` 
-            + street2:`Apt. 55` 
-            + city:`Ottawa`
-            + state:`ON`
-            + country:`Canada` 
-            + zip:`M1M 1M1`
-            + phone:`6139991100`
-        + links
-            + rel:`self` (string, required)
-            + href:`https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae` (string, required)            
-    
-
 ## Purchase Base
 + `id`: `25f6dadf-176a-415f-95c9-6ff39ff697ba` (string) - This is the ID returned in the response. This ID can be used for future associated requests, e,g., Credits.
 
@@ -3565,31 +3598,6 @@ This is how you look up a Standalone Credit request using the merchant reference
             _length<=9_
         + Include dateOfBirth
     
-## profile response
-+ profile (object) - These are some [customer details](#profileobject) for the request. 
-
-
-    + Properties
-        + firstName:`John` (string) - This is the customer’s first name.
-        + lastName:`Johnson` (string) - This is the customer's last name.
-        + email:`john.johnson@emailserver.com` (string) - This is the customer's email address.
-        + ssn:`123456789` (string) - This is the customer's social security number.
-        + dateOfBirth (object) - This is the [customer's date of birth](#dateofbirthobject).
-            + day:`24` (number) - This is the day of the customer's birth.
-            + month:`10` (number) - This is the month of the customer's birth.
-            + year:`1981` (number) - This is the year of the customer's birth.
-
-## Profile Response Create Token
-+ profile (object) - These represents some [customer details](#profileobject) associated with the bank account. 
-
-
-    + Properties
-        + id:`ef2abd0c-8475-4cd9-85c6-70e1e226533c`
-
-## Response Base
-+ id:`a02e52c7-c991-4418-966a-b62989cb0eae` (string) - This is the ID returned in the response.
-+ txnTime:`2017-12-14T15:12:18Z` (string) - This is the date and time the transaction was processed.
-
 ## SEPA
 + sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
@@ -3626,62 +3634,8 @@ This is how you look up a Standalone Credit request using the merchant reference
         + mandateReference:`1000-3232659874-65985698` (string) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
             _length=35_,  _Read Only_
 
-## SEPA Payment Token
-+ sepa (object, required) - If the [payment token](#sepaobject) is provided, no other bank account information is necessary.
-
-    + Properties
-        + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - If the payment token is provided, no other bank account information is necessary.
-
-
-## SEPA Response
-+ sepa (object) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
-
-    + Properties
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + iban:`NL77ABNA0492122466` (string) - This is the International Bank Account Number for the customer's bank account.        
-        + mandateReference:`1000-3232659874-65985698` (string) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
-        + lastDigits:`66` (string) - These are the last two digits of the bank account number, returned in the response.
-
-## SEPA Token Response
-+ sepa (object) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
-
-    + Properties
-        + paymentToken:`MTEyMzYzMjQ3ODg` (string) - If the payment token is provided, no other bank account information is necessary.        
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + mandateReference:`1000-3232659874-65985698` (string) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.
-        + lastDigits:`66` (string) - These are the last two digits of the bank account number, returned in the response.
-        + bic:`ABNANL2B` (string) - This is the Bank Identifier Code for the customer's bank account.
-        + iban:`NL77 ABNA 04** **24 66` (string) - This is the International Bank Account Number for the customer's bank account.
-
-        
-## SEPA Credit Token Response
-+ sepa (object) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
-
-    + Properties
-        + paymentToken:`MTEyMzYzMjQ3ODg` (string) - If the payment token is provided, no other bank account information is necessary.        
-        + accountHolderName:`First Company` (string) - This is the name of the customer or company.
-        + lastDigits:`66` (string) - These are the last two digits of the bank account number, returned in the response.        
-        
-## Status Purchase
-+ status:`PENDING` (enum, required) - This is the status of the transaction request.        
-    - COMPLETED
-    - RECEIVED
-    - PENDING
-    - PROCESSING
-    - FAILED
-    - CANCELLED
-
-## Status Create Token
-+ status:`COMPLETED` (enum, required) - This is the status of the transaction request.        
-    - COMPLETED
-    - RECEIVED
-    - PENDING
-    - PROCESSING
-    - FAILED
-    - CANCELLED
-
 ## Splitpay Refund Request
-+ splitpay (array) - For Splitpay transactions only, an array containing the linked accounts and the amount to refund from each. You must include either *amount* or *percent*. However, you cannot include both values. You can specify any number of linked accounts, but the example here uses two.
++ splitpay (array) - For Splitpay transactions only, an array containing the linked accounts and the amount to refund from each. You must include either *amount* or *percent*. However, you cannot include both values. You can specify any number of linked accounts.
     + (object)
         + Properties
             + linkedAccount:`123816816` (string) - This is the ID of the linked account.
@@ -3695,31 +3649,11 @@ This is how you look up a Standalone Credit request using the merchant reference
                 + amount:`130` (number) - This is the amount to transfer from the linked account in minor currency units.
                 + percent:`5` (number) - This is the percentage of the total transaction amount to transfer from the linked account.
 
-## Splitpay Refund Response
-+ splitpay (array) - For Split Payouts transactions only, an array containing the linked accounts and the amount to refund from each. The example is for a merchant with two linked accounts.
-    + (object)
-        + Properties    
-            + linkedAccount:`123816816` (string) - The ID of the linked account.
-            + percent:`6` (number) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred from that account. This is not returned if an amount was specified in the request.
-            + amount:`156` (number) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
-    + (object)
-        + Properties    
-            + linkedAccount:`123124124` (string) - The ID of the linked account.
-            + One of
-                + amount:`130` (number) - The amount to transfer from the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
-                + percent:`5` (number) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred from that account. This is not returned if an amount was specified in the request.
-
 ## Splitpay Request
 + splitpay (array, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount shared with each. You must include either *amount* or *percent*. However, you cannot include both values.
     + (object)
         + Properties
             + linkedAccount:`123124124` (string, required) - This is the ID of the linked account.
             + One of
-                + percent:`5` (number, optional) - This is the percentage of the total transaction amount to transfer to the linked account.
-                + amount:`505` (number, optional) - This is the amount to transfer to the linked account in minor currency units.
-
-## Splitpay Response
-+ splitpay (object, optional) - For Split Payouts transactions only, an array containing the linked accounts and the amount shared with each.
-    - linkedAccount:`123124124` (string) - The ID of the linked account.
-    - percent:`5` (number) - The percent (if specified) in the request for the linked account, which is the percentage of the total transaction amount transferred to that account. This is not returned if an amount was specified in the request.
-    - amount:`505` (number) - The amount to transfer to the linked account in minor currency units. This is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
+                + percent:`5` (number, optional) - This is the percentage of the total transaction amount to transfer to the linked account. This is not returned in the response if an amount was specified in the request.
+                + amount:`505` (number, optional) - This is the amount to transfer to the linked account in minor currency units. In the response, this is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
