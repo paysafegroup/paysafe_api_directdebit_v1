@@ -8,7 +8,7 @@ HOST: https://api.test.paysafe.com/directdebit/
 | Version   | Date          | Details |
 |---        |---            |---      |
 | 1.0       | December 2017 | <ul><li>Added Direct Debit single-use tokens</li></ul>|
-| 1.0       | November 2016 | Document release |
+| 1.0       | November 2016 | <ul><li>Document release</li></ul> |
 
 # Overview
 Connect your application with the Paysafe payment engine through our RESTful API and access a full suite of methods, including Purchases and Standalone Credits.
@@ -1259,7 +1259,7 @@ To call the API resource, click **Call Resource**. The response is displayed in 
 <li><a href="http://community.paysafe.com/spaces/10/index.html" target="_blank">Paysafe Blog</a></li>
 </ul>
 
-## Verify the Service is Accessible [GET /monitor]
+## Verify That the Service Is Accessible [GET /monitor]
 <a name="verifyservice" title="Verify Service"></a>
 
 This call returns a status of READY if the API is available.
@@ -1401,7 +1401,7 @@ In the case of a Purchase request using a payment token, you can use either of t
 
             {
                 "merchantRefNum": "04.04.17_2",
-                "amount": 10155,
+                "amount": 10000,
                 "customerIp": "192.0.126.111",
                 "ach": {
                     "accountHolderName": "First Company",
@@ -1476,7 +1476,7 @@ In the case of a Purchase request using a payment token, you can use either of t
                 "splitpay": {
                     "linkedAccount": "123124124",
                     "percent": 5,
-                    "amount":135
+                    "amount":500
                 },
                 "customerIp": "192.0.126.111",
                 "dupCheck": true,
@@ -2212,19 +2212,6 @@ This is how you look up a Purchase request using the merchant reference number u
     + Body
 
             {
-                "links": [{
-                        "rel": "self",
-                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
-                    },
-                    {
-                        "rel": "next",
-                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
-                    },
-                    {
-                        "rel": "previous",
-                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
-                    }
-                ],
                 "purchases": [{
                         "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                         "txnTime": "2017-02-14T15:12:18Z",
@@ -2307,11 +2294,19 @@ This is how you look up a Purchase request using the merchant reference number u
                         }
                     }
                 ],
-                "splitpay": {
-                    "linkedAccount": "123124124",
-                    "percent": 5,
-                    "amount": 505
-                }
+                "links": [{
+                        "rel": "self",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "next",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "previous",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/purchases?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    }
+                ]
             }
 
 # Standalone Credits [/standalonecredits]
@@ -2529,10 +2524,6 @@ In the case of a Standalone Credit request using a payment token, you can use ei
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "merchantCustomerId": "ach_standalonecredit01",
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
@@ -2564,7 +2555,11 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                     "country": "CA",
                     "zip": "M1M 1M1",
                     "phone": "6139991100"
-                }
+                },
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 ## EFT Standalone Credit [POST /v1/accounts/{account_id}/standalonecredits]
@@ -2648,10 +2643,6 @@ In the case of a Standalone Credit request using a payment token, you can use ei
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
                 "currencyCode": "CAD",
@@ -2696,7 +2687,11 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                         "linkedAccount": "123124124",
                         "amount": 130
                     }
-                ]
+                ],
+            "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 + Request Submit an EFT Standalone Credit Request Using a Payment Token (application/json)
@@ -2732,10 +2727,6 @@ In the case of a Standalone Credit request using a payment token, you can use ei
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
                 "currencyCode": "CAD",
@@ -2781,7 +2772,11 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                         "linkedAccount": "123124124",
                         "amount": 130
                     }
-                ]
+                ],
+            "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 
@@ -2811,10 +2806,6 @@ In the case of a Standalone Credit request using a payment token, you can use ei
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "merchantCustomerId": "eft_standalonecredit01",
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
@@ -2845,7 +2836,11 @@ In the case of a Standalone Credit request using a payment token, you can use ei
                     "country": "CA",
                     "zip": "M1M 1M1",
                     "phone": "6139991100"
-                }
+                },
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 ## BACS Standalone Credit with Payment Token [POST /v1/accounts/{account_id}/standalonecredits]
@@ -2885,16 +2880,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
                 "dupCheck": true,
                 "bacs": {
                     "paymentToken": "BNjEzMTM4NDg1"
-                },
-                "splitpay": [{
-                        "linkedAccount": "123816816",
-                        "percent": 6
-                    },
-                    {
-                        "linkedAccount": "123124124",
-                        "amount": 130
-                    }
-                ]
+                }
             }
 
 + Response 200 (application/json)
@@ -2902,10 +2888,6 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
                 "currencyCode": "GBP",
@@ -2941,16 +2923,10 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
                     "zip": "M1M 1M1",
                     "phone": "6139991100"
                 },
-                "splitpay": [{
-                        "linkedAccount": "123816816",
-                        "percent": 6,
-                        "amount": 156
-                    },
-                    {
-                        "linkedAccount": "123124124",
-                        "amount": 130
-                    }
-                ]
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 ## SEPA Standalone Credit [POST /v1/accounts/{account_id}/standalonecredits]
@@ -3016,16 +2992,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
                     "country": "CA",
                     "zip": "M1M 1M1",
                     "phone": "6139991100"
-                },
-                "splitpay": [{
-                        "linkedAccount": "123816816",
-                        "percent": 6
-                    },
-                    {
-                        "linkedAccount": "123124124",
-                        "amount": 130
-                    }
-                ]
+                }
             }
 
 + Response 200 (application/json)
@@ -3033,10 +3000,6 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
                 "currencyCode": "EUR",
@@ -3071,16 +3034,10 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
                     "zip": "M1M 1M1",
                     "phone": "6139991100"
                 },
-                "splitpay": [{
-                        "linkedAccount": "123816816",
-                        "percent": 6,
-                        "amount": 156
-                    },
-                    {
-                        "linkedAccount": "123124124",
-                        "amount": 130
-                    }
-                ]
+                "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 + Request Submit a SEPA Standalone Credit Request Using a Payment Token (application/json)
@@ -3115,10 +3072,6 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
                 "currencyCode": "EUR",
@@ -3164,7 +3117,11 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
                         "linkedAccount": "123124124",
                         "amount": 130
                     }
-                ]
+                ],
+            "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 ## Cancel Standalone Credit [PUT /v1/standalonecredits/{standalone_credit_id}]
@@ -3198,13 +3155,13 @@ This is how you cancel a Direct Debit Standalone Credit request.
     + Body
 
             {
+                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
+                "txnTime": "2017-12-14T15:12:18Z",
+                "status": "CANCELLED",
                 "links": [{
                     "rel": "self",
                     "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
-                "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
-                "txnTime": "2017-12-14T15:12:18Z",
-                "status": "CANCELLED"
+                }]
             }
 
 ## Get Standalone Credit [GET /v1/accounts/{account_id}/standalonecredits/{standalone_credit_id}]
@@ -3228,10 +3185,6 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
     + Body
 
             {
-                "links": [{
-                    "rel": "self",
-                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
-                }],
                 "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                 "txnTime": "2017-12-14T15:12:18Z",
                 "status": "PENDING",
@@ -3277,7 +3230,11 @@ This is how you look up a Direct Debit Standalone Credit request using the ID re
                         "linkedAccount": "123124124",
                         "amount": 130
                     }
-                ]
+                ],
+            "links": [{
+                    "rel": "self",
+                    "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits/a02e52c7-c991-4418-966a-b62989cb0eae"
+                }]
             }
 
 ## Get Standalone Credit Using Merchant Reference Number [GET /v1/accounts/{account_id}/standalonecredits?merchantRefNum={merchantRefNum}&limit={limit}&offset={offset}&startDate={startDate}&endDate={endDate}]
@@ -3306,19 +3263,6 @@ This is how you look up a Standalone Credit request using the merchant reference
     + Body
 
             {
-                "links": [{
-                        "rel": "self",
-                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
-                    },
-                    {
-                        "rel": "next",
-                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
-                    },
-                    {
-                        "rel": "previous",
-                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
-                    }
-                ],
                 "standalonecredits": [{
                         "id": "a02e52c7-c991-4418-966a-b62989cb0eae",
                         "txnTime": "2017-02-14T15:12:18Z",
@@ -3401,14 +3345,17 @@ This is how you look up a Standalone Credit request using the merchant reference
                         }
                     }
                 ],
-                "splitpay": [{
-                        "linkedAccount": "123816816",
-                        "percent": 6,
-                        "amount": 156
+                "links": [{
+                        "rel": "self",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=2&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
                     },
                     {
-                        "linkedAccount": "123124124",
-                        "amount": 130
+                        "rel": "next",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=4&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
+                    },
+                    {
+                        "rel": "previous",
+                        "href": "https://api.test.paysafe.com/directdebit/v1/accounts/1001058140/standalonecredits?merchantRefNum=merchant-ABC-123&limit=2&offset=0&startDate=2017-01-14T15:12:18Z&endDate=2017-04-04T15:12:18Z"
                     }
                 ]
             }
