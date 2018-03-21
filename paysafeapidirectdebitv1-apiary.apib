@@ -3413,10 +3413,11 @@ This is how you look up a Standalone Credit request using the merchant reference
             _length=10_, _Read Only_
 
 ## BACS Payment Token
-+ bacs (object, required) - If the [payment token](#bacsobject) is provided, no other bank account information is necessary.
++ bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
-        + paymentToken:`BNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + paymentToken:`BNjEzMTM4NDg1` (string, required) - This is the payment token found in the response to the [BACS mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-bacs-mandate). If provided, no other bank account information is necessary.
+            _length<=50_
 
 
 ## billingDetails
