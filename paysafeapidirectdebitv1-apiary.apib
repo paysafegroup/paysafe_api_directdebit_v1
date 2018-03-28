@@ -1924,7 +1924,7 @@ In the case of a Purchase request using a payment token, you can use either of t
             }
 
 
-## BACS Purchase [POST /v1/accounts/{account_id}/purchases]
+## BACS Purchase with Payment Token [POST /v1/accounts/{account_id}/purchases]
 <a name="bacspurchasetokenrequest" title="BACS Purchase Request with Token"></a>
 
 This is how you process a BACS Direct Debit Purchase request using a payment token. When processing a BACS Direct Debit Purchase, you must use the [Paysafe Customer Vault API](https://developer.paysafe.com/en/payments/vault/api/#/introduction/overview) to:
@@ -1932,7 +1932,7 @@ This is how you process a BACS Direct Debit Purchase request using a payment tok
  * Add a BACS bank account to the profile
  * Add a mandate to the BACS bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+**Note:** When you [create a BACS bank account](https://developer.paysafe.com/en/vault/api/#/reference/0/bacs-bank-accounts/create-a-bacs-bank-account), you will receive a *paymentToken* in that response. However, you **cannot** use this token for processing BACS requests in the Direct Debit API. You must use the *paymentToken* returned in the response to the [BACS mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -1940,7 +1940,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
 
 + Attributes
     + Include Purchase Base
-    + Include BACS
+    + Include BACS Payment Token
     + Include profile
     + Include billingDetails
     + Include Splitpay Request
@@ -2010,7 +2010,7 @@ This is how you process a SEPA Direct Debit Purchase request using a payment tok
  * Add a SEPA bank account to the profile
  * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+**Note:** When you [create a SEPA bank account](https://developer.paysafe.com/en/vault/api/#/reference/0/sepa-bank-accounts/create-a-sepa-bank-account), you will receive a *paymentToken* in that response. However, you **cannot** use this token for processing SEPA requests in the Direct Debit API. You must use the *paymentToken* returned in the response to the [SEPA mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -2018,7 +2018,7 @@ You can then use the *paymentToken* returned in the response to the [mandate cre
 
 + Attributes
     + Include Purchase Base
-    + Include SEPA Token
+    + Include SEPA Token Only
     + Include profile
     + Include billingDetails
     + Include Splitpay Request
@@ -2850,7 +2850,7 @@ This is how you process a BACS Direct Debit Standalone Credit request using a pa
  * Add a BACS bank account to the profile
  * Add a mandate to the BACS bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Purchase. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+**Note:** When you [create a BACS bank account](https://developer.paysafe.com/en/vault/api/#/reference/0/bacs-bank-accounts/create-a-bacs-bank-account), you will receive a *paymentToken* in that response. However, you **cannot** use this token for processing BACS requests in the Direct Debit API. You must use the *paymentToken* returned in the response to the [BACS mandate creation request](https://developer.paysafe.com/en/payments/vault/api/#/reference/0/mandates/create-a-bacs-mandate) to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Attributes
     + Include Purchase Base
@@ -2940,7 +2940,7 @@ When processing a SEPA Direct Debit Standalone Credit using a payment token, you
  * Add a SEPA bank account to the profile
  * Add a mandate to the SEPA bank account (the mandate must have the status of ACTIVE)
  
-You can then use the *paymentToken* associated with the SEPA bank account or the *paymentToken* returned in the response to the [mandate creation request](https://developer.paysafe.com/en/payments/vault/api/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
+**Note:** When you [create a SEPA bank account](https://developer.paysafe.com/en/vault/api/#/reference/0/sepa-bank-accounts/create-a-sepa-bank-account), you will receive a *paymentToken* in that response. However, you **cannot** use this token for processing SEPA requests in the Direct Debit API. You must use the *paymentToken* returned in the response to the [SEPA mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-sepa-mandate) to process a Direct Debit Standalone Credit. In this case, you submit the request without extra parameters such as bank account, profile, and billing address information. These details are stored with the payment token.
 
 + Parameters
 
@@ -2948,7 +2948,7 @@ You can then use the *paymentToken* associated with the SEPA bank account or the
 
 + Attributes
     + Include Purchase Base
-    + Include SEPA
+    + Include SEPA Token
     + Include profile
     + Include billingDetails
     + Include Splitpay Refund Request
@@ -3399,7 +3399,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 + bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
-        + paymentToken:`BNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + paymentToken:`BNjEzMTM4NDg1` (string, required) - This is the payment token found in the response to the [BACS mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-bacs-mandate). If provided, no other bank account information is necessary.
             _length<=50_
         + accountHolderName:`First Company` (string) - This is the name of the customer or company.
             _length<=18_, _Read Only_
@@ -3413,10 +3413,11 @@ This is how you look up a Standalone Credit request using the merchant reference
             _length=10_, _Read Only_
 
 ## BACS Payment Token
-+ bacs (object, required) - If the [payment token](#bacsobject) is provided, no other bank account information is necessary.
++ bacs (object, required) - These are the details of the [BACS bank account](#bacsobject) used for the request.
 
     + Properties
-        + paymentToken:`BNjEzMTM4NDg1` (string, required) - If the payment token is provided, no other bank account information is necessary.
+        + paymentToken:`BNjEzMTM4NDg1` (string, required) - This is the payment token found in the response to the [BACS mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-bacs-mandate). If provided, no other bank account information is necessary.
+            _length<=50_
 
 
 ## billingDetails
@@ -3544,12 +3545,12 @@ This is how you look up a Standalone Credit request using the merchant reference
             _length<=9_
         + Include dateOfBirth
     
-## SEPA
+## SEPA Token
 + sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
         + One Of
-            + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - If the payment token is provided, no other bank account information is necessary.
+            + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - This is the payment token found in the response to the [SEPA mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-sepa-mandate). If provided, no other bank account information is necessary.
                 _length<=50_
             + sepa details
                 + accountHolderName:`First Company` (string, required) - This is the name of the customer or company.
@@ -3563,12 +3564,17 @@ This is how you look up a Standalone Credit request using the merchant reference
                 + mandateReference:`1000-3232659874-65985698` (string, required) - This is the *reference* element used in the mandate creation request. It is the identifier of the mandate in the banking system.<br/>**Note:** This parameter is not required for SEPA standalone credits.
                     _length=35_
 
-## SEPA Token
+## SEPA Token Only
 + sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
 
     + Properties
-        + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - If the payment token is provided, no other bank account information is necessary.
-            _length<=50_
+        + paymentToken:`MTEyMzYzMjQ3ODg` (string, required) - This is the payment token found in the response to the [SEPA mandate creation request](https://developer.paysafe.com/en/vault/api/#/reference/0/mandates/create-a-sepa-mandate). If provided, no other bank account information is necessary.
+                _length<=50_
+
+## SEPA
++ sepa (object, required) - These are the details of the [SEPA bank account](#sepaobject) used for the request.
+
+    + Properties
         + accountHolderName:`First Company` (string) - This is the name of the customer or company.
             _length<=32_, _Read Only_
         + bic:`ABNANL2B` (string) - This is the Bank Identifier Code for the customer's bank account.
