@@ -7,6 +7,7 @@ HOST: https://api.test.paysafe.com/directdebit/
 
 | Version   | Date          | Details |
 |---        |---            |---      |
+| 1.0       | April 2018 | <ul><li>Changed "turnkey" to "platforms"</li></ul>|
 | 1.0       | December 2017 | <ul><li>Added Direct Debit single-use tokens</li></ul>|
 | 1.0       | November 2016 | <ul><li>Document release</li></ul> |
 
@@ -42,12 +43,15 @@ The flow of funds in a Direct Debit charge transaction is depicted in the diagra
 
 <a name="apikey" title="Authentication"></a>
 # Authentication 
+
 In order for you to use the Paysafe REST API, Paysafe must first set you up on their system
 and provide you with an API key. Your API key looks something like this:
  * Key Username – MerchantXYZ
  * Key Password – B-tst1-0-51ed39e4-312d02345d3f123120881dff9bb4020a89e8ac44cdfdcecd702151182fdc952272661d290ab2e5849e31bb03deede7e
-Note this is not the same as your Merchant Back Office username and password.Ke
+
+Note that this is not the same as your Merchant Back Office username and password. 
 The case-sensitive API key is sent using HTTP Basic Authentication. To use HTTP Basic Authentication, you must send the API key credentials using the Authorization header with every request. The Authorization header is constructed as follows:
+
  1. The Key Username and Key Password are combined into a string separated by a colon, e.g.,“Key Username:Key Password”.
  2. The resulting string literal is then encoded using Base64.
  3. The authorization method and a space (i.e., “Basic”) are then put before the encoded string.
@@ -1250,9 +1254,9 @@ To call the API resource, click **Call Resource**. The response is displayed in 
 
 # Legal and Community
 <ul>
-<li><a href="https://www.paysafe.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
+<li><a href="https://www.paysafe.com/paysafegroup/privacy-policy/" target="_blank">Privacy Policy</a></li>
 <li><a href="https://developer.paysafe.com/en/resources-and-support/terms-of-use/" target="_blank">Terms of Use</a></li>
-<li><a href="http://www.paysafe.com/regulatory-disclosure/" target="_blank">Regulatory Disclosures</a></li>
+<li><a href="https://www.paysafe.com/paysafegroup/regulatory-disclosures/" target="_blank">Regulatory Disclosures</a></li>
 <li><a href="http://community.paysafe.com/spaces/11/index.html" target="_blank">FAQs</a></li>
 <li><a href="http://community.paysafe.com/index.html" target="_blank">Community</a></li>
 <li><a href="http://community.paysafe.com/spaces/10/index.html" target="_blank">Paysafe Blog</a></li>
@@ -1279,7 +1283,7 @@ This call returns a status of READY if the API is available.
 
 This shows you four examples of an ACH Purchase request:
 * A regular Purchase request
-* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/turnkey/split-payouts/split-payouts-overview/)
+* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/platforms/split-payouts/split-payouts-overview/)
 * A Purchase request using a payment token
 * A Purchase request using a single-use token that also creates a permanent, reusable payment token representing the ACH account
 
@@ -1605,7 +1609,7 @@ In the case of a Purchase request using a payment token, you can use either of t
 
 This shows you three examples of an EFT Purchase request:
 * A regular Purchase request
-* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/turnkey/split-payouts/split-payouts-overview/)
+* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/platforms/split-payouts/split-payouts-overview/)
 * A Purchase request using a payment token
 * A Purchase request using a single-use token that also creates a permanent, reusable payment token representing the EFT account
 
