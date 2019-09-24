@@ -144,11 +144,11 @@ The following request types are supported:
 <a name="gettingstarted"></a>
 # Getting Started
 
-Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/using-the-api/scenarios/) for some common scenarios for making Direct Debit payments. 
+Click [here](https://developer.paysafe.com/en/rest-apis/direct-debit/using-the-api/scenarios/) for some common scenarios for making Direct Debit payments. 
 
 # Testing Instructions
 
-The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment. Click [here](https://developer.paysafe.com/en/rest-api/direct-debit/test-and-go-live/testing-instructions/) for details of how to use the test environment.
+The Paysafe Test environment can be used to test websites or applications without actually running transactions through the payment processing engine. It is important to make sure that your systems are working correctly before going into a live environment. Click [here](https://developer.paysafe.com/en/rest-apis/direct-debit/test-and-go-live/testing-instructions/) for details of how to use the test environment.
 
 <a name="isostandards" title="ISO Standards"></a>
 # ISO Standards
@@ -993,7 +993,7 @@ When providing SEPA bank account information, merchants can provide either a pay
 ## Direct Debit Return Codes
 
 Occasionally, a Direct Debit API request will be successful, but can fail at the banking network level, e.g., due to insufficient funds or bank account closure. In such cases, the bank scheme provides a Return Code as an explanation. Because Direct Debit requests can take up to 7 days to clear, you cannot be notified of errors such as these via the API response. 
-However, you can use the [Paysafe Merchant Back Office](https://developer.paysafe.com/en/rest-api/reference-information/managing-payments/paysafe-merchant-back-office/) to run reports to view Return Codes in the case where a Direct Debit request has failed.
+However, you can use the [Paysafe Merchant Back Office](https://developer.paysafe.com/en/rest-apis/reference-information/managing-payments/paysafe-merchant-back-office/) to run reports to view Return Codes in the case where a Direct Debit request has failed.
 
 | Code         | Description                                                                                                                                                      | Bank Scheme |
 |--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
@@ -1283,7 +1283,7 @@ This call returns a status of READY if the API is available.
 
 This shows you four examples of an ACH Purchase request:
 * A regular Purchase request
-* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/platforms/split-payouts/split-payouts-overview/)
+* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-apis/platforms/split-payouts/split-payouts-overview/)
 * A Purchase request using a payment token
 * A Purchase request using a single-use token that also creates a permanent, reusable payment token representing the ACH account
 
@@ -1609,7 +1609,7 @@ In the case of a Purchase request using a payment token, you can use either of t
 
 This shows you three examples of an EFT Purchase request:
 * A regular Purchase request
-* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-api/platforms/split-payouts/split-payouts-overview/)
+* A Purchase request including [Split Payouts](https://developer.paysafe.com/en/rest-apis/platforms/split-payouts/split-payouts-overview/)
 * A Purchase request using a payment token
 * A Purchase request using a single-use token that also creates a permanent, reusable payment token representing the EFT account
 
@@ -3654,13 +3654,13 @@ This is how you look up a Standalone Credit request using the merchant reference
 + splitpay (array) - For Splitpay transactions only, an array containing the linked accounts and the amount to refund from each. You must include either *amount* or *percent*. However, you cannot include both values. You can specify any number of linked accounts.
     + (object)
         + Properties
-            + linkedAccount:`123816816` (string) - This is the ID of the linked account.
+            + linkedAccount:`123816816` (string) - This is the ID of the linked account. This account must already be linked to the merchant account.
             + One of
                 + percent:`6` (number) - This is the percentage of the total transaction amount to transfer from the linked account.                
                 + amount:`156` (number) - This is the amount to transfer from the linked account in minor currency units.
     + (object)
         + Properties
-            + linkedAccount:`123124124` (string) - This is the ID of the linked account.
+            + linkedAccount:`123124124` (string) - This is the ID of the linked account. This account must already be linked to the merchant account.
             + One of
                 + amount:`130` (number) - This is the amount to transfer from the linked account in minor currency units.
                 + percent:`5` (number) - This is the percentage of the total transaction amount to transfer from the linked account.
@@ -3669,7 +3669,7 @@ This is how you look up a Standalone Credit request using the merchant reference
 + splitpay (array, optional) - For Splitpay transactions only, an array containing the linked accounts and the amount shared with each. You must include either *amount* or *percent*. However, you cannot include both values.
     + (object)
         + Properties
-            + linkedAccount:`123124124` (string, required) - This is the ID of the linked account.
+            + linkedAccount:`123124124` (string, required) - This is the ID of the linked account. This account must already be linked to the merchant account.
             + One of
                 + percent:`5` (number, optional) - This is the percentage of the total transaction amount to transfer to the linked account. This is not returned in the response if an amount was specified in the request.
                 + amount:`505` (number, optional) - This is the amount to transfer to the linked account in minor currency units. In the response, this is either the amount (if specified) in the request or - if percent was specified - the result of the percentage calculation.
